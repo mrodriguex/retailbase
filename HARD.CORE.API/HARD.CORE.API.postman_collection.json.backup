@@ -1,0 +1,1961 @@
+{
+  "info": {
+    "_postman_id": "05ff95ff-445e-4868-ac3a-00e21c8f5c8d",
+    "name": "HARD.CORE.API Collection",
+    "description": "Collection for testing all endpoints in HARD.CORE.API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "17549784",
+    "_collection_link": "https://go.postman.co/collection/17549784-05ff95ff-445e-4868-ac3a-00e21c8f5c8d?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth - Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "/****************************************************************************/",
+              "pm.test(\"El campo 'success' es 'true'\", function () {",
+              "    let jsonData = pm.response.json();",
+              "    pm.collectionVariables.set(\"jwtToken\", jsonData.data);",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "});",
+              "/****************************************************************************/",
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: { type: 'string' },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"administrador\",\n  \"password\": \"Default.123@\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Usuario - Add",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: { type: 'integer' },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Usuario Nuevo\",\n  \"descripcion\": \"Descripción del usuario\",\n  \"abreviatura\": \"UN\",\n  \"activo\": true,\n  \"nombreUsuario\": \"newuser\",\n  \"contrasena\": \"TempPass123!\",\n  \"correo\": \"newuser@example.com\",\n  \"numeroEmpleado\": 123,\n  \"apellidoPaterno\": \"Paterno\",\n  \"apellidoMaterno\": \"Materno\",\n  \"estatus\": true,\n  \"isActive\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Usuario/Add",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Usuario",
+            "Add"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Usuario - Update",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: { type: 'boolean' },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 1,\n  \"nombre\": \"Usuario Actualizado\",\n  \"descripcion\": \"Descripción actualizada\",\n  \"abreviatura\": \"UA\",\n  \"activo\": true,\n  \"nombreUsuario\": \"updateduser\",\n  \"correo\": \"updated@example.com\",\n  \"numeroEmpleado\": 123,\n  \"apellidoPaterno\": \"Paterno\",\n  \"apellidoMaterno\": \"Materno\",\n  \"estatus\": true,\n  \"isActive\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Usuario/Update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Usuario",
+            "Update"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Usuario - GetById",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: {",
+              "      type: 'object',",
+              "      properties: {",
+              "        id: { type: 'integer' },",
+              "        descripcion: { type: 'string' },",
+              "        nombre: { type: 'string' },",
+              "        abreviatura: { type: 'string' },",
+              "        activo: { type: 'boolean' },",
+              "        fechaCreacion: { type: 'string' },",
+              "        fechaModificacion: { type: 'string' },",
+              "        idUsuarioCreacion: { type: 'integer' },",
+              "        idUsuarioModificacion: { type: 'integer' },",
+              "        orden: { type: 'integer' },",
+              "        claveUsuario: { type: 'string' },",
+              "        numeroEmpleado: { type: 'integer' },",
+              "        isActive: { type: 'boolean' },",
+              "        perfiles: { type: 'array', items: { type: 'object' } },",
+              "        empresas: { type: 'array', items: { type: 'object' } },",
+              "        nombreCompleto: { type: 'string' },",
+              "        nombreUsuario: { type: 'string' },",
+              "        apellidoPaterno: { type: 'string' },",
+              "        apellidoMaterno: { type: 'string' },",
+              "        correo: { type: 'string' },",
+              "        contrasena: { type: 'string' },",
+              "        numeroIntentos: { type: 'integer' },",
+              "        bloqueado: { type: 'boolean' },",
+              "        cambioContrasena: { type: 'boolean' },",
+              "        estatus: { type: 'boolean' },",
+              "        fotografia: { type: 'string' },",
+              "        idUsuarioPorAusencia: { type: 'integer' },",
+              "        nombreUsuarioPorAusencia: { type: 'string' }",
+              "      },",
+              "      required: ['id', 'descripcion', 'nombre', 'abreviatura', 'activo', 'fechaCreacion', 'fechaModificacion', 'idUsuarioCreacion', 'idUsuarioModificacion', 'orden', 'claveUsuario', 'numeroEmpleado', 'isActive', 'perfiles', 'empresas', 'nombreCompleto', 'nombreUsuario', 'apellidoPaterno', 'apellidoMaterno', 'correo', 'contrasena', 'numeroIntentos', 'bloqueado', 'cambioContrasena', 'estatus']",
+              "    },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Usuario/GetById?idUsuario=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Usuario",
+            "GetById"
+          ],
+          "query": [
+            {
+              "key": "idUsuario",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Usuario - GetAll",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: {",
+              "      type: 'array',",
+              "      items: {",
+              "        type: 'object',",
+              "        properties: {",
+              "          id: { type: 'integer' },",
+              "          descripcion: { type: 'string' },",
+              "          nombre: { type: 'string' },",
+              "          abreviatura: { type: 'string' },",
+              "          activo: { type: 'boolean' },",
+              "          fechaCreacion: { type: 'string' },",
+              "          fechaModificacion: { type: 'string' },",
+              "          idUsuarioCreacion: { type: 'integer' },",
+              "          idUsuarioModificacion: { type: 'integer' },",
+              "          orden: { type: 'integer' },",
+              "          claveUsuario: { type: 'string' },",
+              "          numeroEmpleado: { type: 'integer' },",
+              "          isActive: { type: 'boolean' },",
+              "          perfiles: { type: 'array', items: { type: 'object' } },",
+              "          empresas: { type: 'array', items: { type: 'object' } },",
+              "          nombreCompleto: { type: 'string' },",
+              "          nombreUsuario: { type: 'string' },",
+              "          apellidoPaterno: { type: 'string' },",
+              "          apellidoMaterno: { type: 'string' },",
+              "          correo: { type: 'string' },",
+              "          contrasena: { type: 'string' },",
+              "          numeroIntentos: { type: 'integer' },",
+              "          bloqueado: { type: 'boolean' },",
+              "          cambioContrasena: { type: 'boolean' },",
+              "          estatus: { type: 'boolean' },",
+              "          fotografia: { type: 'string' },",
+              "          idUsuarioPorAusencia: { type: 'integer' },",
+              "          nombreUsuarioPorAusencia: { type: 'string' }",
+              "        },",
+              "        required: ['id', 'descripcion', 'nombre', 'abreviatura', 'activo', 'fechaCreacion', 'fechaModificacion', 'idUsuarioCreacion', 'idUsuarioModificacion', 'orden', 'claveUsuario', 'numeroEmpleado', 'isActive', 'perfiles', 'empresas', 'nombreCompleto', 'nombreUsuario', 'apellidoPaterno', 'apellidoMaterno', 'correo', 'contrasena', 'numeroIntentos', 'bloqueado', 'cambioContrasena', 'estatus']",
+              "      }",
+              "    },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Usuario/GetAll",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Usuario",
+            "GetAll"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cliente - Add",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: { type: 'integer' },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rfc\": \"ABC123456789\",\n  \"razonSocial\": \"Nuevo Cliente S.A.\",\n  \"idClientePadre\": null,\n  \"nombre\": \"Cliente Nuevo\",\n  \"activo\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Cliente/Add",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Cliente",
+            "Add"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cliente - Update",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: { type: 'boolean' },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 1,\n  \"rfc\": \"ABC123456789\",\n  \"razonSocial\": \"Cliente Actualizado S.A.\",\n  \"idClientePadre\": null,\n  \"nombre\": \"Cliente Actualizado\",\n  \"activo\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Cliente/Update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Cliente",
+            "Update"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cliente - GetById",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: {",
+              "      type: 'object',",
+              "      properties: {",
+              "        id: { type: 'integer' },",
+              "        descripcion: { type: 'string' },",
+              "        nombre: { type: 'string' },",
+              "        abreviatura: { type: 'string' },",
+              "        activo: { type: 'boolean' },",
+              "        fechaCreacion: { type: 'string' },",
+              "        fechaModificacion: { type: 'string' },",
+              "        idUsuarioCreacion: { type: 'integer' },",
+              "        idUsuarioModificacion: { type: 'integer' },",
+              "        orden: { type: 'integer' },",
+              "        rfc: { type: 'string' },",
+              "        razonSocial: { type: 'string' },",
+              "        idClientePadre: { type: ['integer', 'null'] }",
+              "      },",
+              "      required: ['id', 'descripcion', 'nombre', 'abreviatura', 'activo', 'fechaCreacion', 'fechaModificacion', 'idUsuarioCreacion', 'idUsuarioModificacion', 'orden', 'rfc', 'razonSocial']",
+              "    },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Cliente/GetById?idCliente=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Cliente",
+            "GetById"
+          ],
+          "query": [
+            {
+              "key": "idCliente",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cliente - GetAll",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: {",
+              "      type: 'array',",
+              "      items: {",
+              "        type: 'object',",
+              "        properties: {",
+              "          id: { type: 'integer' },",
+              "          descripcion: { type: 'string' },",
+              "          nombre: { type: 'string' },",
+              "          abreviatura: { type: 'string' },",
+              "          activo: { type: 'boolean' },",
+              "          fechaCreacion: { type: 'string' },",
+              "          fechaModificacion: { type: 'string' },",
+              "          idUsuarioCreacion: { type: 'integer' },",
+              "          idUsuarioModificacion: { type: 'integer' },",
+              "          orden: { type: 'integer' },",
+              "          rfc: { type: 'string' },",
+              "          razonSocial: { type: 'string' },",
+              "          idClientePadre: { type: ['integer', 'null'] }",
+              "        },",
+              "        required: ['id', 'descripcion', 'nombre', 'abreviatura', 'activo', 'fechaCreacion', 'fechaModificacion', 'idUsuarioCreacion', 'idUsuarioModificacion', 'orden', 'rfc', 'razonSocial']",
+              "      }",
+              "    },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Cliente/GetAll",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Cliente",
+            "GetAll"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Empresa - Add",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: { type: 'integer' },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rfc\": \"DEF987654321\",\n  \"razonSocial\": \"Nueva Empresa S.A.\",\n  \"usuarios\": [],\n  \"nombre\": \"Empresa Nueva\",\n  \"activo\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Empresa/Add",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Empresa",
+            "Add"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Empresa - Update",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: { type: 'boolean' },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 1,\n  \"rfc\": \"DEF987654321\",\n  \"razonSocial\": \"Empresa Actualizada S.A.\",\n  \"usuarios\": [],\n  \"nombre\": \"Empresa Actualizada\",\n  \"activo\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Empresa/Update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Empresa",
+            "Update"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Empresa - GetAll",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: {",
+              "      type: 'array',",
+              "      items: {",
+              "        type: 'object',",
+              "        properties: {",
+              "          id: { type: 'integer' },",
+              "          descripcion: { type: 'string' },",
+              "          nombre: { type: 'string' },",
+              "          abreviatura: { type: 'string' },",
+              "          activo: { type: 'boolean' },",
+              "          fechaCreacion: { type: 'string' },",
+              "          fechaModificacion: { type: 'string' },",
+              "          idUsuarioCreacion: { type: 'integer' },",
+              "          idUsuarioModificacion: { type: 'integer' },",
+              "          orden: { type: 'integer' },",
+              "          usuarios: { type: 'array', items: { type: 'object' } },",
+              "          rfc: { type: 'string' },",
+              "          razonSocial: { type: 'string' }",
+              "        },",
+              "        required: ['id', 'descripcion', 'nombre', 'abreviatura', 'activo', 'fechaCreacion', 'fechaModificacion', 'idUsuarioCreacion', 'idUsuarioModificacion', 'orden', 'usuarios', 'rfc', 'razonSocial']",
+              "      }",
+              "    },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Empresa/GetAll",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Empresa",
+            "GetAll"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Empresa - GetById",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: {",
+              "      type: 'object',",
+              "      properties: {",
+              "        id: { type: 'integer' },",
+              "        descripcion: { type: 'string' },",
+              "        nombre: { type: 'string' },",
+              "        abreviatura: { type: 'string' },",
+              "        activo: { type: 'boolean' },",
+              "        fechaCreacion: { type: 'string' },",
+              "        fechaModificacion: { type: 'string' },",
+              "        idUsuarioCreacion: { type: 'integer' },",
+              "        idUsuarioModificacion: { type: 'integer' },",
+              "        orden: { type: 'integer' },",
+              "        usuarios: { type: 'array', items: { type: 'object' } },",
+              "        rfc: { type: 'string' },",
+              "        razonSocial: { type: 'string' }",
+              "      },",
+              "      required: ['id', 'descripcion', 'nombre', 'abreviatura', 'activo', 'fechaCreacion', 'fechaModificacion', 'idUsuarioCreacion', 'idUsuarioModificacion', 'orden', 'usuarios', 'rfc', 'razonSocial']",
+              "    },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Empresa/GetById?idEmpresa=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Empresa",
+            "GetById"
+          ],
+          "query": [
+            {
+              "key": "idEmpresa",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Perfil - Add",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: { type: 'integer' },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Nuevo Perfil\",\n  \"descripcion\": \"Descripción del perfil\",\n  \"abreviatura\": \"NP\",\n  \"activo\": true,\n  \"usuarios\": [],\n  \"menus\": []\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Perfil/Add",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Perfil",
+            "Add"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Perfil - Update",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: { type: 'boolean' },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 1,\n  \"nombre\": \"Perfil Actualizado\",\n  \"descripcion\": \"Descripción actualizada\",\n  \"abreviatura\": \"PA\",\n  \"activo\": true,\n  \"usuarios\": [],\n  \"menus\": []\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Perfil/Update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Perfil",
+            "Update"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Perfil - GetById",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: {",
+              "      type: 'object',",
+              "      properties: {",
+              "        id: { type: 'integer' },",
+              "        descripcion: { type: 'string' },",
+              "        nombre: { type: 'string' },",
+              "        abreviatura: { type: 'string' },",
+              "        activo: { type: 'boolean' },",
+              "        fechaCreacion: { type: 'string' },",
+              "        fechaModificacion: { type: 'string' },",
+              "        idUsuarioCreacion: { type: 'integer' },",
+              "        idUsuarioModificacion: { type: 'integer' },",
+              "        orden: { type: 'integer' },",
+              "        usuarios: { type: 'array', items: { type: 'object' } },",
+              "        menus: { type: 'array', items: { type: 'object' } }",
+              "      },",
+              "      required: ['id', 'descripcion', 'nombre', 'abreviatura', 'activo', 'fechaCreacion', 'fechaModificacion', 'idUsuarioCreacion', 'idUsuarioModificacion', 'orden', 'usuarios', 'menus']",
+              "    },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Perfil/GetById?idPerfil=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Perfil",
+            "GetById"
+          ],
+          "query": [
+            {
+              "key": "idPerfil",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Perfil - GetAll",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: {",
+              "      type: 'array',",
+              "      items: {",
+              "        type: 'object',",
+              "        properties: {",
+              "          id: { type: 'integer' },",
+              "          descripcion: { type: 'string' },",
+              "          nombre: { type: 'string' },",
+              "          abreviatura: { type: 'string' },",
+              "          activo: { type: 'boolean' },",
+              "          fechaCreacion: { type: 'string' },",
+              "          fechaModificacion: { type: 'string' },",
+              "          idUsuarioCreacion: { type: 'integer' },",
+              "          idUsuarioModificacion: { type: 'integer' },",
+              "          orden: { type: 'integer' },",
+              "          usuarios: { type: 'array', items: { type: 'object' } },",
+              "          menus: { type: 'array', items: { type: 'object' } }",
+              "        },",
+              "        required: ['id', 'descripcion', 'nombre', 'abreviatura', 'activo', 'fechaCreacion', 'fechaModificacion', 'idUsuarioCreacion', 'idUsuarioModificacion', 'orden', 'usuarios', 'menus']",
+              "      }",
+              "    },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Perfil/GetAll",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Perfil",
+            "GetAll"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Menu - Add",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: { type: 'integer' },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Nuevo Menu\",\n  \"descripcion\": \"Descripción del menu\",\n  \"abreviatura\": \"NM\",\n  \"activo\": true,\n  \"perfiles\": [],\n  \"imagen\": \"\",\n  \"ruta\": \"\",\n  \"claveMenuPadre\": null\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Menu/Add",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Menu",
+            "Add"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Menu - Update",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: { type: 'boolean' },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 1,\n  \"nombre\": \"Menu Actualizado\",\n  \"descripcion\": \"Descripción actualizada\",\n  \"abreviatura\": \"MA\",\n  \"activo\": true,\n  \"perfiles\": [],\n  \"imagen\": \"\",\n  \"ruta\": \"\",\n  \"claveMenuPadre\": null\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Menu/Update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Menu",
+            "Update"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Menu - GetById",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: {",
+              "      type: 'object',",
+              "      properties: {",
+              "        id: { type: 'integer' },",
+              "        descripcion: { type: 'string' },",
+              "        nombre: { type: 'string' },",
+              "        abreviatura: { type: 'string' },",
+              "        activo: { type: 'boolean' },",
+              "        fechaCreacion: { type: 'string' },",
+              "        fechaModificacion: { type: 'string' },",
+              "        idUsuarioCreacion: { type: 'integer' },",
+              "        idUsuarioModificacion: { type: 'integer' },",
+              "        orden: { type: 'integer' },",
+              "        perfiles: { type: 'array', items: { type: 'object' } },",
+              "        imagen: { type: 'string' },",
+              "        ruta: { type: 'string' },",
+              "        claveMenuPadre: { type: ['integer', 'null'] }",
+              "      },",
+              "      required: ['id', 'descripcion', 'nombre', 'abreviatura', 'activo', 'fechaCreacion', 'fechaModificacion', 'idUsuarioCreacion', 'idUsuarioModificacion', 'orden', 'perfiles', 'imagen', 'ruta']",
+              "    },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Menu/GetById?idMenu=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Menu",
+            "GetById"
+          ],
+          "query": [
+            {
+              "key": "idMenu",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Menu - GetAll",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: {",
+              "      type: 'array',",
+              "      items: {",
+              "        type: 'object',",
+              "        properties: {",
+              "          id: { type: 'integer' },",
+              "          descripcion: { type: 'string' },",
+              "          nombre: { type: 'string' },",
+              "          abreviatura: { type: 'string' },",
+              "          activo: { type: 'boolean' },",
+              "          fechaCreacion: { type: 'string' },",
+              "          fechaModificacion: { type: 'string' },",
+              "          idUsuarioCreacion: { type: 'integer' },",
+              "          idUsuarioModificacion: { type: 'integer' },",
+              "          orden: { type: 'integer' },",
+              "          perfiles: { type: 'array', items: { type: 'object' } },",
+              "          imagen: { type: 'string' },",
+              "          ruta: { type: 'string' },",
+              "          claveMenuPadre: { type: ['integer', 'null'] }",
+              "        },",
+              "        required: ['id', 'descripcion', 'nombre', 'abreviatura', 'activo', 'fechaCreacion', 'fechaModificacion', 'idUsuarioCreacion', 'idUsuarioModificacion', 'orden', 'perfiles', 'imagen', 'ruta']",
+              "      }",
+              "    },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Menu/GetAll",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Menu",
+            "GetAll"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Usuario - Exists",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const schema = { type: 'object', properties: { success: { type: 'boolean' }, message: { type: 'string' }, data: { type: 'boolean' }, errors: { type: 'array' } }, required: ['success','message','data','errors'] };",
+              "pm.test('Response matches schema', function () { pm.response.to.have.jsonSchema(schema); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Usuario/Exists?idUsuario=1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "Usuario", "Exists"],
+          "query": [{ "key": "idUsuario", "value": "1" }]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Usuario - Delete",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const schema = { type: 'object', properties: { success: { type: 'boolean' }, message: { type: 'string' }, data: { type: 'boolean' }, errors: { type: 'array' } }, required: ['success','message','data','errors'] };",
+              "pm.test('Response matches schema', function () { pm.response.to.have.jsonSchema(schema); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Usuario/Delete?idUsuario=1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "Usuario", "Delete"],
+          "query": [{ "key": "idUsuario", "value": "1" }]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Usuario - AuthenticateUser",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const schema = { type: 'object', properties: { success: { type: 'boolean' }, message: { type: 'string' }, data: { type: 'boolean' }, errors: { type: 'array' } }, required: ['success','message','data','errors'] };",
+              "pm.test('Response matches schema', function () { pm.response.to.have.jsonSchema(schema); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwtToken}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"administrador\",\n  \"password\": \"Default.123@\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Usuario/AuthenticateUser",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "Usuario", "AuthenticateUser"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Usuario - UpdatePassword",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const schema = { type: 'object', properties: { success: { type: 'boolean' }, message: { type: 'string' }, data: { type: 'boolean' }, errors: { type: 'array' } }, required: ['success','message','data','errors'] };",
+              "pm.test('Response matches schema', function () { pm.response.to.have.jsonSchema(schema); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"administrador\",\n  \"password\": \"Default.123@\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Usuario/UpdatePassword",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "Usuario", "UpdatePassword"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Usuario - UnlockUser",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const schema = { type: 'object', properties: { success: { type: 'boolean' }, message: { type: 'string' }, data: { type: 'boolean' }, errors: { type: 'array' } }, required: ['success','message','data','errors'] };",
+              "pm.test('Response matches schema', function () { pm.response.to.have.jsonSchema(schema); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwtToken}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "1"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Usuario/UnlockUser",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "Usuario", "UnlockUser"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cliente - Delete",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const schema = { type: 'object', properties: { success: { type: 'boolean' }, message: { type: 'string' }, data: { type: 'boolean' }, errors: { type: 'array' } }, required: ['success','message','data','errors'] };",
+              "pm.test('Response matches schema', function () { pm.response.to.have.jsonSchema(schema); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Cliente/Delete?idCliente=1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "Cliente", "Delete"],
+          "query": [{ "key": "idCliente", "value": "1" }]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Empresa - Delete",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const schema = { type: 'object', properties: { success: { type: 'boolean' }, message: { type: 'string' }, data: { type: 'boolean' }, errors: { type: 'array' } }, required: ['success','message','data','errors'] };",
+              "pm.test('Response matches schema', function () { pm.response.to.have.jsonSchema(schema); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Empresa/Delete?idEmpresa=1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "Empresa", "Delete"],
+          "query": [{ "key": "idEmpresa", "value": "1" }]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Empresa - GetCompaniesByUser",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const schema = { type: 'object', properties: { success: { type: 'boolean' }, message: { type: 'string' }, data: { type: 'array', items: { type: 'object' } }, errors: { type: 'array' } }, required: ['success','message','data','errors'] };",
+              "pm.test('Response matches schema', function () { pm.response.to.have.jsonSchema(schema); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Empresa/GetCompaniesByUser?idUsuario=1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "Empresa", "GetCompaniesByUser"],
+          "query": [{ "key": "idUsuario", "value": "1" }]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Perfil - Delete",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const schema = { type: 'object', properties: { success: { type: 'boolean' }, message: { type: 'string' }, data: { type: 'boolean' }, errors: { type: 'array' } }, required: ['success','message','data','errors'] };",
+              "pm.test('Response matches schema', function () { pm.response.to.have.jsonSchema(schema); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Perfil/Delete?idPerfil=1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "Perfil", "Delete"],
+          "query": [{ "key": "idPerfil", "value": "1" }]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Perfil - GetUserProfiles",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const schema = { type: 'object', properties: { success: { type: 'boolean' }, message: { type: 'string' }, data: { type: 'array', items: { type: 'object' } }, errors: { type: 'array' } }, required: ['success','message','data','errors'] };",
+              "pm.test('Response matches schema', function () { pm.response.to.have.jsonSchema(schema); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Perfil/GetUserProfiles?idUsuario=1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "Perfil", "GetUserProfiles"],
+          "query": [{ "key": "idUsuario", "value": "1" }]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Menu - Delete",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const schema = { type: 'object', properties: { success: { type: 'boolean' }, message: { type: 'string' }, data: { type: 'boolean' }, errors: { type: 'array' } }, required: ['success','message','data','errors'] };",
+              "pm.test('Response matches schema', function () { pm.response.to.have.jsonSchema(schema); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Menu/Delete?idMenu=1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "Menu", "Delete"],
+          "query": [{ "key": "idMenu", "value": "1" }]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Menu - GetMenusByUser",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const schema = { type: 'object', properties: { success: { type: 'boolean' }, message: { type: 'string' }, data: { type: 'array', items: { type: 'object' } }, errors: { type: 'array' } }, required: ['success','message','data','errors'] };",
+              "pm.test('Response matches schema', function () { pm.response.to.have.jsonSchema(schema); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Menu/GetMenusByUser?idUsuario=1&idPerfil=1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "Menu", "GetMenusByUser"],
+          "query": [
+            { "key": "idUsuario", "value": "1" },
+            { "key": "idPerfil", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Menu - GetMenusByProfile",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const schema = { type: 'object', properties: { success: { type: 'boolean' }, message: { type: 'string' }, data: { type: 'array', items: { type: 'object' } }, errors: { type: 'array' } }, required: ['success','message','data','errors'] };",
+              "pm.test('Response matches schema', function () { pm.response.to.have.jsonSchema(schema); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Menu/GetMenusByProfile?idPerfil=1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "Menu", "GetMenusByProfile"],
+          "query": [{ "key": "idPerfil", "value": "1" }]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Config - Get",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    value: { type: 'string' },",
+              "    message: { type: 'string' }",
+              "  },",
+              "  required: ['value', 'message']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+        
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Config/testkey",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Config",
+            "testkey"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Config - Update",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    message: { type: 'string' }",
+              "  },",
+              "  required: ['message']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Config/testkey?newValue=new%20value",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Config",
+            "testkey"
+          ],
+          "query": [
+            {
+              "key": "newValue",
+              "value": "new value"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cryptographer - CreateHash",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: { type: 'string' },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Cryptographer/CreateHash?input=test",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Cryptographer",
+            "CreateHash"
+          ],
+          "query": [
+            {
+              "key": "input",
+              "value": "test"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cryptographer - CompareHash",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Schema validation",
+              "const schema = {",
+              "  type: 'object',",
+              "  properties: {",
+              "    success: { type: 'boolean' },",
+              "    message: { type: 'string' },",
+              "    data: { type: 'boolean' },",
+              "    errors: { type: 'array' }",
+              "  },",
+              "  required: ['success', 'message', 'data', 'errors']",
+              "};",
+              "pm.test(\"Response matches schema\", function () {",
+              "  pm.response.to.have.jsonSchema(schema);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/Cryptographer/CompareHash?input=test&hash=7iaw3Ur350mqGo7jwQrpkj9hiYB3Lkc/iBml1JQODbJ6wYX4oOHV%2BE%2BIvIh/1nsUNzLDBMxfqa2Ob1f1ACio/w==",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "Cryptographer",
+            "CompareHash"
+          ],
+          "query": [
+            {
+              "key": "input",
+              "value": "test"
+            },
+            {
+              "key": "hash",
+              "value": "7iaw3Ur350mqGo7jwQrpkj9hiYB3Lkc/iBml1JQODbJ6wYX4oOHV%2BE%2BIvIh/1nsUNzLDBMxfqa2Ob1f1ACio/w=="
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:7026"
+    },
+    {
+      "key": "jwtToken",
+      "value": ""
+    }
+  ]
+}

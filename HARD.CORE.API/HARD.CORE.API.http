@@ -1,0 +1,6 @@
+@HARD.CORE.API_HostAddress = http://localhost:5098
+
+GET {{HARD.CORE.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,1551 @@
+{
+  "info": {
+    "_postman_id": "05ff95ff-445e-4868-ac3a-00e21c8f5c8d",
+    "name": "HARD.CORE.API Collection",
+    "description": "Comprehensive collection for testing all endpoints in HARD.CORE.API with current controllers and data types",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "17549784",
+    "_collection_link": "https://go.postman.co/collection/17549784-05ff95ff-445e-4868-ac3a-00e21c8f5c8d?source=collection_link"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:5001",
+      "type": "string"
+    },
+    {
+      "key": "jwtToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth V1",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"El campo 'success' es 'true'\", function () {",
+                  "    let jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"jwtToken\", jsonData.data);",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "});",
+                  "",
+                  "const schema = {",
+                  "  type: 'object',",
+                  "  properties: {",
+                  "    success: { type: 'boolean' },",
+                  "    message: { type: 'string' },",
+                  "    data: { type: 'string' },",
+                  "    errors: { type: 'array' }",
+                  "  },",
+                  "  required: ['success', 'message', 'data', 'errors']",
+                  "};",
+                  "pm.test(\"Response matches schema\", function () {",
+                  "  pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"administrador\",\n  \"password\": \"Default.123@\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth V2",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"El campo 'success' es 'true'\", function () {",
+                  "    let jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"jwtToken\", jsonData.data);",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "});",
+                  "",
+                  "const schema = {",
+                  "  type: 'object',",
+                  "  properties: {",
+                  "    success: { type: 'boolean' },",
+                  "    message: { type: 'string' },",
+                  "    data: { type: 'string' },",
+                  "    errors: { type: 'array' }",
+                  "  },",
+                  "  required: ['success', 'message', 'data', 'errors']",
+                  "};",
+                  "pm.test(\"Response matches schema\", function () {",
+                  "  pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"administrador\",\n  \"password\": \"Default.123@\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "Auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Usuario V1",
+      "item": [
+        {
+          "name": "GetById",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const schema = {",
+                  "  type: 'object',",
+                  "  properties: {",
+                  "    success: { type: 'boolean' },",
+                  "    message: { type: 'string' },",
+                  "    data: {",
+                  "      type: 'object',",
+                  "      properties: {",
+                  "        id: { type: 'integer' },",
+                  "        nombre: { type: 'string' },",
+                  "        descripcion: { type: 'string' },",
+                  "        abreviatura: { type: 'string' },",
+                  "        activo: { type: 'boolean' },",
+                  "        fechaCreacion: { type: 'string', format: 'date-time' },",
+                  "        fechaModificacion: { type: 'string', format: 'date-time' },",
+                  "        idUsuarioCreacion: { type: 'integer' },",
+                  "        idUsuarioModificacion: { type: 'integer' },",
+                  "        orden: { type: 'integer' },",
+                  "        claveUsuario: { type: 'string' },",
+                  "        numeroEmpleado: { type: 'integer' },",
+                  "        isActive: { type: 'boolean' },",
+                  "        perfiles: { type: 'array' },",
+                  "        empresas: { type: 'array' },",
+                  "        nombreCompleto: { type: 'string' },",
+                  "        nombreUsuario: { type: 'string' },",
+                  "        apellidoPaterno: { type: 'string' },",
+                  "        apellidoMaterno: { type: 'string' },",
+                  "        correo: { type: 'string' },",
+                  "        numeroIntentos: { type: 'integer' },",
+                  "        bloqueado: { type: 'boolean' },",
+                  "        cambioContrasena: { type: 'boolean' },",
+                  "        estatus: { type: 'boolean' },",
+                  "        fotografia: { type: 'string' },",
+                  "        idUsuarioPorAusencia: { type: 'integer' },",
+                  "        nombreUsuarioPorAusencia: { type: 'string' }",
+                  "      }",
+                  "    },",
+                  "    errors: { type: 'array' }",
+                  "  },",
+                  "  required: ['success', 'message', 'data', 'errors']",
+                  "};",
+                  "pm.test(\"Response matches schema\", function () {",
+                  "  pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Usuario/GetById?idUsuario=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Usuario",
+                "GetById"
+              ],
+              "query": [
+                {
+                  "key": "idUsuario",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const schema = {",
+                  "  type: 'object',",
+                  "  properties: {",
+                  "    success: { type: 'boolean' },",
+                  "    message: { type: 'string' },",
+                  "    data: {",
+                  "      type: 'object',",
+                  "      properties: {",
+                  "        data: { type: 'array' },",
+                  "        totalCount: { type: 'integer' },",
+                  "        pageIndex: { type: 'integer' },",
+                  "        pageSize: { type: 'integer' }",
+                  "      }",
+                  "    },",
+                  "    errors: { type: 'array' }",
+                  "  },",
+                  "  required: ['success', 'message', 'data', 'errors']",
+                  "};",
+                  "pm.test(\"Response matches schema\", function () {",
+                  "  pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Usuario/GetAll?pageIndex=1&pageSize=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Usuario",
+                "GetAll"
+              ],
+              "query": [
+                {
+                  "key": "pageIndex",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Exists",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Usuario/Exists?idUsuario=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Usuario",
+                "Exists"
+              ],
+              "query": [
+                {
+                  "key": "idUsuario",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const schema = {",
+                  "  type: 'object',",
+                  "  properties: {",
+                  "    success: { type: 'boolean' },",
+                  "    message: { type: 'string' },",
+                  "    data: { type: 'integer' },",
+                  "    errors: { type: 'array' }",
+                  "  },",
+                  "  required: ['success', 'message', 'data', 'errors']",
+                  "};",
+                  "pm.test(\"Response matches schema\", function () {",
+                  "  pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Usuario Nuevo\",\n  \"descripcion\": \"Descripción del usuario\",\n  \"abreviatura\": \"UN\",\n  \"activo\": true,\n  \"claveUsuario\": \"newuser\",\n  \"numeroEmpleado\": 123,\n  \"isActive\": true,\n  \"nombreUsuario\": \"newuser\",\n  \"apellidoPaterno\": \"Paterno\",\n  \"apellidoMaterno\": \"Materno\",\n  \"correo\": \"newuser@example.com\",\n  \"contrasena\": \"TempPass123!\",\n  \"numeroIntentos\": 0,\n  \"bloqueado\": false,\n  \"cambioContrasena\": true,\n  \"estatus\": true,\n  \"fotografia\": \"\",\n  \"idUsuarioPorAusencia\": 0,\n  \"nombreUsuarioPorAusencia\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Usuario/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Usuario",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const schema = {",
+                  "  type: 'object',",
+                  "  properties: {",
+                  "    success: { type: 'boolean' },",
+                  "    message: { type: 'string' },",
+                  "    data: { type: 'boolean' },",
+                  "    errors: { type: 'array' }",
+                  "  },",
+                  "  required: ['success', 'message', 'data', 'errors']",
+                  "};",
+                  "pm.test(\"Response matches schema\", function () {",
+                  "  pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"nombre\": \"Usuario Actualizado\",\n  \"descripcion\": \"Descripción actualizada\",\n  \"abreviatura\": \"UA\",\n  \"activo\": true,\n  \"claveUsuario\": \"updateduser\",\n  \"numeroEmpleado\": 123,\n  \"isActive\": true,\n  \"nombreUsuario\": \"updateduser\",\n  \"apellidoPaterno\": \"Paterno\",\n  \"apellidoMaterno\": \"Materno\",\n  \"correo\": \"updated@example.com\",\n  \"numeroIntentos\": 0,\n  \"bloqueado\": false,\n  \"cambioContrasena\": false,\n  \"estatus\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Usuario/Update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Usuario",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdatePassword",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"NewPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Usuario/UpdatePassword",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Usuario",
+                "UpdatePassword"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UnlockUser",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "1"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Usuario/UnlockUser",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Usuario",
+                "UnlockUser"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Usuario/Delete?idUsuario=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Usuario",
+                "Delete"
+              ],
+              "query": [
+                {
+                  "key": "idUsuario",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Usuario V2",
+      "item": [
+        {
+          "name": "GetById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Usuario/GetById?idUsuario=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "Usuario",
+                "GetById"
+              ],
+              "query": [
+                {
+                  "key": "idUsuario",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Usuario/GetAll?pageIndex=1&pageSize=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "Usuario",
+                "GetAll"
+              ],
+              "query": [
+                {
+                  "key": "pageIndex",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Exists",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Usuario/Exists?idUsuario=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "Usuario",
+                "Exists"
+              ],
+              "query": [
+                {
+                  "key": "idUsuario",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Usuario Nuevo V2\",\n  \"descripcion\": \"Descripción del usuario V2\",\n  \"abreviatura\": \"UN2\",\n  \"activo\": true,\n  \"claveUsuario\": \"newuserv2\",\n  \"numeroEmpleado\": 124,\n  \"isActive\": true,\n  \"nombreUsuario\": \"newuserv2\",\n  \"apellidoPaterno\": \"Paterno\",\n  \"apellidoMaterno\": \"Materno\",\n  \"correo\": \"newuserv2@example.com\",\n  \"contrasena\": \"TempPass123!\",\n  \"numeroIntentos\": 0,\n  \"bloqueado\": false,\n  \"cambioContrasena\": true,\n  \"estatus\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Usuario/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "Usuario",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"nombre\": \"Usuario Actualizado V2\",\n  \"descripcion\": \"Descripción actualizada V2\",\n  \"abreviatura\": \"UA2\",\n  \"activo\": true,\n  \"claveUsuario\": \"updateduserv2\",\n  \"numeroEmpleado\": 124,\n  \"isActive\": true,\n  \"nombreUsuario\": \"updateduserv2\",\n  \"apellidoPaterno\": \"Paterno\",\n  \"apellidoMaterno\": \"Materno\",\n  \"correo\": \"updatedv2@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Usuario/Update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "Usuario",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AuthenticateUser",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"TestPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Usuario/AuthenticateUser",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "Usuario",
+                "AuthenticateUser"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdatePassword",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"NewPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Usuario/UpdatePassword",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "Usuario",
+                "UpdatePassword"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UnlockUser",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "1"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Usuario/UnlockUser",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "Usuario",
+                "UnlockUser"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cliente V1",
+      "item": [
+        {
+          "name": "GetById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Cliente/GetById?idCliente=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Cliente",
+                "GetById"
+              ],
+              "query": [
+                {
+                  "key": "idCliente",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Cliente/GetAll?pageIndex=1&pageSize=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Cliente",
+                "GetAll"
+              ],
+              "query": [
+                {
+                  "key": "pageIndex",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Cliente Nuevo\",\n  \"descripcion\": \"Descripción del cliente\",\n  \"abreviatura\": \"CN\",\n  \"activo\": true,\n  \"rfc\": \"XAXX010101000\",\n  \"direccion\": \"Dirección del cliente\",\n  \"telefono\": \"555-123-4567\",\n  \"email\": \"cliente@example.com\",\n  \"contacto\": \"Juan Pérez\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Cliente/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Cliente",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"nombre\": \"Cliente Actualizado\",\n  \"descripcion\": \"Descripción actualizada\",\n  \"abreviatura\": \"CA\",\n  \"activo\": true,\n  \"rfc\": \"XAXX010101000\",\n  \"direccion\": \"Dirección actualizada\",\n  \"telefono\": \"555-987-6543\",\n  \"email\": \"cliente.updated@example.com\",\n  \"contacto\": \"María García\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Cliente/Update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Cliente",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Cliente/Delete?idCliente=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Cliente",
+                "Delete"
+              ],
+              "query": [
+                {
+                  "key": "idCliente",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Empresa V1",
+      "item": [
+        {
+          "name": "GetById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Empresa/GetById?idEmpresa=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Empresa",
+                "GetById"
+              ],
+              "query": [
+                {
+                  "key": "idEmpresa",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Empresa/GetAll?pageIndex=1&pageSize=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Empresa",
+                "GetAll"
+              ],
+              "query": [
+                {
+                  "key": "pageIndex",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Empresa Nueva\",\n  \"descripcion\": \"Descripción de la empresa\",\n  \"abreviatura\": \"EN\",\n  \"activo\": true,\n  \"rfc\": \"XAXX010101000\",\n  \"direccion\": \"Dirección de la empresa\",\n  \"telefono\": \"555-123-4567\",\n  \"email\": \"empresa@example.com\",\n  \"sitioWeb\": \"https://empresa.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Empresa/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Empresa",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"nombre\": \"Empresa Actualizada\",\n  \"descripcion\": \"Descripción actualizada\",\n  \"abreviatura\": \"EA\",\n  \"activo\": true,\n  \"rfc\": \"XAXX010101000\",\n  \"direccion\": \"Dirección actualizada\",\n  \"telefono\": \"555-987-6543\",\n  \"email\": \"empresa.updated@example.com\",\n  \"sitioWeb\": \"https://empresa-updated.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Empresa/Update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Empresa",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Empresa/Delete?idEmpresa=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Empresa",
+                "Delete"
+              ],
+              "query": [
+                {
+                  "key": "idEmpresa",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Menu V1",
+      "item": [
+        {
+          "name": "GetById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Menu/GetById?idMenu=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Menu",
+                "GetById"
+              ],
+              "query": [
+                {
+                  "key": "idMenu",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Menu/GetAll?pageIndex=1&pageSize=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Menu",
+                "GetAll"
+              ],
+              "query": [
+                {
+                  "key": "pageIndex",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetMenusByUser",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Menu/GetMenusByUser?idUsuario=1&idPerfil=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Menu",
+                "GetMenusByUser"
+              ],
+              "query": [
+                {
+                  "key": "idUsuario",
+                  "value": "1"
+                },
+                {
+                  "key": "idPerfil",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetMenusByProfile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Menu/GetMenusByProfile?idPerfil=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Menu",
+                "GetMenusByProfile"
+              ],
+              "query": [
+                {
+                  "key": "idPerfil",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Menú Nuevo\",\n  \"descripcion\": \"Descripción del menú\",\n  \"abreviatura\": \"MN\",\n  \"activo\": true,\n  \"ruta\": \"/nuevo-menu\",\n  \"icono\": \"fas fa-new\",\n  \"orden\": 1,\n  \"idMenuPadre\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Menu/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Menu",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"nombre\": \"Menú Actualizado\",\n  \"descripcion\": \"Descripción actualizada\",\n  \"abreviatura\": \"MA\",\n  \"activo\": true,\n  \"ruta\": \"/menu-actualizado\",\n  \"icono\": \"fas fa-updated\",\n  \"orden\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Menu/Update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Menu",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Menu/Delete?idMenu=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Menu",
+                "Delete"
+              ],
+              "query": [
+                {
+                  "key": "idMenu",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Perfil V1",
+      "item": [
+        {
+          "name": "GetById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Perfil/GetById?idPerfil=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Perfil",
+                "GetById"
+              ],
+              "query": [
+                {
+                  "key": "idPerfil",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Perfil/GetAll?pageIndex=1&pageSize=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Perfil",
+                "GetAll"
+              ],
+              "query": [
+                {
+                  "key": "pageIndex",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Perfil Nuevo\",\n  \"descripcion\": \"Descripción del perfil\",\n  \"abreviatura\": \"PN\",\n  \"activo\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Perfil/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Perfil",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"nombre\": \"Perfil Actualizado\",\n  \"descripcion\": \"Descripción actualizada\",\n  \"abreviatura\": \"PA\",\n  \"activo\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Perfil/Update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Perfil",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Perfil/Delete?idPerfil=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Perfil",
+                "Delete"
+              ],
+              "query": [
+                {
+                  "key": "idPerfil",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

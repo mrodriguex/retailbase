@@ -1,0 +1,22 @@
+obj/
+bin/
+**/packages/
+*.user
+*.vs/
+*.vscode/
+*.log
+*.tmp
+*.bak
+*.swp
+*.db
+*.pdb
+*.sln.docstates
+*.suo
+*.cache
+*.backup
+limpiarBinarios.bat
+UNIT_TESTS_SUMMARY.md
+# Ignore ALL bin and obj folders in ALL projects
+**/bin/
+**/obj/
+packages/
