@@ -64,7 +64,7 @@ pipeline {
                     echo "  PROYECTO: ${params.PROJECT}"
                     echo "  AMBIENTE: ${params.ENVIRONMENT}"
                     echo "  SERVICIO: ${env.SERVICE}"
-                    echo "  RUTA: ${env.DEPLOY_PATH}"
+                    echo "  PATH: ${env.DEPLOY_PATH}"
                 }
             }
         }

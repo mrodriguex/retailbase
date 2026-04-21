@@ -1,0 +1,1786 @@
+{
+  "info": {
+    "_postman_id": "05ff95ff-445e-4868-ac3a-00e21c8f5c8d",
+    "name": "RETAIL.BASE.API Collection",
+    "description": "Comprehensive collection for testing all endpoints in RETAIL.BASE.API with current controllers and data types",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "17549784",
+    "_collection_link": "https://go.postman.co/collection/17549784-05ff95ff-445e-4868-ac3a-00e21c8f5c8d?source=collection_link"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:5001",
+      "type": "string"
+    },
+    {
+      "key": "jwtToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth V1",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"El campo 'success' es 'true'\", function () {",
+                  "    let jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"jwtToken\", jsonData.data);",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "});",
+                  "",
+                  "const schema = {",
+                  "  type: 'object',",
+                  "  properties: {",
+                  "    success: { type: 'boolean' },",
+                  "    message: { type: 'string' },",
+                  "    data: { type: 'string' },",
+                  "    errors: { type: 'array' }",
+                  "  },",
+                  "  required: ['success', 'message', 'data', 'errors']",
+                  "};",
+                  "pm.test(\"Response matches schema\", function () {",
+                  "  pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"administrador\",\n  \"password\": \"Default.123@\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth V2",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"El campo 'success' es 'true'\", function () {",
+                  "    let jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"jwtToken\", jsonData.data);",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "});",
+                  "",
+                  "const schema = {",
+                  "  type: 'object',",
+                  "  properties: {",
+                  "    success: { type: 'boolean' },",
+                  "    message: { type: 'string' },",
+                  "    data: { type: 'string' },",
+                  "    errors: { type: 'array' }",
+                  "  },",
+                  "  required: ['success', 'message', 'data', 'errors']",
+                  "};",
+                  "pm.test(\"Response matches schema\", function () {",
+                  "  pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"administrador\",\n  \"password\": \"Default.123@\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "Auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User V1",
+      "item": [
+        {
+          "name": "GetById",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const schema = {",
+                  "  type: 'object',",
+                  "  properties: {",
+                  "    success: { type: 'boolean' },",
+                  "    message: { type: 'string' },",
+                  "    data: {",
+                  "      type: 'object',",
+                  "      properties: {",
+                  "        id: { type: 'integer' },",
+                  "        name: { type: 'string' },",
+                  "        description: { type: 'string' },",
+                  "        abbreviation: { type: 'string' },",
+                  "        enabled: { type: 'boolean' },",
+                  "        dateTimeCreation: { type: 'string', format: 'date-time' },",
+                  "        dateTimeModification: { type: 'string', format: 'date-time' },",
+                  "        idUserCreation: { type: 'integer' },",
+                  "        idUserModification: { type: 'integer' },",
+                  "        order: { type: 'integer' },",
+                  "        userName: { type: 'string' },",
+                  "        employeeId: { type: 'integer' },",
+                  "        isActive: { type: 'boolean' },",
+                  "        roles: { type: 'array' },",
+                  "        companys: { type: 'array' },",
+                  "        nameCompleto: { type: 'string' },",
+                  "        firstName: { type: 'string' },",
+                  "        lastNameFather: { type: 'string' },",
+                  "        lastNameMother: { type: 'string' },",
+                  "        email: { type: 'string' },",
+                  "        attempts: { type: 'integer' },",
+                  "        bloqueado: { type: 'boolean' },",
+                  "        cambioPassword: { type: 'boolean' },",
+                  "        avatar: { type: 'string' },",
+                  "        idUserPorAusencia: { type: 'integer' },",
+                  "        firstNamePorAusencia: { type: 'string' }",
+                  "      }",
+                  "    },",
+                  "    errors: { type: 'array' }",
+                  "  },",
+                  "  required: ['success', 'message', 'data', 'errors']",
+                  "};",
+                  "pm.test(\"Response matches schema\", function () {",
+                  "  pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/User/GetById?idUser=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "User",
+                "GetById"
+              ],
+              "query": [
+                {
+                  "key": "idUser",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const schema = {",
+                  "  type: 'object',",
+                  "  properties: {",
+                  "    success: { type: 'boolean' },",
+                  "    message: { type: 'string' },",
+                  "    data: {",
+                  "      type: 'object',",
+                  "      properties: {",
+                  "        data: { type: 'array' },",
+                  "        totalCount: { type: 'integer' },",
+                  "        pageIndex: { type: 'integer' },",
+                  "        pageSize: { type: 'integer' }",
+                  "      }",
+                  "    },",
+                  "    errors: { type: 'array' }",
+                  "  },",
+                  "  required: ['success', 'message', 'data', 'errors']",
+                  "};",
+                  "pm.test(\"Response matches schema\", function () {",
+                  "  pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/User/GetAll?pageIndex=1&pageSize=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "User",
+                "GetAll"
+              ],
+              "query": [
+                {
+                  "key": "pageIndex",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Exists",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/User/Exists?idUser=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "User",
+                "Exists"
+              ],
+              "query": [
+                {
+                  "key": "idUser",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const schema = {",
+                  "  type: 'object',",
+                  "  properties: {",
+                  "    success: { type: 'boolean' },",
+                  "    message: { type: 'string' },",
+                  "    data: { type: 'integer' },",
+                  "    errors: { type: 'array' }",
+                  "  },",
+                  "  required: ['success', 'message', 'data', 'errors']",
+                  "};",
+                  "pm.test(\"Response matches schema\", function () {",
+                  "  pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"User Nuevo\",\n  \"description\": \"Descripción del user\",\n  \"abbreviation\": \"UN\",\n  \"enabled\": true,\n  \"userName\": \"newuser\",\n  \"employeeId\": 123,\n  \"isActive\": true,\n  \"firstName\": \"newuser\",\n  \"lastNameFather\": \"Paterno\",\n  \"lastNameMother\": \"Materno\",\n  \"email\": \"newuser@example.com\",\n  \"password\": \"TempPass123!\",\n  \"attempts\": 0,\n  \"cambioPassword\": true,\n  \"avatar\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/User/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "User",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const schema = {",
+                  "  type: 'object',",
+                  "  properties: {",
+                  "    success: { type: 'boolean' },",
+                  "    message: { type: 'string' },",
+                  "    data: { type: 'boolean' },",
+                  "    errors: { type: 'array' }",
+                  "  },",
+                  "  required: ['success', 'message', 'data', 'errors']",
+                  "};",
+                  "pm.test(\"Response matches schema\", function () {",
+                  "  pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"User Actualizado\",\n  \"description\": \"Descripción actualizada\",\n  \"abbreviation\": \"UA\",\n  \"enabled\": true,\n  \"userName\": \"updateduser\",\n  \"employeeId\": 123,\n  \"isActive\": true,\n  \"firstName\": \"updateduser\",\n  \"lastNameFather\": \"Paterno\",\n  \"lastNameMother\": \"Materno\",\n  \"email\": \"updated@example.com\",\n  \"attempts\": 0,\n  \"bloqueado\": false,\n  \"cambioPassword\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/User/Update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "User",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdatePassword",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"NewPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/User/UpdatePassword",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "User",
+                "UpdatePassword"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UnlockUser",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "1"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/User/UnlockUser",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "User",
+                "UnlockUser"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/User/Delete?idUser=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "User",
+                "Delete"
+              ],
+              "query": [
+                {
+                  "key": "idUser",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User V2",
+      "item": [
+        {
+          "name": "GetById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/User/GetById?idUser=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "User",
+                "GetById"
+              ],
+              "query": [
+                {
+                  "key": "idUser",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/User/GetAll?pageIndex=1&pageSize=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "User",
+                "GetAll"
+              ],
+              "query": [
+                {
+                  "key": "pageIndex",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Exists",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/User/Exists?idUser=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "User",
+                "Exists"
+              ],
+              "query": [
+                {
+                  "key": "idUser",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"User Nuevo V2\",\n  \"description\": \"Descripción del user V2\",\n  \"abbreviation\": \"UN2\",\n  \"enabled\": true,\n  \"userName\": \"newuserv2\",\n  \"employeeId\": 124,\n  \"isActive\": true,\n  \"firstName\": \"newuserv2\",\n  \"lastNameFather\": \"Paterno\",\n  \"lastNameMother\": \"Materno\",\n  \"email\": \"newuserv2@example.com\",\n  \"password\": \"TempPass123!\",\n  \"attempts\": 0,\n  \"bloqueado\": false,\n  \"cambioPassword\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/User/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "User",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"User Actualizado V2\",\n  \"description\": \"Descripción actualizada V2\",\n  \"abbreviation\": \"UA2\",\n  \"enabled\": true,\n  \"userName\": \"updateduserv2\",\n  \"employeeId\": 124,\n  \"isActive\": true,\n  \"firstName\": \"updateduserv2\",\n  \"lastNameFather\": \"Paterno\",\n  \"lastNameMother\": \"Materno\",\n  \"email\": \"updatedv2@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/User/Update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "User",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AuthenticateUser",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"TestPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/User/AuthenticateUser",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "User",
+                "AuthenticateUser"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdatePassword",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"NewPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/User/UpdatePassword",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "User",
+                "UpdatePassword"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UnlockUser",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "1"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/User/UnlockUser",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "User",
+                "UnlockUser"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Customer V1",
+      "item": [
+        {
+          "name": "GetById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Customer/GetById?idCustomer=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Customer",
+                "GetById"
+              ],
+              "query": [
+                {
+                  "key": "idCustomer",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Customer/GetAll?pageIndex=1&pageSize=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Customer",
+                "GetAll"
+              ],
+              "query": [
+                {
+                  "key": "pageIndex",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Customer Nuevo\",\n  \"description\": \"Descripción del customer\",\n  \"abbreviation\": \"CN\",\n  \"enabled\": true,\n  \"taxid\": \"XAXX010101000\",\n  \"direccion\": \"Dirección del customer\",\n  \"telefono\": \"555-123-4567\",\n  \"email\": \"customer@example.com\",\n  \"contacto\": \"Juan Pérez\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Customer/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Customer",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Customer Actualizado\",\n  \"description\": \"Descripción actualizada\",\n  \"abbreviation\": \"CA\",\n  \"enabled\": true,\n  \"taxid\": \"XAXX010101000\",\n  \"direccion\": \"Dirección actualizada\",\n  \"telefono\": \"555-987-6543\",\n  \"email\": \"customer.updated@example.com\",\n  \"contacto\": \"María García\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Customer/Update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Customer",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Customer/Delete?idCustomer=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Customer",
+                "Delete"
+              ],
+              "query": [
+                {
+                  "key": "idCustomer",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Company V1",
+      "item": [
+        {
+          "name": "GetById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Company/GetById?idCompany=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Company",
+                "GetById"
+              ],
+              "query": [
+                {
+                  "key": "idCompany",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Company/GetAll?pageIndex=1&pageSize=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Company",
+                "GetAll"
+              ],
+              "query": [
+                {
+                  "key": "pageIndex",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Company Nueva\",\n  \"description\": \"Descripción de la company\",\n  \"abbreviation\": \"EN\",\n  \"enabled\": true,\n  \"taxid\": \"XAXX010101000\",\n  \"direccion\": \"Dirección de la company\",\n  \"telefono\": \"555-123-4567\",\n  \"email\": \"company@example.com\",\n  \"sitioWeb\": \"https://company.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Company/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Company",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Company Actualizada\",\n  \"description\": \"Descripción actualizada\",\n  \"abbreviation\": \"EA\",\n  \"enabled\": true,\n  \"taxid\": \"XAXX010101000\",\n  \"direccion\": \"Dirección actualizada\",\n  \"telefono\": \"555-987-6543\",\n  \"email\": \"company.updated@example.com\",\n  \"sitioWeb\": \"https://company-updated.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Company/Update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Company",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Company/Delete?idCompany=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Company",
+                "Delete"
+              ],
+              "query": [
+                {
+                  "key": "idCompany",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "MenuItem V1",
+      "item": [
+        {
+          "name": "GetById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/MenuItem/GetById?idMenuItem=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "MenuItem",
+                "GetById"
+              ],
+              "query": [
+                {
+                  "key": "idMenuItem",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/MenuItem/GetAll?pageIndex=1&pageSize=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "MenuItem",
+                "GetAll"
+              ],
+              "query": [
+                {
+                  "key": "pageIndex",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetMenuItemsByUser",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/MenuItem/GetMenuItemsByUser?idUser=1&idRole=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "MenuItem",
+                "GetMenuItemsByUser"
+              ],
+              "query": [
+                {
+                  "key": "idUser",
+                  "value": "1"
+                },
+                {
+                  "key": "idRole",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetMenuItemsByProfile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/MenuItem/GetMenuItemsByProfile?idRole=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "MenuItem",
+                "GetMenuItemsByProfile"
+              ],
+              "query": [
+                {
+                  "key": "idRole",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Menú Nuevo\",\n  \"description\": \"Descripción del menú\",\n  \"abbreviation\": \"MN\",\n  \"enabled\": true,\n  \"path\": \"/nuevo-menuitem\",\n  \"icono\": \"fas fa-new\",\n  \"order\": 1,\n  \"idMenuItemFather\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/MenuItem/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "MenuItem",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Menú Actualizado\",\n  \"description\": \"Descripción actualizada\",\n  \"abbreviation\": \"MA\",\n  \"enabled\": true,\n  \"path\": \"/menuitem-actualizado\",\n  \"icono\": \"fas fa-updated\",\n  \"order\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/MenuItem/Update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "MenuItem",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/MenuItem/Delete?idMenuItem=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "MenuItem",
+                "Delete"
+              ],
+              "query": [
+                {
+                  "key": "idMenuItem",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Role V1",
+      "item": [
+        {
+          "name": "GetById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Role/GetById?idRole=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Role",
+                "GetById"
+              ],
+              "query": [
+                {
+                  "key": "idRole",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Role/GetAll?pageIndex=1&pageSize=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Role",
+                "GetAll"
+              ],
+              "query": [
+                {
+                  "key": "pageIndex",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Role Nuevo\",\n  \"description\": \"Descripción del role\",\n  \"abbreviation\": \"PN\",\n  \"enabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Role/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Role",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Role Actualizado\",\n  \"description\": \"Descripción actualizada\",\n  \"abbreviation\": \"PA\",\n  \"enabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Role/Update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Role",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Role/Delete?idRole=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Role",
+                "Delete"
+              ],
+              "query": [
+                {
+                  "key": "idRole",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "E2E Product Data",
+      "item": [
+        {
+          "name": "Add Brand Coca-Cola",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Coca-Cola\",\n  \"description\": \"Bebidas refrescantes\",\n  \"abbreviation\": \"CC\",\n  \"enabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Brand/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Brand",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Brand Pepsi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pepsi\",\n  \"description\": \"Bebidas refrescantes\",\n  \"abbreviation\": \"PEP\",\n  \"enabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Brand/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Brand",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Category Refrescos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Refrescos\",\n  \"description\": \"Bebidas carbonatadas\",\n  \"abbreviation\": \"REF\",\n  \"enabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Category/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Category",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Product Coca-Cola 355ml",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Coca-Cola 355ml\",\n  \"description\": \"Lata\",\n  \"abbreviation\": \"CC355\",\n  \"enabled\": true,\n  \"BrandId\": 1,\n  \"CategoryId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Product/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Product",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Product Pepsi 355ml",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pepsi 355ml\",\n  \"description\": \"Lata\",\n  \"abbreviation\": \"PEP355\",\n  \"enabled\": true,\n  \"BrandId\": 2,\n  \"CategoryId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/Product/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "Product",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add ProductPresentation Coca-Cola 355ml",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Coca-Cola 355ml\",\n  \"description\": \"Lata\",\n  \"abbreviation\": \"CC355\",\n  \"enabled\": true,\n  \"ProductId\": 1,\n  \"Barcode\": \"7501055301041\",\n  \"SizeLabel\": \"355ml\",\n  \"NetContent\": 355,\n  \"Unit\": \"ml\",\n  \"Presentation\": \"Lata\",\n  \"SuggestedPrice\": 18.00,\n  \"CostEstimate\": 12.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ProductPresentation/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ProductPresentation",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add ProductPresentation Pepsi 355ml",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pepsi 355ml\",\n  \"description\": \"Lata\",\n  \"abbreviation\": \"PEP355\",\n  \"enabled\": true,\n  \"ProductId\": 2,\n  \"Barcode\": \"7501025201042\",\n  \"SizeLabel\": \"355ml\",\n  \"NetContent\": 355,\n  \"Unit\": \"ml\",\n  \"Presentation\": \"Lata\",\n  \"SuggestedPrice\": 17.00,\n  \"CostEstimate\": 11.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ProductPresentation/Add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ProductPresentation",
+                "Add"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

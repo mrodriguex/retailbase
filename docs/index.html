@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HARD.CORE – Base Solution</title>
+    <title>RETAIL.BASE – Base Solution</title>
     <link rel="icon" type="image/png" href="assets/images/favicon.png" />
     <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/menu.css" />
+    <link rel="stylesheet" href="assets/css/menuitem.css" />
 </head>
 
 <body>
@@ -18,7 +18,7 @@
                 <span class="bar"></span>
                 <span class="bar"></span>
             </button>
-            <div class="nav-menu" id="nav-menu">
+            <div class="nav-menuitem" id="nav-menuitem">
                 <a href="#about" class="nav-link">About</a>
                 <a href="#features" class="nav-link">Features</a>
                 <a href="#tech" class="nav-link">Tech Stack</a>
@@ -31,14 +31,14 @@
 
     <header class="hero">
         <div class="hero-content">
-            <img src="assets/images/project_logo.png" alt="HARD.CORE Logo" class="avatar">
-            <h1>Hard.Core Framework</h1>
+            <img src="assets/images/project_logo.png" alt="RETAIL.BASE Logo" class="avatar">
+            <h1>RETAIL.BASE Framework</h1>
             <p class="subtitle">
                 Modular, extensible framework for rapid enterprise-grade application development
             </p>
             <div class="hero-links">
                 <a href="../README.md" target="_blank">README</a>
-                <a href="https://github.com/mrodriguex/hard.core" target="_blank">GitHub</a>
+                <a href="https://github.com/mrodriguex/RETAIL.BASE" target="_blank">GitHub</a>
                 <a href="#api">API Docs</a>
             </div>
         </div>
@@ -50,11 +50,11 @@
                 style="background:linear-gradient(90deg,#1e3c72 0%,#2a5298 100%);color:#fff;padding:1.1rem 1.5rem 1.1rem 1.5rem;border-radius:12px;margin-bottom:2.2rem;box-shadow:0 2px 12px rgba(30,60,114,0.10);font-size:1.13rem;">
                 <strong>Live Demo:</strong>
                  A probe version is published at
-                 <a href="https://hardcoreapi.hookhub.app/swagger/index.html" target="_blank" style="color:#fff;text-decoration:underline;font-weight:600;">https://hardcoreapi.hookhub.app/</a>
+                 <a href="https://retail_baseapi.hookhub.app/swagger/index.html" target="_blank" style="color:#fff;text-decoration:underline;font-weight:600;">https://retail_baseapi.hookhub.app/</a>
             </div>
             <h2>About</h2>
             <p>
-                <strong>Hard.Core</strong> is a modular and extensible framework designed to facilitate rapid development of enterprise-grade applications. It provides a set of reusable components, libraries, and tools that streamline common development tasks and promote best practices.
+                <strong>RETAIL.BASE</strong> is a modular and extensible framework designed to facilitate rapid development of enterprise-grade applications. It provides a set of reusable components, libraries, and tools that streamline common development tasks and promote best practices.
             </p>
         </section>
 
@@ -99,11 +99,11 @@
         <section class="section" id="usage">
             <h2>Usage</h2>
             <ul>
-                <li><strong>Build:</strong> <code>dotnet build HARD.CORE.sln</code></li>
-                <li><strong>Run API:</strong> <code>dotnet run --project HARD.CORE.API/HARD.CORE.API.csproj</code></li>
+                <li><strong>Build:</strong> <code>dotnet build RETAIL.BASE.sln</code></li>
+                <li><strong>Run API:</strong> <code>dotnet run --project RETAIL.BASE.API/RETAIL.BASE.API.csproj</code></li>
                 <li><strong>Swagger UI:</strong> Enabled by default for API exploration</li>
-                <li><strong>Configure:</strong> Edit <code>HARD.CORE.API/appsettings.json</code> for connection strings and JWT keys</li>
-                <li><strong>Test:</strong> <code>dotnet test HARD.CORE.NEG.Tests/HARD.CORE.NEG.Tests.csproj</code></li>
+                <li><strong>Configure:</strong> Edit <code>RETAIL.BASE.API/appsettings.json</code> for connection strings and JWT keys</li>
+                <li><strong>Test:</strong> <code>dotnet test RETAIL.BASE.NEG.Tests/RETAIL.BASE.NEG.Tests.csproj</code></li>
                 <li><strong>CI/CD:</strong> Jenkins pipeline for build, publish, deploy, and restart</li>
             </ul>
             <div class="usage-gallery">
@@ -127,11 +127,11 @@
             <p>Key endpoints (v1, v2):</p>
             <ul>
                 <li><strong>Auth:</strong> <code>POST /api/v1/auth/login</code></li>
-                <li><strong>Usuario:</strong> <code>GET /api/v1/usuario</code>, <code>POST /api/v1/usuario</code></li>
-                <li><strong>Cliente:</strong> <code>GET /api/v1/cliente</code>, <code>POST /api/v1/cliente</code></li>
-                <li><strong>Empresa:</strong> <code>GET /api/v1/empresa</code>, <code>POST /api/v1/empresa</code></li>
-                <li><strong>Menu:</strong> <code>GET /api/v1/menu</code></li>
-                <li><strong>Perfil:</strong> <code>GET /api/v1/perfil</code></li>
+                <li><strong>User:</strong> <code>GET /api/v1/user</code>, <code>POST /api/v1/user</code></li>
+                <li><strong>Customer:</strong> <code>GET /api/v1/customer</code>, <code>POST /api/v1/customer</code></li>
+                <li><strong>Company:</strong> <code>GET /api/v1/company</code>, <code>POST /api/v1/company</code></li>
+                <li><strong>MenuItem:</strong> <code>GET /api/v1/menuitem</code></li>
+                <li><strong>Role:</strong> <code>GET /api/v1/role</code></li>
                 <li><strong>Reports:</strong> <code>GET /api/v1/rpt/...</code></li>
             </ul>
             <p>See <a href="../README.md" target="_blank">README</a> for request/response examples and full API documentation.</p>
@@ -148,9 +148,9 @@
     </main>
 
         <footer>
-        <p>© <span id="year"></span> Hard.Core Framework</p>
+        <p>© <span id="year"></span> RETAIL.BASE Framework</p>
         <footer class="footer">
-            <p>&copy; 2026 Hard.Core Framework. All rights reserved.</p>
+            <p>&copy; 2026 RETAIL.BASE Framework. All rights reserved.</p>
         </footer>
     <script src="assets/js/main.js"></script>
 </body>

@@ -1,9 +1,9 @@
-// Hamburger menu toggle
+// Hamburger menuitem toggle
 const hamburger = document.getElementById('hamburger');
-const navMenu = document.getElementById('nav-menu');
-if (hamburger && navMenu) {
+const navMenuItem = document.getElementById('nav-menuitem');
+if (hamburger && navMenuItem) {
   hamburger.addEventListener('click', () => {
-    navMenu.classList.toggle('active');
+    navMenuItem.classList.toggle('active');
   });
 }
 

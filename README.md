@@ -1,32 +1,32 @@
 
-# HARD.CORE
+# RETAIL.BASE
 
-Hard.Core is a modular and extensible framework designed to facilitate rapid development of enterprise-grade applications. It provides a set of reusable components, libraries, and tools that streamline common development tasks and promote best practices.
+RETAIL.BASE is a modular and extensible framework designed to facilitate rapid development of enterprise-grade applications. It provides a set of reusable components, libraries, and tools that streamline common development tasks and promote best practices.
 
 ## Current repository status
 
 This README was regenerated from the current source tree on **2026-03-14**.
 
-### Projects currently in `HARD.CORE.sln`
+### Projects currently in `RETAIL.BASE.sln`
 
-- `HARD.CORE.OBJ` (`net8.0`)
-- `HARD.CORE.DAT` (`net8.0`)
-- `HARD.CORE.NEG` (`net8.0`)
-- `HARD.CORE.API` (`net8.0`)
+- `RETAIL.BASE.OBJ` (`net8.0`)
+- `RETAIL.BASE.DAT` (`net8.0`)
+- `RETAIL.BASE.NEG` (`net8.0`)
+- `RETAIL.BASE.API` (`net8.0`)
 
-> `HARD.CORE.SER` and `HARD.CORE.WEB` are no longer part of the active solution.
+> `RETAIL.BASE.SER` and `RETAIL.BASE.WEB` are no longer part of the active solution.
 
 ## Architecture
 
 Layered dependency flow:
 
-`HARD.CORE.API -> HARD.CORE.NEG -> HARD.CORE.DAT -> HARD.CORE.OBJ`
+`RETAIL.BASE.API -> RETAIL.BASE.NEG -> RETAIL.BASE.DAT -> RETAIL.BASE.OBJ`
 
-`HARD.CORE.API` also references `HARD.CORE.OBJ` directly.
+`RETAIL.BASE.API` also references `RETAIL.BASE.OBJ` directly.
 
 ## Main components
 
-### `HARD.CORE.API`
+### `RETAIL.BASE.API`
 
 - ASP.NET Core Web API (`net8.0`)
 - API versioning via URL segment (`v1`, `v2`)
@@ -37,50 +37,50 @@ Layered dependency flow:
 
 Controllers currently present:
 
-- `V1`: `Auth`, `Cliente`, `Config`, `Cryptographer`, `Empresa`, `Menu`, `Perfil`, `Usuario`
-- `V2`: `Auth`, `Usuario`
+- `V1`: `Auth`, `Customer`, `Config`, `Cryptographer`, `Company`, `MenuItem`, `Role`, `User`
+- `V2`: `Auth`, `User`
 - `RPT`: report/viewer controllers exist in source
 
-### `HARD.CORE.NEG`
+### `RETAIL.BASE.NEG`
 
 Business rules and application services:
 
-- Business classes: `AuthB`, `ClienteB`, `CryptographerSHA512B`, `EmpresaB`, `MenuB`, `PerfilB`, `UsuarioB`
+- Business classes: `AuthB`, `CustomerB`, `CryptographerSHA512B`, `CompanyB`, `MenuItemB`, `RoleB`, `UserB`
 - Service classes (folder `Services/`) consumed by API controllers
 
-### `HARD.CORE.DAT`
+### `RETAIL.BASE.DAT`
 
 Data access layer:
 
-- `HardCoreDbContext` with EF Core SQL Server provider
-- Repository-style classes: `UsuarioDA`, `PerfilDA`, `ClienteDA`, `MenuDA`, `EmpresaDA`
+- `RETAIL_BASEDbContext` with EF Core SQL Server provider
+- Repository-style classes: `UserDA`, `RoleDA`, `CustomerDA`, `MenuItemDA`, `CompanyDA`
 - Migrations folder included
 
-### `HARD.CORE.OBJ`
+### `RETAIL.BASE.OBJ`
 
 Shared models and base objects:
 
-- `Usuario`, `Perfil`, `Cliente`, `Empresa`, `Menu`, `WebResult`, filters, enums, and common model classes
+- `User`, `Role`, `Customer`, `Company`, `MenuItem`, `WebResult`, filters, enums, and common model classes
 
-### `HARD.CORE.NEG.Tests`
+### `RETAIL.BASE.NEG.Tests`
 
 Unit tests (not included in solution file, but present in repository):
 
 - xUnit + Moq
 - Current target framework: `net10.0`
-- Service test classes: `UsuarioServiceTests`, `ClienteServiceTests`, `EmpresaServiceTests`, `PerfilServiceTests`, `MenuServiceTests`, `ConfigServiceTests`, `CryptographerServiceTests`
+- Service test classes: `UserServiceTests`, `CustomerServiceTests`, `CompanyServiceTests`, `RoleServiceTests`, `MenuItemServiceTests`, `ConfigServiceTests`, `CryptographerServiceTests`
 
 ## Repository structure
 
 ```text
-hard.core/
-├── HARD.CORE.sln
+RETAIL.BASE/
+├── RETAIL.BASE.sln
 ├── Jenkinsfile
-├── HARD.CORE.API/
-├── HARD.CORE.NEG/
-├── HARD.CORE.DAT/
-├── HARD.CORE.OBJ/
-├── HARD.CORE.NEG.Tests/
+├── RETAIL.BASE.API/
+├── RETAIL.BASE.NEG/
+├── RETAIL.BASE.DAT/
+├── RETAIL.BASE.OBJ/
+├── RETAIL.BASE.NEG.Tests/
 ├── UNIT_TESTS_SUMMARY.md
 └── LICENSE
 ```
@@ -95,7 +95,7 @@ hard.core/
 
 Primary app configuration file:
 
-- `HARD.CORE.API/appsettings.json`
+- `RETAIL.BASE.API/appsettings.json`
 
 Important keys expected by the API startup and DI code:
 
@@ -109,13 +109,13 @@ Important keys expected by the API startup and DI code:
 Build the solution:
 
 ```bash
-dotnet build HARD.CORE.sln
+dotnet build RETAIL.BASE.sln
 ```
 
 Build API only:
 
 ```bash
-dotnet build HARD.CORE.API/HARD.CORE.API.csproj
+dotnet build RETAIL.BASE.API/RETAIL.BASE.API.csproj
 ```
 
 ## Run
@@ -123,7 +123,7 @@ dotnet build HARD.CORE.API/HARD.CORE.API.csproj
 Run API locally:
 
 ```bash
-dotnet run --project HARD.CORE.API/HARD.CORE.API.csproj
+dotnet run --project RETAIL.BASE.API/RETAIL.BASE.API.csproj
 ```
 
 Swagger UI is enabled by the API pipeline.
@@ -133,7 +133,7 @@ Swagger UI is enabled by the API pipeline.
 Run business/service tests:
 
 ```bash
-dotnet test HARD.CORE.NEG.Tests/HARD.CORE.NEG.Tests.csproj
+dotnet test RETAIL.BASE.NEG.Tests/RETAIL.BASE.NEG.Tests.csproj
 ```
 
 ## CI/CD
@@ -141,9 +141,9 @@ dotnet test HARD.CORE.NEG.Tests/HARD.CORE.NEG.Tests.csproj
 Current `Jenkinsfile` pipeline:
 
 1. Checkout from GitHub (`main`)
-2. Publish `HARD.CORE.API` for `linux-x64`
+2. Publish `RETAIL.BASE.API` for `linux-x64`
 3. Deploy via SSH + `rsync`
-4. Restart and verify systemd service `HARD.CORE.API`
+4. Restart and verify systemd service `RETAIL.BASE.API`
 
 ## License
 

@@ -6,9 +6,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/HARD.CORE.API/bin/Debug/net8.0/HARD.CORE.API.dll",
+      "program": "${workspaceFolder}/RETAIL.BASE.API/bin/Debug/net8.0/RETAIL.BASE.API.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/HARD.CORE.API",
+      "cwd": "${workspaceFolder}/RETAIL.BASE.API",
       "stopAtEntry": false,
       "serverReadyAction": {
         "action": "openExternally",
@@ -34,10 +34,10 @@
 //     "version": "0.2.0",
 //     "configurations": [
 //         {
-//             "name": "C#: HARD.CORE.API Debug",
+//             "name": "C#: RETAIL.BASE.API Debug",
 //             "type": "dotnet",
 //             "request": "launch",
-//             "projectPath": "${workspaceFolder}/HARD.CORE.API/HARD.CORE.API.csproj"
+//             "projectPath": "${workspaceFolder}/RETAIL.BASE.API/RETAIL.BASE.API.csproj"
         
 //         }
 

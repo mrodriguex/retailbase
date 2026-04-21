@@ -1,4 +1,4 @@
-/* Navigation Bar & Hamburger Menu Styles */
+/* Navigation Bar & Hamburger MenuItem Styles */
 
 .navbar {
     background: #222;
@@ -34,7 +34,7 @@
     border-radius: 2px;
 }
 
-.nav-menu {
+.nav-menuitem {
     display: flex;
     gap: 1.5rem;
     justify-content: center;
@@ -58,7 +58,7 @@
         flex-direction: row;
         justify-content: flex-start;
     }
-    .nav-menu {
+    .nav-menuitem {
         flex-direction: column;
         position: absolute;
         top: 100%;
@@ -71,7 +71,7 @@
         padding: 1.2rem 0 1.2rem 0;
         align-items: center;
     }
-    .nav-menu.active {
+    .nav-menuitem.active {
         display: flex;
     }
     .hamburger {

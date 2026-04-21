@@ -7,7 +7,7 @@
 			"type": "process",
 			"args": [
 				"build",
-				"${workspaceFolder}/HARD.CORE.API/HARD.CORE.API.csproj",
+				"${workspaceFolder}/RETAIL.BASE.API/RETAIL.BASE.API.csproj",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary"
 			],
@@ -19,7 +19,7 @@
 			"command": "dotnet",
 			"args": [
 				"build",
-				"${workspaceFolder}/HARD.CORE.API/HARD.CORE.API.csproj",
+				"${workspaceFolder}/RETAIL.BASE.API/RETAIL.BASE.API.csproj",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary"
 			]

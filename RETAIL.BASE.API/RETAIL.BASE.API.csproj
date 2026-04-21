@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.10" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+    <PackageReference Include="Telerik.Reporting" Version="19.0.25.313" />
+    <PackageReference Include="Telerik.Reporting.OpenXmlRendering" Version="19.0.25.313" />
+    <PackageReference Include="Telerik.Reporting.Services.AspNetCore" Version="19.0.25.313" />
+    <PackageReference Include="Telerik.WebReportDesigner.Services" Version="19.0.25.313" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RETAIL.BASE.NEG\RETAIL.BASE.NEG.csproj" />
+    <ProjectReference Include="..\RETAIL.BASE.OBJ\RETAIL.BASE.OBJ.csproj" />
+  </ItemGroup>
+
+
+</Project>
