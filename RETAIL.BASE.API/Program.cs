@@ -1,6 +1,8 @@
-using Asp.Versioning;
-using Asp.Versioning.ApiExplorer;
+using Asp.Viewsioning;
+using Asp.Viewsioning.ApiExplorer;
 
+using Microsoft.AspNetCore.SignalR;
+using RETAIL.BASE.API.Controllers.Hubs;
 using RETAIL.BASE.API.Helpers;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,19 +18,19 @@ builder.Services.AddApplicationServices(builder.Configuration);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// 1. Add API Versioning services (NEW WAY FOR .NET 6+)
-builder.Services.AddApiVersioning(options =>
+// 1. Add API Viewsioning services (NEW WAY FOR .NET 6+)
+builder.Services.AddApiViewsioning(options =>
 {
-    options.DefaultApiVersion = new ApiVersion(1, 0);
-    options.AssumeDefaultVersionWhenUnspecified = true;
-    options.ReportApiVersions = true;
-    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+    options.DefaultApiViewsion = new ApiViewsion(1, 0);
+    options.AssumeDefaultViewsionWhenUnspecified = true;
+    options.ReportApiViewsions = true;
+    options.ApiViewsionReader = new UrlSegmentApiViewsionReader();
 })
 .AddMvc() // <- �Este .AddMvc() es NECESARIO ahora!
 .AddApiExplorer(options => // <- Ahora esto funcionar�
 {
     options.GroupNameFormat = "'v'VVV";
-    options.SubstituteApiVersionInUrl = true;
+    options.SubstituteApiViewsionInUrl = true;
 });
 
 
@@ -39,6 +41,7 @@ builder.Services.AddSwaggerGen(); // This is enough for basic setup
 // 3. Configure the Swagger options USING THE CUSTOM CLASS WE WILL CREATE NEXT
 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
+builder.Services.AddSignalR(); // Agregar SignalR
 
 // Agrega la pol�tica de CORS
 builder.Services.AddCors(options =>
@@ -87,6 +90,8 @@ builder.Services.AddControllers()
 
 var app = builder.Build();
 
+app.MapHub<DataHub>("/datahub"); // Definir el endpoint de SignalR
+
 // Usar la política CORS
 app.UseCors("AllowOrigins");
 
@@ -99,13 +104,13 @@ if (!app.Environment.IsDevelopment())
 
 
 // 5. Get the service that knows about all our API versions
-var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+var apiViewsionDescriptionProvider = app.Services.GetRequiredService<IApiViewsionDescriptionProvider>();
 // Habilitar el middleware de Swagger solo en el entorno de desarrollo
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     // 6. Build a Swagger endpoint for each discovered API version
-    foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+    foreach (var description in apiViewsionDescriptionProvider.ApiViewsionDescriptions)
     {
         options.SwaggerEndpoint(
             url: $"./{description.GroupName}/swagger.json",

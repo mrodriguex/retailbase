@@ -61,7 +61,7 @@ namespace RETAIL.BASE.NEG.Helpers
         }
 
 
-        public static bool VerifyPassword(string password, string storedHashBase64)
+        public static bool ViewifyPassword(string password, string storedHashBase64)
         {
             // Decodificar el hash almacenado en Base64
             byte[] storedHashBytes = Convert.FromBase64String(storedHashBase64);
@@ -74,7 +74,7 @@ namespace RETAIL.BASE.NEG.Helpers
             byte[] storedHash = new byte[64];
             Array.Copy(storedHashBytes, 16, storedHash, 0, 64);
 
-            // Convertir la contraseña en bytes
+            // Convertir la password en bytes
             byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
 
             // Concatenar salt + password

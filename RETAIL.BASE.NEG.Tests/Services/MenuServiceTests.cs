@@ -40,7 +40,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.Equal(menuitem, result.Data);
             Assert.Equal("Información del menuitem obtenida exitosamente.", result.Message);
-            _menuitemRepositoryMock.Verify(x => x.GetByIdAsync(2), Times.Once);
+            _menuitemRepositoryMock.Viewify(x => x.GetByIdAsync(2), Times.Once);
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Null(result.Data);
             Assert.Equal("Error al obtener la información del menuitem.", result.Message);
             Assert.Contains("get error", result.Errors);
-            _menuitemRepositoryMock.Verify(x => x.GetByIdAsync(2), Times.Once);
+            _menuitemRepositoryMock.Viewify(x => x.GetByIdAsync(2), Times.Once);
         }
 
         [Fact]
@@ -77,11 +77,11 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.Equal(2, result.Data.Data.Count());
             Assert.Equal("Información obtenida exitosamente.", result.Message);
-            _menuitemRepositoryMock.Verify(x => x.GetAllAsync(It.Is<BaseFilter>(f =>
+            _menuitemRepositoryMock.Viewify(x => x.GetAllAsync(It.Is<BaseFilter>(f =>
                 f.PageIndex == 2 &&
                 f.PageSize == 50 &&
                 f.Enabled == true)), Times.Once);
-            _menuitemRepositoryMock.Verify(x => x.AddAsync(It.IsAny<MenuItem>()), Times.Never);
+            _menuitemRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<MenuItem>()), Times.Never);
         }
 
         [Fact]
@@ -98,7 +98,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Null(result.Data);
             Assert.Equal("Error al obtener la información de los menuitemes.", result.Message);
             Assert.Contains("list error", result.Errors);
-            _menuitemRepositoryMock.Verify(x => x.GetAllAsync(It.IsAny<BaseFilter>()), Times.Once);
+            _menuitemRepositoryMock.Viewify(x => x.GetAllAsync(It.IsAny<BaseFilter>()), Times.Once);
         }
 
         [Fact]
@@ -124,8 +124,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Equal(61, capturedMenuItem.IdUserModification);
             Assert.InRange(capturedMenuItem.DateTimeCreation, before, after);
             Assert.InRange(capturedMenuItem.DateTimeModification, before, after);
-            _menuitemRepositoryMock.Verify(x => x.AddAsync(It.IsAny<MenuItem>()), Times.Once);
-            _menuitemRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<MenuItem>()), Times.Never);
+            _menuitemRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<MenuItem>()), Times.Once);
+            _menuitemRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<MenuItem>()), Times.Never);
         }
 
         [Fact]
@@ -141,7 +141,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Equal(0, result.Data);
             Assert.Equal("Error al agregar el menuitem.", result.Message);
             Assert.Contains("insert error", result.Errors);
-            _menuitemRepositoryMock.Verify(x => x.AddAsync(It.IsAny<MenuItem>()), Times.Once);
+            _menuitemRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<MenuItem>()), Times.Once);
         }
 
         [Fact]
@@ -165,8 +165,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.NotNull(capturedMenuItem);
             Assert.Equal(72, capturedMenuItem.IdUserModification);
             Assert.InRange(capturedMenuItem.DateTimeModification, before, after);
-            _menuitemRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<MenuItem>()), Times.Once);
-            _menuitemRepositoryMock.Verify(x => x.DeleteAsync(It.IsAny<int>()), Times.Never);
+            _menuitemRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<MenuItem>()), Times.Once);
+            _menuitemRepositoryMock.Viewify(x => x.DeleteAsync(It.IsAny<int>()), Times.Never);
         }
 
         [Fact]
@@ -182,7 +182,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.False(result.Data);
             Assert.Equal("Error al actualizar el menuitem.", result.Message);
             Assert.Contains("update error", result.Errors);
-            _menuitemRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<MenuItem>()), Times.Once);
+            _menuitemRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<MenuItem>()), Times.Once);
         }
 
         [Fact]
@@ -197,8 +197,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.True(result.Data);
             Assert.Equal("MenuItem eliminado exitosamente.", result.Message);
-            _menuitemRepositoryMock.Verify(x => x.DeleteAsync(25), Times.Once);
-            _menuitemRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<int>()), Times.Never);
+            _menuitemRepositoryMock.Viewify(x => x.DeleteAsync(25), Times.Once);
+            _menuitemRepositoryMock.Viewify(x => x.GetByIdAsync(It.IsAny<int>()), Times.Never);
         }
 
         [Fact]
@@ -214,7 +214,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.False(result.Data);
             Assert.Equal("Error al eliminar el menuitem.", result.Message);
             Assert.Contains("delete error", result.Errors);
-            _menuitemRepositoryMock.Verify(x => x.DeleteAsync(25), Times.Once);
+            _menuitemRepositoryMock.Viewify(x => x.DeleteAsync(25), Times.Once);
         }
 
         [Fact]
@@ -233,7 +233,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.Equal(2, result.Data.ToList().Count);
             Assert.Equal("Información de los menuitemes del user obtenida exitosamente.", result.Message);
-            _userRepositoryMock.Verify(x => x.GetByIdAsync(8), Times.Once);
+            _userRepositoryMock.Viewify(x => x.GetByIdAsync(8), Times.Once);
         }
 
         [Fact]
@@ -249,7 +249,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Null(result.Data);
             Assert.Equal("Error al obtener la información de los menuitemes del user.", result.Message);
             Assert.Contains("user menuitems error", result.Errors);
-            _userRepositoryMock.Verify(x => x.GetByIdAsync(8), Times.Once);
+            _userRepositoryMock.Viewify(x => x.GetByIdAsync(8), Times.Once);
         }
 
         [Fact]
@@ -267,7 +267,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.Equal(2, result.Data.ToList().Count);
             Assert.Equal("Información de los menuitemes del role obtenida exitosamente.", result.Message);
-            _roleRepositoryMock.Verify(x => x.GetByIdAsync(3), Times.Once);
+            _roleRepositoryMock.Viewify(x => x.GetByIdAsync(3), Times.Once);
         }
 
         [Fact]
@@ -283,7 +283,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Null(result.Data);
             Assert.Equal("Error al obtener la información de los menuitemes del role.", result.Message);
             Assert.Contains("profile menuitems error", result.Errors);
-            _roleRepositoryMock.Verify(x => x.GetByIdAsync(3), Times.Once);
+            _roleRepositoryMock.Viewify(x => x.GetByIdAsync(3), Times.Once);
         }
 
         private static MenuItem CreateMenuItem(int id = 1)

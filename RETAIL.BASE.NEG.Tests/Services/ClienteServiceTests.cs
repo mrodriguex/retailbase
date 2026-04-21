@@ -35,7 +35,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.Equal(customer, result.Data);
             Assert.Equal("Información del customer obtenida exitosamente.", result.Message);
-            _customerRepositoryMock.Verify(x => x.GetByIdAsync(4), Times.Once);
+            _customerRepositoryMock.Viewify(x => x.GetByIdAsync(4), Times.Once);
         }
 
         [Fact]
@@ -51,7 +51,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Null(result.Data);
             Assert.Equal("Error al obtener la información del customer.", result.Message);
             Assert.Contains("get error", result.Errors);
-            _customerRepositoryMock.Verify(x => x.GetByIdAsync(4), Times.Once);
+            _customerRepositoryMock.Viewify(x => x.GetByIdAsync(4), Times.Once);
         }
 
         [Fact]
@@ -74,13 +74,13 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.Equal(2, result.Data.Data.Count());
             Assert.Equal("Información obtenida exitosamente.", result.Message);
-            _customerRepositoryMock.Verify(x => x.GetAllAsync(It.Is<BaseFilter>(f =>
+            _customerRepositoryMock.Viewify(x => x.GetAllAsync(It.Is<BaseFilter>(f =>
                 f.PageIndex == 3 &&
                 f.PageSize == 15 &&
                 f.IdMaster == 7 &&
                 f.IdDetail == 9 &&
                 f.Enabled == true)), Times.Once);
-            _customerRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Customer>()), Times.Never);
+            _customerRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<Customer>()), Times.Never);
         }
 
         [Fact]
@@ -97,7 +97,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Null(result.Data);
             Assert.Equal("Error al obtener la información de los customers.", result.Message);
             Assert.Contains("list error", result.Errors);
-            _customerRepositoryMock.Verify(x => x.GetAllAsync(It.IsAny<BaseFilter>()), Times.Once);
+            _customerRepositoryMock.Viewify(x => x.GetAllAsync(It.IsAny<BaseFilter>()), Times.Once);
         }
 
         [Fact]
@@ -123,8 +123,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Equal(50, capturedCustomer.IdUserModification);
             Assert.InRange(capturedCustomer.DateTimeCreation, before, after);
             Assert.InRange(capturedCustomer.DateTimeModification, before, after);
-            _customerRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Customer>()), Times.Once);
-            _customerRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Customer>()), Times.Never);
+            _customerRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<Customer>()), Times.Once);
+            _customerRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<Customer>()), Times.Never);
         }
 
         [Fact]
@@ -140,7 +140,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Equal(0, result.Data);
             Assert.Equal("Error al agregar el customer.", result.Message);
             Assert.Contains("insert error", result.Errors);
-            _customerRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Customer>()), Times.Once);
+            _customerRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<Customer>()), Times.Once);
         }
 
         [Fact]
@@ -164,8 +164,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.NotNull(capturedCustomer);
             Assert.Equal(88, capturedCustomer.IdUserModification);
             Assert.InRange(capturedCustomer.DateTimeModification, before, after);
-            _customerRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Customer>()), Times.Once);
-            _customerRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<int>()), Times.Never);
+            _customerRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<Customer>()), Times.Once);
+            _customerRepositoryMock.Viewify(x => x.GetByIdAsync(It.IsAny<int>()), Times.Never);
         }
 
         [Fact]
@@ -181,7 +181,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.False(result.Data);
             Assert.Equal("Error al actualizar el customer.", result.Message);
             Assert.Contains("update error", result.Errors);
-            _customerRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Customer>()), Times.Once);
+            _customerRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<Customer>()), Times.Once);
         }
 
         [Fact]
@@ -196,8 +196,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.True(result.Data);
             Assert.Equal("Customer eliminado exitosamente.", result.Message);
-            _customerRepositoryMock.Verify(x => x.DeleteAsync(17), Times.Once);
-            _customerRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Customer>()), Times.Never);
+            _customerRepositoryMock.Viewify(x => x.DeleteAsync(17), Times.Once);
+            _customerRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<Customer>()), Times.Never);
         }
 
         [Fact]
@@ -213,7 +213,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.False(result.Data);
             Assert.Equal("Error al eliminar el customer.", result.Message);
             Assert.Contains("delete error", result.Errors);
-            _customerRepositoryMock.Verify(x => x.DeleteAsync(17), Times.Once);
+            _customerRepositoryMock.Viewify(x => x.DeleteAsync(17), Times.Once);
         }
 
         private static Customer CreateCustomer(int id = 1)

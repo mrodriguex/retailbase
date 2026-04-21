@@ -1,6 +1,6 @@
 ﻿//namespace RETAIL.BASE.API.Controllers.RPT
 //{
-//    using Asp.Versioning;
+//    using Asp.Viewsioning;
 
 //    using RETAIL.BASE.API.Configuration;
 //    using RETAIL.BASE.API.Helpers;
@@ -16,8 +16,8 @@
 //    using Telerik.Reporting.Services;
 //    using Telerik.Reporting.Services.AspNetCore;
 
-//    [ApiVersion("1.0")]
-//    [Route("rpt/v{version:apiVersion}/[controller]")] // Version in the URL path
+//    [ApiViewsion("1.0")]
+//    [Route("rpt/v{version:apiViewsion}/[controller]")] // Viewsion in the URL path
 //    public class ReportsComposedController : ReportsControllerBase
 //    {
 

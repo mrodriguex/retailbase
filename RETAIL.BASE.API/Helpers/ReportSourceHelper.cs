@@ -230,7 +230,7 @@
 //             // Crear un nuevo reporte
 //             var report = new Telerik.Reporting.Report();
 
-//             // Configurar la página directamente en el reporte (sin ReportPage)
+//             // Configurar la page directamente en el reporte (sin ReportPage)
 //             report.PageSettings.PaperKind = System.Drawing.Printing.PaperKind.Letter;
 //             report.PageSettings.Margins = new Telerik.Reporting.Drawing.MarginsU(
 //                 Telerik.Reporting.Drawing.Unit.Inch(0.5),
@@ -255,7 +255,7 @@
 //             textBox.Style.Color = System.Drawing.Color.Red;
 //             textBox.Style.Font.Size = Telerik.Reporting.Drawing.Unit.Point(12);
 //             textBox.Style.TextAlign = Telerik.Reporting.Drawing.HorizontalAlign.Center;
-//             textBox.Style.VerticalAlign = Telerik.Reporting.Drawing.VerticalAlign.Middle;
+//             textBox.Style.ViewticalAlign = Telerik.Reporting.Drawing.ViewticalAlign.Middle;
 
 //             // Agregar el TextBox a la sección Detail
 //             detailSection.Items.Add(textBox);

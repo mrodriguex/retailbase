@@ -27,7 +27,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
 
             Assert.False(result.Success);
             Assert.Contains("input", string.Join(" ", result.Errors), StringComparison.OrdinalIgnoreCase);
-            _cryptographerMock.Verify(x => x.CreateHash(It.IsAny<string>()), Times.Never);
+            _cryptographerMock.Viewify(x => x.CreateHash(It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
 
             Assert.True(result.Success);
             Assert.Equal(expectedHash, result.Data);
-            _cryptographerMock.Verify(x => x.CreateHash(decodedInput), Times.Once);
+            _cryptographerMock.Viewify(x => x.CreateHash(decodedInput), Times.Once);
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
 
             Assert.False(result.Success);
             Assert.Contains("input", string.Join(" ", result.Errors), StringComparison.OrdinalIgnoreCase);
-            _cryptographerMock.Verify(x => x.CompareHash(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            _cryptographerMock.Viewify(x => x.CompareHash(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
 
             Assert.False(result.Success);
             Assert.Contains("hash", string.Join(" ", result.Errors), StringComparison.OrdinalIgnoreCase);
-            _cryptographerMock.Verify(x => x.CompareHash(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            _cryptographerMock.Viewify(x => x.CompareHash(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -97,7 +97,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
 
             Assert.True(result.Success);
             Assert.True(result.Data);
-            _cryptographerMock.Verify(x => x.CompareHash(decodedInput, decodedHash), Times.Once);
+            _cryptographerMock.Viewify(x => x.CompareHash(decodedInput, decodedHash), Times.Once);
         }
 
         [Fact]

@@ -1,4 +1,4 @@
-﻿//using Asp.Versioning;
+﻿//using Asp.Viewsioning;
 
 //using RETAIL.BASE.API.Configuration;
 //using RETAIL.BASE.API.Helpers;
@@ -19,15 +19,15 @@
 
 //namespace RETAIL.BASE.API.Controllers.RPT
 //{
-//    [ApiVersion("1.0")]
-//    [Route("rpt/v{version:apiVersion}/[controller]")] // Version in the URL path
+//    [ApiViewsion("1.0")]
+//    [Route("rpt/v{version:apiViewsion}/[controller]")] // Viewsion in the URL path
 //    public class ViewerComposedController : Controller
 //    {
 //        public static bool IsLinux
 //        {
 //            get
 //            {
-//                int p = (int)Environment.OSVersion.Platform;
+//                int p = (int)Environment.OSViewsion.Platform;
 //                return (p == 4) || (p == 6) || (p == 128);
 //            }
 //        }

@@ -11,11 +11,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.DirectoryServices" Version="9.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10" />
+		<PackageReference Include="System.DirectoryServices" Viewsion="9.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Viewsion="8.0.10" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Viewsion="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Viewsion="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Viewsion="8.0.10" />
 	</ItemGroup>
 
 	<ItemGroup>

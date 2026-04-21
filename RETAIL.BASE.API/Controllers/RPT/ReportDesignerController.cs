@@ -1,6 +1,6 @@
 ﻿//namespace RETAIL.BASE.API.Controllers.RPT
 //{
-//    using Asp.Versioning;
+//    using Asp.Viewsioning;
 
 //    using RETAIL.BASE.API.Configuration;
 
@@ -18,8 +18,8 @@
 //    using Telerik.WebReportDesigner.Services;
 //    using Telerik.WebReportDesigner.Services.Controllers;
 
-//    [ApiVersion("1.0")]
-//    [Route("rpt/v{version:apiVersion}/[controller]")] // Version in the URL path
+//    [ApiViewsion("1.0")]
+//    [Route("rpt/v{version:apiViewsion}/[controller]")] // Viewsion in the URL path
 //    public class ReportDesignerController : ReportDesignerControllerBase
 //    {
 

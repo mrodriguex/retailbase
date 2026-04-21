@@ -1,12 +1,12 @@
-﻿using Asp.Versioning;
+﻿using Asp.Viewsioning;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace RETAIL.BASE.API.Controllers.V1
 {
     [ApiController]
-    [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/[controller]")] // Version in the URL path
+    [ApiViewsion("1.0")]
+    [Route("api/v{version:apiViewsion}/[controller]")] // Viewsion in the URL path
     public class ConfigController : Controller
     {
         private readonly ConfigService _configService;

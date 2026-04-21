@@ -1,4 +1,4 @@
-using Asp.Versioning;
+using Asp.Viewsioning;
 using RETAIL.BASE.API.Controllers.Base;
 using RETAIL.BASE.NEG.Interfaces;
 using RETAIL.BASE.OBJ;
@@ -10,8 +10,8 @@ namespace RETAIL.BASE.API.Controllers.V1
 {
     [Authorize]
     [ApiController]
-    [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiViewsion("1.0")]
+    [Route("api/v{version:apiViewsion}/[controller]")]
     public class BrandController : BaseController
     {
         private readonly IBrandService _brandService;

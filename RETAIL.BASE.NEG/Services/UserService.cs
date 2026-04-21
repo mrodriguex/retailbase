@@ -153,7 +153,7 @@ namespace RETAIL.BASE.NEG.Services
             {
                 User user = await _userRepository.GetByIdAsync(idUser);
                 webResult.Data = user != null;
-                webResult.Message = "Verificación de existencia del user realizada exitosamente.";
+                webResult.Message = "Viewificación de existencia del user realizada exitosamente.";
                 webResult.Success = true;
             }
             catch (Exception ex)

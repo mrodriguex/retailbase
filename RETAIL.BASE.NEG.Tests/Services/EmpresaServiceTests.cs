@@ -38,7 +38,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.Equal(company, result.Data);
             Assert.Equal("Información del company obtenida exitosamente.", result.Message);
-            _companyRepositoryMock.Verify(x => x.GetByIdAsync(3), Times.Once);
+            _companyRepositoryMock.Viewify(x => x.GetByIdAsync(3), Times.Once);
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Null(result.Data);
             Assert.Equal("Error al obtener la información del company.", result.Message);
             Assert.Contains("get error", result.Errors);
-            _companyRepositoryMock.Verify(x => x.GetByIdAsync(3), Times.Once);
+            _companyRepositoryMock.Viewify(x => x.GetByIdAsync(3), Times.Once);
         }
 
         [Fact]
@@ -77,13 +77,13 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.Equal(2, result.Data.Data.Count());
             Assert.Equal("Información obtenida exitosamente.", result.Message);
-            _companyRepositoryMock.Verify(x => x.GetAllAsync(It.Is<BaseFilter>(f =>
+            _companyRepositoryMock.Viewify(x => x.GetAllAsync(It.Is<BaseFilter>(f =>
                 f.PageIndex == 2 &&
                 f.PageSize == 25 &&
                 f.IdMaster == 5 &&
                 f.IdDetail == 6 &&
                 f.Enabled == true)), Times.Once);
-            _companyRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Company>()), Times.Never);
+            _companyRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<Company>()), Times.Never);
         }
 
         [Fact]
@@ -100,7 +100,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Null(result.Data);
             Assert.Equal("Error al obtener la información de los companyes.", result.Message);
             Assert.Contains("list error", result.Errors);
-            _companyRepositoryMock.Verify(x => x.GetAllAsync(It.IsAny<BaseFilter>()), Times.Once);
+            _companyRepositoryMock.Viewify(x => x.GetAllAsync(It.IsAny<BaseFilter>()), Times.Once);
         }
 
         [Fact]
@@ -126,8 +126,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Equal(64, capturedCompany.IdUserModification);
             Assert.InRange(capturedCompany.DateTimeCreation, before, after);
             Assert.InRange(capturedCompany.DateTimeModification, before, after);
-            _companyRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Company>()), Times.Once);
-            _companyRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Company>()), Times.Never);
+            _companyRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<Company>()), Times.Once);
+            _companyRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<Company>()), Times.Never);
         }
 
         [Fact]
@@ -143,7 +143,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Equal(0, result.Data);
             Assert.Equal("Error al agregar el company.", result.Message);
             Assert.Contains("insert error", result.Errors);
-            _companyRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Company>()), Times.Once);
+            _companyRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<Company>()), Times.Once);
         }
 
         [Fact]
@@ -167,7 +167,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.NotNull(capturedCompany);
             Assert.Equal(70, capturedCompany.IdUserModification);
             Assert.InRange(capturedCompany.DateTimeModification, before, after);
-            _companyRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Company>()), Times.Once);
+            _companyRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<Company>()), Times.Once);
             // Removed invalid GetCompaniesByUserAsync verification (not a repository method)
         }
 
@@ -184,7 +184,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.False(result.Data);
             Assert.Equal("Error al actualizar el company.", result.Message);
             Assert.Contains("update error", result.Errors);
-            _companyRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Company>()), Times.Once);
+            _companyRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<Company>()), Times.Once);
         }
 
         [Fact]
@@ -199,8 +199,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.True(result.Data);
             Assert.Equal("Company eliminado exitosamente.", result.Message);
-            _companyRepositoryMock.Verify(x => x.DeleteAsync(15), Times.Once);
-            _companyRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<int>()), Times.Never);
+            _companyRepositoryMock.Viewify(x => x.DeleteAsync(15), Times.Once);
+            _companyRepositoryMock.Viewify(x => x.GetByIdAsync(It.IsAny<int>()), Times.Never);
         }
 
         [Fact]
@@ -216,7 +216,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.False(result.Data);
             Assert.Equal("Error al eliminar el company.", result.Message);
             Assert.Contains("delete error", result.Errors);
-            _companyRepositoryMock.Verify(x => x.DeleteAsync(15), Times.Once);
+            _companyRepositoryMock.Viewify(x => x.DeleteAsync(15), Times.Once);
         }
 
         private static Company CreateCompany(int id = 1)

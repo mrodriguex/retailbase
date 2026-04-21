@@ -55,12 +55,16 @@ public static class DependencyInjection
         services.AddScoped<ICryptographerB, CryptographerSHA512B>();
         services.AddScoped<ICryptographerService, CryptographerService>();
 
+        services.AddScoped<HubCommunicationService>();
+
         // Register DbContext
         services.AddDbContext<RETAIL_BASEDbContext>(options =>
             options.UseNpgsql(
                 configuration.GetConnectionString("SqlConn_RETAIL_BASE"),
                 b => b.MigrationsAssembly("RETAIL.BASE.DAT")
             ));
+
+
 
         return services;
     }

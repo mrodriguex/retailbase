@@ -15,15 +15,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
-    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.10" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
-    <PackageReference Include="Telerik.Reporting" Version="19.0.25.313" />
-    <PackageReference Include="Telerik.Reporting.OpenXmlRendering" Version="19.0.25.313" />
-    <PackageReference Include="Telerik.Reporting.Services.AspNetCore" Version="19.0.25.313" />
-    <PackageReference Include="Telerik.WebReportDesigner.Services" Version="19.0.25.313" />
+    <PackageReference Include="Asp.Viewsioning.Mvc" Viewsion="8.1.0" />
+    <PackageReference Include="Asp.Viewsioning.Mvc.ApiExplorer" Viewsion="8.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Viewsion="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Viewsion="8.0.10" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Viewsion="7.2.0" />
+    <PackageReference Include="Telerik.Reporting" Viewsion="19.0.25.313" />
+    <PackageReference Include="Telerik.Reporting.OpenXmlRendering" Viewsion="19.0.25.313" />
+    <PackageReference Include="Telerik.Reporting.Services.AspNetCore" Viewsion="19.0.25.313" />
+    <PackageReference Include="Telerik.WebReportDesigner.Services" Viewsion="19.0.25.313" />
   </ItemGroup>
 
   <ItemGroup>

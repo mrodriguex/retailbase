@@ -1,4 +1,4 @@
-﻿using Asp.Versioning.ApiExplorer;
+﻿using Asp.Viewsioning.ApiExplorer;
 
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
@@ -9,9 +9,9 @@ namespace RETAIL.BASE.API.Helpers // Replace with your project's namespace
 {
     public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {
-        private readonly IApiVersionDescriptionProvider _provider;
+        private readonly IApiViewsionDescriptionProvider _provider;
 
-        public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
+        public ConfigureSwaggerOptions(IApiViewsionDescriptionProvider provider)
         {
             _provider = provider;
         }
@@ -19,7 +19,7 @@ namespace RETAIL.BASE.API.Helpers // Replace with your project's namespace
         public void Configure(SwaggerGenOptions options)
         {
             // Create a Swagger document for each discovered API version
-            foreach (var description in _provider.ApiVersionDescriptions)
+            foreach (var description in _provider.ApiViewsionDescriptions)
             {
                 options.SwaggerDoc(
                     description.GroupName, // e.g., "v1", "v2.0", "v3.0-beta"
@@ -53,12 +53,12 @@ namespace RETAIL.BASE.API.Helpers // Replace with your project's namespace
 
         }
 
-        private static OpenApiInfo CreateOpenApiInfo(ApiVersionDescription description)
+        private static OpenApiInfo CreateOpenApiInfo(ApiViewsionDescription description)
         {
             var info = new OpenApiInfo()
             {
                 Title = "RETAIL_BASE API", // Your API's name
-                Version = description.ApiVersion.ToString(),
+                Viewsion = description.ApiViewsion.ToString(),
                 Description = "API del Código Base HARD CORE.",
                 Contact = new OpenApiContact { Name = "Manuel Rodríguez Camacho", Email = "mrodriguez@cryoinfra.com.mx" },
                 License = new OpenApiLicense { Name = "MIT License" }

@@ -369,7 +369,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"User Nuevo\",\n  \"description\": \"Descripción del user\",\n  \"abbreviation\": \"UN\",\n  \"enabled\": true,\n  \"userName\": \"newuser\",\n  \"employeeId\": 123,\n  \"isActive\": true,\n  \"firstName\": \"newuser\",\n  \"lastNameFather\": \"Paterno\",\n  \"lastNameMother\": \"Materno\",\n  \"email\": \"newuser@example.com\",\n  \"password\": \"TempPass123!\",\n  \"attempts\": 0,\n  \"cambioPassword\": true,\n  \"avatar\": \"\"\n}"
+              "raw": "{\n  \"name\": \"User New\",\n  \"description\": \"Descripción del user\",\n  \"abbreviation\": \"UN\",\n  \"enabled\": true,\n  \"userName\": \"newuser\",\n  \"employeeId\": 123,\n  \"isActive\": true,\n  \"firstName\": \"newuser\",\n  \"lastNameFather\": \"Paterno\",\n  \"lastNameMother\": \"Materno\",\n  \"email\": \"newuser@example.com\",\n  \"password\": \"TempPass123!\",\n  \"attempts\": 0,\n  \"cambioPassword\": true,\n  \"avatar\": \"\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/User/Add",
@@ -657,7 +657,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"User Nuevo V2\",\n  \"description\": \"Descripción del user V2\",\n  \"abbreviation\": \"UN2\",\n  \"enabled\": true,\n  \"userName\": \"newuserv2\",\n  \"employeeId\": 124,\n  \"isActive\": true,\n  \"firstName\": \"newuserv2\",\n  \"lastNameFather\": \"Paterno\",\n  \"lastNameMother\": \"Materno\",\n  \"email\": \"newuserv2@example.com\",\n  \"password\": \"TempPass123!\",\n  \"attempts\": 0,\n  \"bloqueado\": false,\n  \"cambioPassword\": true\n}"
+              "raw": "{\n  \"name\": \"User New V2\",\n  \"description\": \"Descripción del user V2\",\n  \"abbreviation\": \"UN2\",\n  \"enabled\": true,\n  \"userName\": \"newuserv2\",\n  \"employeeId\": 124,\n  \"isActive\": true,\n  \"firstName\": \"newuserv2\",\n  \"lastNameFather\": \"Paterno\",\n  \"lastNameMother\": \"Materno\",\n  \"email\": \"newuserv2@example.com\",\n  \"password\": \"TempPass123!\",\n  \"attempts\": 0,\n  \"bloqueado\": false,\n  \"cambioPassword\": true\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v2/User/Add",
@@ -893,7 +893,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Customer Nuevo\",\n  \"description\": \"Descripción del customer\",\n  \"abbreviation\": \"CN\",\n  \"enabled\": true,\n  \"taxid\": \"XAXX010101000\",\n  \"direccion\": \"Dirección del customer\",\n  \"telefono\": \"555-123-4567\",\n  \"email\": \"customer@example.com\",\n  \"contacto\": \"Juan Pérez\"\n}"
+              "raw": "{\n  \"name\": \"Customer New\",\n  \"description\": \"Descripción del customer\",\n  \"abbreviation\": \"CN\",\n  \"enabled\": true,\n  \"taxid\": \"XAXX010101000\",\n  \"direccion\": \"Dirección del customer\",\n  \"telefono\": \"555-123-4567\",\n  \"email\": \"customer@example.com\",\n  \"contacto\": \"Juan Pérez\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/Customer/Add",
@@ -1061,7 +1061,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Company Nueva\",\n  \"description\": \"Descripción de la company\",\n  \"abbreviation\": \"EN\",\n  \"enabled\": true,\n  \"taxid\": \"XAXX010101000\",\n  \"direccion\": \"Dirección de la company\",\n  \"telefono\": \"555-123-4567\",\n  \"email\": \"company@example.com\",\n  \"sitioWeb\": \"https://company.com\"\n}"
+              "raw": "{\n  \"name\": \"Company New\",\n  \"description\": \"Descripción de la company\",\n  \"abbreviation\": \"EN\",\n  \"enabled\": true,\n  \"taxid\": \"XAXX010101000\",\n  \"direccion\": \"Dirección de la company\",\n  \"telefono\": \"555-123-4567\",\n  \"email\": \"company@example.com\",\n  \"sitioWeb\": \"https://company.com\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/Company/Add",
@@ -1295,7 +1295,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Menú Nuevo\",\n  \"description\": \"Descripción del menú\",\n  \"abbreviation\": \"MN\",\n  \"enabled\": true,\n  \"path\": \"/nuevo-menuitem\",\n  \"icono\": \"fas fa-new\",\n  \"order\": 1,\n  \"idMenuItemFather\": null\n}"
+              "raw": "{\n  \"name\": \"Menú New\",\n  \"description\": \"Descripción del menú\",\n  \"abbreviation\": \"MN\",\n  \"enabled\": true,\n  \"path\": \"/nuevo-menuitem\",\n  \"icono\": \"fas fa-new\",\n  \"order\": 1,\n  \"idMenuItemFather\": null\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/MenuItem/Add",
@@ -1463,7 +1463,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Role Nuevo\",\n  \"description\": \"Descripción del role\",\n  \"abbreviation\": \"PN\",\n  \"enabled\": true\n}"
+              "raw": "{\n  \"name\": \"Role New\",\n  \"description\": \"Descripción del role\",\n  \"abbreviation\": \"PN\",\n  \"enabled\": true\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/Role/Add",

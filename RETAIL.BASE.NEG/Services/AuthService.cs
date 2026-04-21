@@ -79,7 +79,7 @@ namespace RETAIL.BASE.NEG.Services
                 if (!isAuthenticated)
                 {
                     webResult.Data = false;
-                    webResult.Message = "User o contraseña incorrectos.";
+                    webResult.Message = "User o password incorrectos.";
                     webResult.Success = false;
                     return webResult;
                 }
@@ -117,14 +117,14 @@ namespace RETAIL.BASE.NEG.Services
                 user.DateTimeModification = DateTime.UtcNow;
 
                 webResult.Data = await _userRepository.UpdateAsync(user);
-                webResult.Message = webResult.Data ? "Actualización de contraseña realizada exitosamente." : "Error al actualizar la contraseña.";
+                webResult.Message = webResult.Data ? "Actualización de password realizada exitosamente." : "Error al actualizar la password.";
                 webResult.Success = webResult.Data;
             }
             catch (Exception ex)
             {
-                webResult.Message = "Error al realizar la actualización de contraseña.";
+                webResult.Message = "Error al realizar la actualización de password.";
                 webResult.Errors.Add(ex.Message);
-                _logger.LogError(ex, "Error al actualizar la contraseña para el user: {Username}", login.Username);
+                _logger.LogError(ex, "Error al actualizar la password para el user: {Username}", login.Username);
             }
             return webResult;
         }
