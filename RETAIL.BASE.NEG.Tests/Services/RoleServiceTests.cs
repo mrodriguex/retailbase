@@ -40,7 +40,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.Equal(role, result.Data);
             Assert.Equal("Información del role obtenida exitosamente.", result.Message);
-            _roleRepositoryMock.Viewify(x => x.GetByIdAsync(5), Times.Once);
+            _roleRepositoryMock.Verify(x => x.GetByIdAsync(5), Times.Once);
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Null(result.Data);
             Assert.Equal("Error al obtener la información del role.", result.Message);
             Assert.Contains("get error", result.Errors);
-            _roleRepositoryMock.Viewify(x => x.GetByIdAsync(5), Times.Once);
+            _roleRepositoryMock.Verify(x => x.GetByIdAsync(5), Times.Once);
         }
 
         [Fact]
@@ -76,11 +76,11 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.Equal(2, result.Data.Data.Count());
             Assert.Equal("Información obtenida exitosamente.", result.Message);
-            _roleRepositoryMock.Viewify(x => x.GetAllAsync(It.Is<BaseFilter>(f =>
+            _roleRepositoryMock.Verify(x => x.GetAllAsync(It.Is<BaseFilter>(f =>
                 f.PageIndex == 4 &&
                 f.PageSize == 30 &&
                 f.Enabled == true)), Times.Once);
-            _roleRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<Role>()), Times.Never);
+            _roleRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Role>()), Times.Never);
         }
 
         [Fact]
@@ -97,7 +97,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Null(result.Data);
             Assert.Equal("Error al obtener la información de los roles.", result.Message);
             Assert.Contains("list error", result.Errors);
-            _roleRepositoryMock.Viewify(x => x.GetAllAsync(It.IsAny<BaseFilter>()), Times.Once);
+            _roleRepositoryMock.Verify(x => x.GetAllAsync(It.IsAny<BaseFilter>()), Times.Once);
         }
 
         [Fact]
@@ -123,8 +123,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Equal(41, capturedRole.IdUserModification);
             Assert.InRange(capturedRole.DateTimeCreation, before, after);
             Assert.InRange(capturedRole.DateTimeModification, before, after);
-            _roleRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<Role>()), Times.Once);
-            _roleRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<Role>()), Times.Never);
+            _roleRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Role>()), Times.Once);
+            _roleRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Role>()), Times.Never);
         }
 
         [Fact]
@@ -140,7 +140,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Equal(0, result.Data);
             Assert.Equal("Error al agregar el role.", result.Message);
             Assert.Contains("insert error", result.Errors);
-            _roleRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<Role>()), Times.Once);
+            _roleRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Role>()), Times.Once);
         }
 
         [Fact]
@@ -164,8 +164,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.NotNull(capturedRole);
             Assert.Equal(77, capturedRole.IdUserModification);
             Assert.InRange(capturedRole.DateTimeModification, before, after);
-            _roleRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<Role>()), Times.Once);
-            _roleRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<Role>()), Times.Never);
+            _roleRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Role>()), Times.Once);
+            _roleRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Role>()), Times.Never);
         }
 
         [Fact]
@@ -181,7 +181,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.False(result.Data);
             Assert.Equal("Error al actualizar el role.", result.Message);
             Assert.Contains("update error", result.Errors);
-            _roleRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<Role>()), Times.Once);
+            _roleRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Role>()), Times.Once);
         }
 
         [Fact]
@@ -196,8 +196,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.True(result.Data);
             Assert.Equal("Role eliminado exitosamente.", result.Message);
-            _roleRepositoryMock.Viewify(x => x.DeleteAsync(22), Times.Once);
-            _roleRepositoryMock.Viewify(x => x.GetByIdAsync(It.IsAny<int>()), Times.Never);
+            _roleRepositoryMock.Verify(x => x.DeleteAsync(22), Times.Once);
+            _roleRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<int>()), Times.Never);
         }
 
         [Fact]
@@ -213,7 +213,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.False(result.Data);
             Assert.Equal("Error al eliminar el role.", result.Message);
             Assert.Contains("delete error", result.Errors);
-            _roleRepositoryMock.Viewify(x => x.DeleteAsync(22), Times.Once);
+            _roleRepositoryMock.Verify(x => x.DeleteAsync(22), Times.Once);
         }
 
         [Fact]
@@ -229,7 +229,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.Equal(2, result.Data.Count());
             Assert.Equal("Información de los roles del user obtenida exitosamente.", result.Message);
-            _userRepositoryMock.Viewify(x => x.GetByIdAsync(12), Times.Once);
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(12), Times.Once);
         }
 
         [Fact]
@@ -245,7 +245,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Null(result.Data);
             Assert.Equal("Error al obtener la información de los roles del user.", result.Message);
             Assert.Contains("profiles error", result.Errors);
-            _userRepositoryMock.Viewify(x => x.GetByIdAsync(12), Times.Once);
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(12), Times.Once);
         }
 
         private static Role CreateRole(int id = 1)

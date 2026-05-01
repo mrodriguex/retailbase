@@ -1,22 +1,29 @@
 import { useState, useEffect, useCallback } from "react";
 import * as productPresentationService from "../services/productPresentationService";
+import * as productService from "../services/productService";
 
 const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 
 const emptyForm = {
   id: 0,
   name: "",
-  abreviation: "",
-  descripcion: "",
-  rfc: "",
-  razonSocial: "",
-  idProductPresentationPadre: "",
+  abbreviation: "",
+  description: "",
+  productId: "",
+  barcode: "",
+  sizeLabel: "",
+  netContent: "",
+  unit: "",
+  presentation: "",
+  suggestedPrice: "",
+  costEstimate: "",
   order: 0,
   enabled: true,
 };
 
-export default function ProductPresentationPresentations() {
-  const [productPresentationPresentations, setProductPresentationPresentations] = useState([]);
+export default function ProductPresentations() {
+  const [productPresentations, setProductPresentations] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -38,7 +45,7 @@ export default function ProductPresentationPresentations() {
   const [deleting, setDeleting] = useState(false);
 
   // ── Data loading ──────────────────────────────────────────────────────────
-  const loadProductPresentationPresentations = useCallback(async () => {
+  const loadProductPresentations = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
@@ -49,25 +56,29 @@ export default function ProductPresentationPresentations() {
       });
 
       if (Array.isArray(result)) {
-        setProductPresentationPresentations(result);
+        setProductPresentations(result);
         setTotal(result.length);
       } else if (result?.items) {
-        setProductPresentationPresentations(result.items);
+        setProductPresentations(result.items);
         setTotal(result.total ?? result.items.length);
       } else {
-        setProductPresentationPresentations([]);
+        setProductPresentations([]);
         setTotal(0);
       }
     } catch (e) {
-      setError(e.message || "Error al cargar los productPresentationPresentations.");
+      setError(e.message || "Error loading product presentations.");
     } finally {
       setLoading(false);
     }
   }, [pageIndex, pageSize, filterEnabled]);
 
   useEffect(() => {
-    loadProductPresentationPresentations();
-  }, [loadProductPresentationPresentations]);
+    loadProductPresentations();
+  }, [loadProductPresentations]);
+
+  useEffect(() => {
+    productService.getAll({ enabled: true, pageSize: 9999 }).then(r => setProducts(r?.items ?? r ?? [])).catch(() => {});
+  }, []);
 
   // ── Modal helpers ─────────────────────────────────────────────────────────
   function openAdd() {
@@ -79,7 +90,7 @@ export default function ProductPresentationPresentations() {
     setModal({
       open: true,
       mode: "edit",
-      data: { ...productPresentation, idProductPresentationPadre: productPresentation.idProductPresentationPadre ?? "" },
+      data: { ...emptyForm, ...productPresentation },
     });
     setModalError("");
   }
@@ -110,8 +121,20 @@ export default function ProductPresentationPresentations() {
     setSaving(true);
     try {
       const payload = {
-        ...modal.data,
-        idProductPresentationPadre: modal.data.idProductPresentationPadre === "" ? null : Number(modal.data.idProductPresentationPadre),
+        id: modal.data.id,
+        name: modal.data.name,
+        abbreviation: modal.data.abbreviation,
+        description: modal.data.description,
+        productId: modal.data.productId === "" ? 0 : Number(modal.data.productId),
+        barcode: modal.data.barcode,
+        sizeLabel: modal.data.sizeLabel,
+        netContent: modal.data.netContent === "" ? null : Number(modal.data.netContent),
+        unit: modal.data.unit,
+        presentation: modal.data.presentation,
+        suggestedPrice: modal.data.suggestedPrice === "" ? null : Number(modal.data.suggestedPrice),
+        costEstimate: modal.data.costEstimate === "" ? null : Number(modal.data.costEstimate),
+        order: modal.data.order,
+        enabled: modal.data.enabled,
       };
       if (modal.mode === "add") {
         await productPresentationService.add(payload);
@@ -119,7 +142,7 @@ export default function ProductPresentationPresentations() {
         await productPresentationService.update(payload);
       }
       closeModal();
-      loadProductPresentationPresentations();
+      loadProductPresentations();
     } catch (e) {
       setModalError(e.message || "Error al guardar el productPresentation.");
     } finally {
@@ -134,8 +157,8 @@ export default function ProductPresentationPresentations() {
     try {
       await productPresentationService.remove(deleteTarget.id);
       setDeleteTarget(null);
-      if (productPresentationPresentations.length === 1 && pageIndex > 1) setPageIndex((p) => p - 1);
-      else loadProductPresentationPresentations();
+      if (productPresentations.length === 1 && pageIndex > 1) setPageIndex((p) => p - 1);
+      else loadProductPresentations();
     } catch (e) {
       setError(e.message || "Error al eliminar el productPresentation.");
       setDeleteTarget(null);
@@ -153,7 +176,7 @@ export default function ProductPresentationPresentations() {
       <div className="flex flex-wrap gap-2 sm:gap-3 items-center mb-5">
         <button
           onClick={openAdd}
-          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition-colors text-sm"
+          className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold transition-colors text-sm"
         >
           + New ProductPresentation
         </button>
@@ -182,7 +205,7 @@ export default function ProductPresentationPresentations() {
         </select>
 
         <button
-          onClick={loadProductPresentationPresentations}
+          onClick={loadProductPresentations}
           disabled={loading}
           className="w-full sm:w-auto sm:ml-auto border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50 px-4 py-2 rounded text-sm transition-colors"
         >
@@ -203,7 +226,7 @@ export default function ProductPresentationPresentations() {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>
-              {["ID", "Name", "Abreviation", "RFC", "Razón Social", "ProductPresentation Padre", "Order", "Estatus", "Actions"].map((h) => (
+              {["ID", "Name", "Abbreviation", "Product", "Barcode", "Size Label", "Net Content", "Unit", "Order", "Status", "Actions"].map((h) => (
                 <th key={h} className="px-4 py-3 text-left font-semibold text-gray-600 whitespace-nowrap">
                   {h}
                 </th>
@@ -213,27 +236,27 @@ export default function ProductPresentationPresentations() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={9} className="text-center py-12 text-gray-400">
+                <td colSpan={11} className="text-center py-12 text-gray-400">
                   <span className="inline-block animate-pulse">Loading...</span>
                 </td>
               </tr>
-            ) : productPresentationPresentations.length === 0 ? (
+            ) : productPresentations.length === 0 ? (
               <tr>
-                <td colSpan={9} className="text-center py-12 text-gray-400">
+                <td colSpan={11} className="text-center py-12 text-gray-400">
                   Sin registros
                 </td>
               </tr>
             ) : (
-              productPresentationPresentations.map((c) => (
+              productPresentations.map((c) => (
                 <tr key={c.id} className="border-b last:border-0 hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-3 text-gray-500">{c.id}</td>
                   <td className="px-4 py-3 font-medium text-gray-900">{c.name}</td>
-                  <td className="px-4 py-3 text-gray-600">{c.abreviation}</td>
-                  <td className="px-4 py-3 text-gray-600">{c.rfc}</td>
-                  <td className="px-4 py-3 text-gray-600">{c.razonSocial}</td>
-                  <td className="px-4 py-3 text-gray-600">
-                    {c.idProductPresentationPadre ?? <span className="text-gray-300">—</span>}
-                  </td>
+                  <td className="px-4 py-3 text-gray-600">{c.abbreviation}</td>
+                  <td className="px-4 py-3 text-gray-600">{products.find(p => p.id === c.productId)?.name ?? c.productId}</td>
+                  <td className="px-4 py-3 text-gray-600 font-mono text-xs">{c.barcode || <span className="text-gray-300">—</span>}</td>
+                  <td className="px-4 py-3 text-gray-600">{c.sizeLabel || <span className="text-gray-300">—</span>}</td>
+                  <td className="px-4 py-3 text-gray-600">{c.netContent ?? <span className="text-gray-300">—</span>}</td>
+                  <td className="px-4 py-3 text-gray-600">{c.unit || <span className="text-gray-300">—</span>}</td>
                   <td className="px-4 py-3 text-gray-600">{c.order}</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -246,7 +269,7 @@ export default function ProductPresentationPresentations() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => openEdit(c)}
-                        className="text-blue-600 hover:text-blue-800 text-xs border border-blue-300 px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+                        className="text-green-600 hover:text-green-800 text-xs border border-green-300 px-2 py-1 rounded hover:bg-green-50 transition-colors"
                       >
                         Edit
                       </button>
@@ -319,50 +342,114 @@ export default function ProductPresentationPresentations() {
                     required
                     value={modal.data.name}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Abreviation</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Abbreviation</label>
                   <input
-                    name="abreviation"
-                    value={modal.data.abreviation ?? ""}
+                    name="abbreviation"
+                    value={modal.data.abbreviation ?? ""}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">RFC</label>
-                  <input
-                    name="rfc"
-                    value={modal.data.rfc ?? ""}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Product <span className="text-red-500">*</span></label>
+                  <select
+                    name="productId"
+                    required
+                    value={modal.data.productId ?? ""}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
+                  >
+                    <option value="">— Select product —</option>
+                    {products.map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Razón Social</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Barcode</label>
                   <input
-                    name="razonSocial"
-                    value={modal.data.razonSocial ?? ""}
+                    name="barcode"
+                    value={modal.data.barcode ?? ""}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">ProductPresentation Padre (ID)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Size Label</label>
                   <input
-                    name="idProductPresentationPadre"
+                    name="sizeLabel"
+                    value={modal.data.sizeLabel ?? ""}
+                    onChange={handleFormChange}
+                    placeholder="e.g. 500ml"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Net Content</label>
+                  <input
+                    name="netContent"
                     type="number"
                     min={0}
-                    value={modal.data.idProductPresentationPadre ?? ""}
+                    step="0.01"
+                    value={modal.data.netContent ?? ""}
                     onChange={handleFormChange}
-                    placeholder="Vacío = raíz"
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+                  <input
+                    name="unit"
+                    value={modal.data.unit ?? ""}
+                    onChange={handleFormChange}
+                    placeholder="e.g. ml, g, pcs"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Presentation</label>
+                  <input
+                    name="presentation"
+                    value={modal.data.presentation ?? ""}
+                    onChange={handleFormChange}
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Suggested Price</label>
+                  <input
+                    name="suggestedPrice"
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    value={modal.data.suggestedPrice ?? ""}
+                    onChange={handleFormChange}
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Cost Estimate</label>
+                  <input
+                    name="costEstimate"
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    value={modal.data.costEstimate ?? ""}
+                    onChange={handleFormChange}
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
@@ -374,7 +461,7 @@ export default function ProductPresentationPresentations() {
                     min={0}
                     value={modal.data.order ?? 0}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
@@ -385,7 +472,7 @@ export default function ProductPresentationPresentations() {
                     type="checkbox"
                     checked={modal.data.enabled ?? true}
                     onChange={handleFormChange}
-                    className="w-4 h-4 accent-blue-600"
+                    className="w-4 h-4 accent-green-600"
                   />
                   <label htmlFor="productPresentation-enabled-check" className="text-sm font-medium text-gray-700">
                     Enabled
@@ -394,13 +481,13 @@ export default function ProductPresentationPresentations() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                 <textarea
-                  name="descripcion"
-                  value={modal.data.descripcion ?? ""}
+                  name="description"
+                  value={modal.data.description ?? ""}
                   onChange={handleFormChange}
                   rows={2}
-                  className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
                 />
               </div>
 
@@ -415,7 +502,7 @@ export default function ProductPresentationPresentations() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white rounded text-sm font-semibold transition-colors"
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white rounded text-sm font-semibold transition-colors"
                 >
                   {saving ? "Guardando..." : "Guardar"}
                 </button>
@@ -429,7 +516,7 @@ export default function ProductPresentationPresentations() {
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
-            <h2 className="text-lg font-bold mb-2">Confirmar eliminación</h2>
+            <h2 className="text-lg font-bold mb-2">Confirm eliminación</h2>
             <p className="text-sm text-gray-600 mb-6">
               ¿Estás seguro de que deseas eliminar el productPresentation{" "}
               <strong>{deleteTarget.name || `#${deleteTarget.id}`}</strong>?{" "}

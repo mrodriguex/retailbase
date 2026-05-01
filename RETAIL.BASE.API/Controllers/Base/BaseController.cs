@@ -1,4 +1,4 @@
-using Asp.Viewsioning;
+using Asp.Versioning;
 using RETAIL.BASE.API.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,8 +7,8 @@ namespace RETAIL.BASE.API.Controllers.Base
 {
     [Authorize]
     [ApiController]
-    [ApiViewsion("1.0")]
-    [Route("api/v{version:apiViewsion}/[controller]")] // Viewsion in the URL path
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")] // Version in the URL path
 
     public abstract class BaseController : ControllerBase
     {

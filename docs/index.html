@@ -7,7 +7,7 @@
     <title>RETAIL.BASE – Base Solution</title>
     <link rel="icon" type="image/png" href="assets/images/favicon.png" />
     <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/menuitem.css" />
+    <link rel="stylesheet" href="assets/css/menu.css" />
 </head>
 
 <body>
@@ -23,7 +23,9 @@
                 <a href="#features" class="nav-link">Features</a>
                 <a href="#tech" class="nav-link">Tech Stack</a>
                 <a href="#usage" class="nav-link">Usage</a>
+                <a href="#getting-started" class="nav-link">Getting Started</a>
                 <a href="#api" class="nav-link">API</a>
+                <a href="#screenshots" class="nav-link">Screenshots</a>
                 <a href="#contact" class="nav-link">Contact</a>
             </div>
         </div>
@@ -49,8 +51,15 @@
             <div class="live-demo-banner"
                 style="background:linear-gradient(90deg,#1e3c72 0%,#2a5298 100%);color:#fff;padding:1.1rem 1.5rem 1.1rem 1.5rem;border-radius:12px;margin-bottom:2.2rem;box-shadow:0 2px 12px rgba(30,60,114,0.10);font-size:1.13rem;">
                 <strong>Live Demo:</strong>
-                 A probe version is published at
-                 <a href="https://retail_baseapi.hookhub.app/swagger/index.html" target="_blank" style="color:#fff;text-decoration:underline;font-weight:600;">https://retail_baseapi.hookhub.app/</a>
+                 A probe version of <strong>frontend</strong> is published at
+                 <a href="https://mrodriguex.github.io/retailbase/" target="_blank" style="color:#fff;text-decoration:underline;font-weight:600;">https://mrodriguex.github.io/retailbase/</a>
+            </div>
+
+            <div class="live-demo-banner"
+                style="background:linear-gradient(90deg,#2957ad 0%,#2a5298 100%);color:#fff;padding:1.1rem 1.5rem 1.1rem 1.5rem;border-radius:12px;margin-bottom:2.2rem;box-shadow:0 2px 12px rgba(30,60,114,0.10);font-size:1.13rem;">
+                <strong>Live Demo:</strong>
+                 A probe version of <strong>backend API</strong> is published at
+                 <a href="https://retailbase-api.hookhub.app/swagger/index.html" target="_blank" style="color:#fff;text-decoration:underline;font-weight:600;">https://retailbase-api.hookhub.app/</a>
             </div>
             <h2>About</h2>
             <p>
@@ -109,32 +118,196 @@
             <div class="usage-gallery">
                 <figure class="gallery-figure card">
                     <div class="img-wrapper">
-                        <img src="assets/images/ui_1.png" alt="API Swagger UI" class="gallery-img-responsive" />
+                        <img src="assets/images/img_api_swagger.png" alt="API Swagger UI" class="gallery-img-responsive" />
                     </div>
                     <figcaption><strong>API:</strong> Modern RESTful API with versioning, JWT auth, and Swagger UI for easy testing and integration.</figcaption>
                 </figure>
                 <figure class="gallery-figure card">
                     <div class="img-wrapper">
-                        <img src="assets/images/ui_2.png" alt="Unit Tests" class="gallery-img-responsive" />
+                        <img src="assets/images/img_ui_login.png" alt="Login Screen" class="gallery-img-responsive" />
                     </div>
-                    <figcaption><strong>Testing:</strong> Comprehensive xUnit/Moq test suite for business logic and services.</figcaption>
+                    <figcaption><strong>Login:</strong> Secure authentication interface with JWT tokens.</figcaption>
                 </figure>
             </div>
+        </section>
+
+        <section class="section" id="getting-started">
+            <h2>Getting Started</h2>
+            <h3>Clone the Repository</h3>
+            <p>Clone the project from GitHub:</p>
+            <pre><code>git clone https://github.com/mrodriguex/RETAIL.BASE.git
+cd RETAIL.BASE</code></pre>
+
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>.NET SDK 8.0 (for building and running the solution)</li>
+                <li>.NET SDK 10.0 (for running tests)</li>
+                <li>SQL Server instance (for database)</li>
+                <li>Node.js and npm (for the web frontend)</li>
+            </ul>
+
+            <h3>Compile and Build</h3>
+            <p>Build the entire solution:</p>
+            <pre><code>dotnet build RETAIL.BASE.sln</code></pre>
+            <p>Or build the API only:</p>
+            <pre><code>dotnet build RETAIL.BASE.API/RETAIL.BASE.API.csproj</code></pre>
+
+            <h3>Debug Locally</h3>
+            <p>Run the API locally:</p>
+            <pre><code>dotnet run --project RETAIL.BASE.API/RETAIL.BASE.API.csproj</code></pre>
+            <p>Access Swagger UI at <code>http://localhost:5000/swagger</code> (or configured port).</p>
+            <p>For the web frontend:</p>
+            <pre><code>cd RETAIL.BASE.WEB
+npm install
+npm run dev</code></pre>
+            <p>Access the web app at <code>http://localhost:5173</code> (Vite default).</p>
+
+            <h3>Deploy</h3>
+            <p>The project includes a Jenkins CI/CD pipeline for automated deployment:</p>
+            <ul>
+                <li>Builds and publishes the API for Linux</li>
+                <li>Deploys via SSH and rsync</li>
+                <li>Restarts the systemd service</li>
+            </ul>
+            <p>See <code>Jenkinsfile</code> for details. For manual deployment, publish and deploy to your server.</p>
+
+            <h3>Contribute</h3>
+            <p>We welcome contributions! Please:</p>
+            <ul>
+                <li>Fork the repository</li>
+                <li>Create a feature branch</li>
+                <li>Write tests for new features</li>
+                <li>Submit a pull request</li>
+                <li>Report issues on GitHub</li>
+            </ul>
+            <p>Follow the existing code style and ensure all tests pass.</p>
         </section>
 
         <section class="section" id="api">
             <h2>API Overview</h2>
             <p>Key endpoints (v1, v2):</p>
             <ul>
-                <li><strong>Auth:</strong> <code>POST /api/v1/auth/login</code></li>
-                <li><strong>User:</strong> <code>GET /api/v1/user</code>, <code>POST /api/v1/user</code></li>
-                <li><strong>Customer:</strong> <code>GET /api/v1/customer</code>, <code>POST /api/v1/customer</code></li>
-                <li><strong>Company:</strong> <code>GET /api/v1/company</code>, <code>POST /api/v1/company</code></li>
-                <li><strong>MenuItem:</strong> <code>GET /api/v1/menuitem</code></li>
-                <li><strong>Role:</strong> <code>GET /api/v1/role</code></li>
-                <li><strong>Reports:</strong> <code>GET /api/v1/rpt/...</code></li>
+                <li><strong>Auth (v1/v2):</strong> <code>POST /api/v1/auth/login</code>, <code>POST /api/v2/auth/login</code></li>
+                <li><strong>User (v1/v2):</strong> <code>GET /api/v1/user</code>, <code>POST /api/v1/user</code>, <code>PUT /api/v1/user/{id}</code>, <code>DELETE /api/v1/user/{id}</code></li>
+                <li><strong>Customer (v1):</strong> <code>GET /api/v1/customer</code>, <code>POST /api/v1/customer</code>, <code>PUT /api/v1/customer/{id}</code>, <code>DELETE /api/v1/customer/{id}</code></li>
+                <li><strong>Company (v1):</strong> <code>GET /api/v1/company</code>, <code>POST /api/v1/company</code>, <code>PUT /api/v1/company/{id}</code>, <code>DELETE /api/v1/company/{id}</code></li>
+                <li><strong>Role (v1):</strong> <code>GET /api/v1/role</code>, <code>POST /api/v1/role</code>, <code>PUT /api/v1/role/{id}</code>, <code>DELETE /api/v1/role/{id}</code></li>
+                <li><strong>MenuItem (v1):</strong> <code>GET /api/v1/menuitem</code></li>
+                <li><strong>Config (v1):</strong> <code>GET /api/v1/config</code></li>
+                <li><strong>Cryptographer (v1):</strong> <code>POST /api/v1/cryptographer/encrypt</code>, <code>POST /api/v1/cryptographer/decrypt</code></li>
+                <li><strong>Reports (v1):</strong> <code>GET /api/v1/rpt/...</code> (various report endpoints)</li>
             </ul>
             <p>See <a href="../README.md" target="_blank">README</a> for request/response examples and full API documentation.</p>
+        </section>
+
+        <section class="section" id="screenshots">
+            <h2>UI Screenshots</h2>
+            <div class="usage-gallery">
+                 <figure class="gallery-figure card">
+                        <img src="assets/images/img_ui_login.png" alt="Login Screen" class="gallery-img-responsive" />
+                    <figcaption>Login Screen</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_users.png" alt="Users Management" class="gallery-img-responsive" />
+                    <figcaption>Users Management</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_users_view.png" alt="User Details" class="gallery-img-responsive" />
+                    <figcaption>User Details View</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_users_edit.png" alt="Edit User" class="gallery-img-responsive" />
+                    <figcaption>Edit User</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_users_change_pass.png" alt="Change Password" class="gallery-img-responsive" />
+                    <figcaption>Change Password</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_users_roles.png" alt="User Roles" class="gallery-img-responsive" />
+                    <figcaption>User Roles</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_users_companies.png" alt="User Companies" class="gallery-img-responsive" />
+                    <figcaption>User Companies</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_roles.png" alt="Roles Management" class="gallery-img-responsive" />
+                    <figcaption>Roles Management</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_roles_view.png" alt="Role Details" class="gallery-img-responsive" />
+                    <figcaption>Role Details</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_roles_edit.png" alt="Edit Role" class="gallery-img-responsive" />
+                    <figcaption>Edit Role</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_companies.png" alt="Companies Management" class="gallery-img-responsive" />
+                    <figcaption>Companies Management</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_companies_edit.png" alt="Edit Company" class="gallery-img-responsive" />
+                    <figcaption>Edit Company</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_customers.png" alt="Customers Management" class="gallery-img-responsive" />
+                    <figcaption>Customers Management</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_customers_edit.png" alt="Edit Customer" class="gallery-img-responsive" />
+                    <figcaption>Edit Customer</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_brands.png" alt="Brands Management" class="gallery-img-responsive" />
+                    <figcaption>Brands Management</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_brands_edit.png" alt="Edit Brand" class="gallery-img-responsive" />
+                    <figcaption>Edit Brand</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_categories.png" alt="Categories Management" class="gallery-img-responsive" />
+                    <figcaption>Categories Management</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_categories_edit.png" alt="Edit Category" class="gallery-img-responsive" />
+                    <figcaption>Edit Category</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_products.png" alt="Products Management" class="gallery-img-responsive" />
+                    <figcaption>Products Management</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_products_edit.png" alt="Edit Product" class="gallery-img-responsive" />
+                    <figcaption>Edit Product</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_product_presentations.png" alt="Product Presentations" class="gallery-img-responsive" />
+                    <figcaption>Product Presentations</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_product_presentations_edit.png" alt="Edit Product Presentation" class="gallery-img-responsive" />
+                    <figcaption>Edit Product Presentation</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_menus.png" alt="Menus Management" class="gallery-img-responsive" />
+                    <figcaption>Menus Management</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_manus_edit.png" alt="Edit Menu" class="gallery-img-responsive" />
+                    <figcaption>Edit Menu</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_messages_broadcast.png" alt="Broadcast Messages" class="gallery-img-responsive" />
+                    <figcaption>Broadcast Messages</figcaption>
+                </figure>
+                <figure class="gallery-figure card">
+                    <img src="assets/images/img_ui_messages_unicast.png" alt="Unicast Messages" class="gallery-img-responsive" />
+                    <figcaption>Unicast Messages</figcaption>
+                </figure>
+            </div>
         </section>
 
         <section class="section" id="contact">

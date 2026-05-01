@@ -5,9 +5,9 @@ const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 
 const emptyForm = {
   id: 0,
-  description: "",
   name: "",
   abbreviation: "",
+  description: "",
   order: 0,
   enabled: true,
 };
@@ -76,7 +76,7 @@ export default function Brands() {
     setModal({
       open: true,
       mode: "edit",
-      data: { ...brand, idBrandPadre: brand.idBrandPadre ?? "" },
+      data: { ...emptyForm, ...brand },
     });
     setModalError("");
   }
@@ -107,8 +107,12 @@ export default function Brands() {
     setSaving(true);
     try {
       const payload = {
-        ...modal.data,
-        idBrandPadre: modal.data.idBrandPadre === "" ? null : Number(modal.data.idBrandPadre),
+        id: modal.data.id,
+        name: modal.data.name,
+        abbreviation: modal.data.abbreviation,
+        description: modal.data.description,
+        order: modal.data.order,
+        enabled: modal.data.enabled,
       };
       if (modal.mode === "add") {
         await brandService.add(payload);
@@ -150,7 +154,7 @@ export default function Brands() {
       <div className="flex flex-wrap gap-2 sm:gap-3 items-center mb-5">
         <button
           onClick={openAdd}
-          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition-colors text-sm"
+          className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold transition-colors text-sm"
         >
           + New Brand
         </button>
@@ -237,7 +241,7 @@ export default function Brands() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => openEdit(c)}
-                        className="text-blue-600 hover:text-blue-800 text-xs border border-blue-300 px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+                        className="text-green-600 hover:text-green-800 text-xs border border-green-300 px-2 py-1 rounded hover:bg-green-50 transition-colors"
                       >
                         Edit
                       </button>
@@ -310,17 +314,17 @@ export default function Brands() {
                     required
                     value={modal.data.name}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Abreviation</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Abbreviation</label>
                   <input
-                    name="abreviation"
-                    value={modal.data.abreviation ?? ""}
+                    name="abbreviation"
+                    value={modal.data.abbreviation ?? ""}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
@@ -332,7 +336,7 @@ export default function Brands() {
                     min={0}
                     value={modal.data.order ?? 0}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
@@ -343,7 +347,7 @@ export default function Brands() {
                     type="checkbox"
                     checked={modal.data.enabled ?? true}
                     onChange={handleFormChange}
-                    className="w-4 h-4 accent-blue-600"
+                    className="w-4 h-4 accent-green-600"
                   />
                   <label htmlFor="brand-enabled-check" className="text-sm font-medium text-gray-700">
                     Enabled
@@ -352,13 +356,13 @@ export default function Brands() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                 <textarea
-                  name="descripcion"
-                  value={modal.data.descripcion ?? ""}
+                  name="description"
+                  value={modal.data.description ?? ""}
                   onChange={handleFormChange}
                   rows={2}
-                  className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
                 />
               </div>
 
@@ -373,7 +377,7 @@ export default function Brands() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white rounded text-sm font-semibold transition-colors"
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white rounded text-sm font-semibold transition-colors"
                 >
                   {saving ? "Guardando..." : "Guardar"}
                 </button>
@@ -387,7 +391,7 @@ export default function Brands() {
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
-            <h2 className="text-lg font-bold mb-2">Confirmar eliminación</h2>
+            <h2 className="text-lg font-bold mb-2">Confirm eliminación</h2>
             <p className="text-sm text-gray-600 mb-6">
               ¿Estás seguro de que deseas eliminar el brand{" "}
               <strong>{deleteTarget.name || `#${deleteTarget.id}`}</strong>?{" "}

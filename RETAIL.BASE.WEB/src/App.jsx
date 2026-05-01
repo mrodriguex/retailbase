@@ -5,7 +5,7 @@ import Brands from "./pages/Brands";
 import Categories from "./pages/Categories";
 import Products from "./pages/Products";
 import ProductPresentations from "./pages/ProductPresentations";
-import Menus from "./pages/Menus";
+import Menus from "./pages/MenuItems";
 import Customers from "./pages/Customers";
 import Roles from "./pages/Roles";
 import Users from "./pages/Users";
@@ -82,18 +82,20 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100">
       <Navbar page={page} onNavigate={setPage} onLogout={handleLogout} />
-      {page === "companies" && <Companies />}
-      {page === "brands" && <Brands />}
-      {page === "categories" && <Categories />}
-      {page === "products" && <Products />}
-      {page === "product-presentations" && <ProductPresentations />}
-      {page === "menus" && <Menus />}
-      {page === "customers" && <Customers />}
-      {page === "roles" && <Roles />}
-      {page === "users" && <Users />}
-      {page === "messages" && <Messages />}
+      <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+        {page === "companies" && <Companies />}
+        {page === "brands" && <Brands />}
+        {page === "categories" && <Categories />}
+        {page === "products" && <Products />}
+        {page === "product-presentations" && <ProductPresentations />}
+        {page === "menus" && <Menus />}
+        {page === "customers" && <Customers />}
+        {page === "roles" && <Roles />}
+        {page === "users" && <Users />}
+        {page === "messages" && <Messages />}
+      </main>
       {hubMessage && <div className="fixed bottom-0 left-0 right-0 bg-green-500 text-white p-2 text-center">
         {hubMessage}
       </div>}

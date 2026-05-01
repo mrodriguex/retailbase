@@ -1,22 +1,23 @@
 import { useState, useEffect, useCallback } from "react";
-import * as menuService from "../services/menuService";
+import * as menuService from "../services/menuItemService";
 
 const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 
 const emptyForm = {
   id: 0,
   name: "",
-  abreviation: "",
-  descripcion: "",
-  imagen: "",
-  ruta: "",
-  claveMenuPadre: "",
+  abbreviation: "",
+  description: "",
+  image: "",
+  path: "",
+  menuItemIdFather: "",
   order: 0,
   enabled: true,
 };
 
 export default function Menus() {
   const [menus, setMenus] = useState([]);
+  const [allMenus, setAllMenus] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -69,6 +70,10 @@ export default function Menus() {
     loadMenus();
   }, [loadMenus]);
 
+  useEffect(() => {
+    menuService.getAll({ enabled: true, pageSize: 9999 }).then(r => setAllMenus(r?.items ?? r ?? [])).catch(() => {});
+  }, []);
+
   // ── Modal helpers ─────────────────────────────────────────────────────────
   function openAdd() {
     setModal({ open: true, mode: "add", data: { ...emptyForm } });
@@ -76,7 +81,7 @@ export default function Menus() {
   }
 
   function openEdit(menu) {
-    setModal({ open: true, mode: "edit", data: { ...menu, claveMenuPadre: menu.claveMenuPadre ?? "" } });
+    setModal({ open: true, mode: "edit", data: { ...emptyForm, ...menu, menuItemIdFather: menu.menuItemIdFather ?? "" } });
     setModalError("");
   }
 
@@ -101,8 +106,15 @@ export default function Menus() {
     setSaving(true);
     try {
       const payload = {
-        ...modal.data,
-        claveMenuPadre: modal.data.claveMenuPadre === "" ? null : Number(modal.data.claveMenuPadre),
+        id: modal.data.id,
+        name: modal.data.name,
+        abbreviation: modal.data.abbreviation,
+        description: modal.data.description,
+        image: modal.data.image,
+        path: modal.data.path,
+        menuItemIdFather: modal.data.menuItemIdFather === "" ? null : Number(modal.data.menuItemIdFather),
+        order: modal.data.order,
+        enabled: modal.data.enabled,
       };
       if (modal.mode === "add") {
         await menuService.add(payload);
@@ -144,7 +156,7 @@ export default function Menus() {
       <div className="flex flex-wrap gap-2 sm:gap-3 items-center mb-5">
         <button
           onClick={openAdd}
-          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition-colors text-sm"
+          className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold transition-colors text-sm"
         >
           + New Menú
         </button>
@@ -194,7 +206,7 @@ export default function Menus() {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>
-              {["ID", "Name", "Abreviation", "Ruta", "Imagen", "Menú Padre", "Order", "Estatus", "Actions"].map((h) => (
+              {["ID", "Name", "Abbreviation", "Path", "Image", "Parent Menu", "Order", "Status", "Actions"].map((h) => (
                 <th key={h} className="px-4 py-3 text-left font-semibold text-gray-600 whitespace-nowrap">
                   {h}
                 </th>
@@ -219,13 +231,13 @@ export default function Menus() {
                 <tr key={m.id} className="border-b last:border-0 hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-3 text-gray-500">{m.id}</td>
                   <td className="px-4 py-3 font-medium text-gray-900">{m.name}</td>
-                  <td className="px-4 py-3 text-gray-600">{m.abreviation}</td>
-                  <td className="px-4 py-3 text-gray-600 font-mono text-xs">{m.ruta}</td>
-                  <td className="px-4 py-3 text-gray-600 max-w-[120px] truncate" title={m.imagen}>
-                    {m.imagen || <span className="text-gray-300">—</span>}
+                  <td className="px-4 py-3 text-gray-600">{m.abbreviation}</td>
+                  <td className="px-4 py-3 text-gray-600 font-mono text-xs">{m.path}</td>
+                  <td className="px-4 py-3 text-gray-600 max-w-[120px] truncate" title={m.image}>
+                    {m.image || <span className="text-gray-300">—</span>}
                   </td>
                   <td className="px-4 py-3 text-gray-600">
-                    {m.claveMenuPadre ?? <span className="text-gray-300">—</span>}
+                    {m.menuItemIdFather != null ? (allMenus.find(p => p.id === m.menuItemIdFather)?.name ?? m.menuItemIdFather) : <span className="text-gray-300">—</span>}
                   </td>
                   <td className="px-4 py-3 text-gray-600">{m.order}</td>
                   <td className="px-4 py-3">
@@ -239,7 +251,7 @@ export default function Menus() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => openEdit(m)}
-                        className="text-blue-600 hover:text-blue-800 text-xs border border-blue-300 px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+                        className="text-green-600 hover:text-green-800 text-xs border border-green-300 px-2 py-1 rounded hover:bg-green-50 transition-colors"
                       >
                         Edit
                       </button>
@@ -308,53 +320,55 @@ export default function Menus() {
                     required
                     value={modal.data.name}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Abreviation</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Abbreviation</label>
                   <input
-                    name="abreviation"
-                    value={modal.data.abreviation ?? ""}
+                    name="abbreviation"
+                    value={modal.data.abbreviation ?? ""}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Ruta</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Path</label>
                   <input
-                    name="ruta"
-                    value={modal.data.ruta ?? ""}
+                    name="path"
+                    value={modal.data.path ?? ""}
                     onChange={handleFormChange}
-                    placeholder="/ruta/del/menu"
-                    className="w-full border border-gray-300 rounded p-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="/route/path"
+                    className="w-full border border-gray-300 rounded p-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Imagen</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
                   <input
-                    name="imagen"
-                    value={modal.data.imagen ?? ""}
+                    name="image"
+                    value={modal.data.image ?? ""}
                     onChange={handleFormChange}
-                    placeholder="ícono o URL"
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="icon or URL"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Menú Padre (ID)</label>
-                  <input
-                    name="claveMenuPadre"
-                    type="number"
-                    min={0}
-                    value={modal.data.claveMenuPadre ?? ""}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Parent Menu</label>
+                  <select
+                    name="menuItemIdFather"
+                    value={modal.data.menuItemIdFather ?? ""}
                     onChange={handleFormChange}
-                    placeholder="Vacío = raíz"
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
+                  >
+                    <option value="">— None (root) —</option>
+                    {allMenus.filter(p => p.id !== modal.data.id).map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
@@ -365,7 +379,7 @@ export default function Menus() {
                     min={0}
                     value={modal.data.order ?? 0}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
@@ -376,20 +390,20 @@ export default function Menus() {
                     type="checkbox"
                     checked={modal.data.enabled ?? true}
                     onChange={handleFormChange}
-                    className="w-4 h-4 accent-blue-600"
+                    className="w-4 h-4 accent-green-600"
                   />
                   <label htmlFor="menu-enabled-check" className="text-sm font-medium text-gray-700">Enabled</label>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                 <textarea
-                  name="descripcion"
-                  value={modal.data.descripcion ?? ""}
+                  name="description"
+                  value={modal.data.description ?? ""}
                   onChange={handleFormChange}
                   rows={2}
-                  className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
                 />
               </div>
 
@@ -404,7 +418,7 @@ export default function Menus() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white rounded text-sm font-semibold transition-colors"
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white rounded text-sm font-semibold transition-colors"
                 >
                   {saving ? "Guardando..." : "Guardar"}
                 </button>
@@ -418,7 +432,7 @@ export default function Menus() {
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
-            <h2 className="text-lg font-bold mb-2">Confirmar eliminación</h2>
+            <h2 className="text-lg font-bold mb-2">Confirm eliminación</h2>
             <p className="text-sm text-gray-600 mb-6">
               ¿Estás seguro de que deseas eliminar el menú{" "}
               <strong>{deleteTarget.name || `#${deleteTarget.id}`}</strong>?{" "}

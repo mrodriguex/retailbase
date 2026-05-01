@@ -34,7 +34,21 @@ export async function remove(idRole) {
 
 export async function getUserProfiles(idUsuario) {
   const response = await apiClient.get('/api/v1/Role/GetUserProfiles', {
-    params: { idUsuario },
+    params: { idUser: idUsuario },
+  });
+  return unwrap(response);
+}
+
+export async function assignProfileToUser(idUser, idRole) {
+  const response = await apiClient.post('/api/v1/Role/AssignProfileToUser', null, {
+    params: { idUser, idRole },
+  });
+  return unwrap(response);
+}
+
+export async function removeProfileFromUser(idUser, idRole) {
+  const response = await apiClient.post('/api/v1/Role/RemoveProfileFromUser', null, {
+    params: { idUser, idRole },
   });
   return unwrap(response);
 }

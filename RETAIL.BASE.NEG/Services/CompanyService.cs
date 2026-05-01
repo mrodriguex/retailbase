@@ -136,6 +136,7 @@ namespace RETAIL.BASE.NEG.Services
                     user.Companys ??= new List<Company>();
                     companys = user.Companys;
                 }
+
                 webResult.Data = companys;
                 webResult.Message = "Información de los companys del user obtenida exitosamente.";
                 webResult.Success = true;
@@ -144,6 +145,78 @@ namespace RETAIL.BASE.NEG.Services
             {
                 _logger.LogError(ex, "Error al obtener la información de los companys del user con ID: {IdUser}", idUser);
                 webResult.Message = "Error al obtener la información de los companys del user.";
+                webResult.Errors.Add(ex.Message);
+            }
+            return webResult;
+        }
+
+        public async Task<ResultModel<bool>> AssignCompanyToUserAsync(int idUser, int idCompany)
+        {
+            var webResult = new ResultModel<bool>();
+            try
+            {
+                User user = await _userDA.GetByIdAsync(idUser);
+                Company company = await _companyRepository.GetByIdAsync(idCompany);
+
+                if (user == null || company == null)
+                {
+                    webResult.Data = false;
+                    webResult.Message = "Usuario or Company no encontrado.";
+                    webResult.Success = false;
+                    return webResult;
+                }
+
+                user.Companys ??= new List<Company>();
+                if (!user.Companys.Exists(c => c.Id == idCompany))
+                {
+                    user.Companys.Add(company);
+                    await _userDA.UpdateAsync(user);
+                }
+
+                webResult.Data = true;
+                webResult.Message = "Company asignado al usuario exitosamente.";
+                webResult.Success = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al asignar el company con ID: {IdCompany} al usuario con ID: {IdUser}", idCompany, idUser);
+                webResult.Message = "Error al asignar el company al usuario.";
+                webResult.Errors.Add(ex.Message);
+            }
+            return webResult;
+        }
+
+        public async Task<ResultModel<bool>> RemoveCompanyFromUserAsync(int idUser, int idCompany)
+        {
+            var webResult = new ResultModel<bool>();
+            try
+            {
+                User user = await _userDA.GetByIdAsync(idUser);
+                Company company = await _companyRepository.GetByIdAsync(idCompany);
+
+                if (user == null || company == null)
+                {
+                    webResult.Data = false;
+                    webResult.Message = "Usuario or Company no encontrado.";
+                    webResult.Success = false;
+                    return webResult;
+                }
+
+                user.Companys ??= new List<Company>();
+                if (user.Companys.Exists(c => c.Id == idCompany))
+                {
+                    user.Companys.RemoveAll(c => c.Id == idCompany);
+                    await _userDA.UpdateAsync(user);
+                }
+
+                webResult.Data = true;
+                webResult.Message = "Company removido del usuario exitosamente.";
+                webResult.Success = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al remover el company con ID: {IdCompany} del usuario con ID: {IdUser}", idCompany, idUser);
+                webResult.Message = "Error al remover el company del usuario.";
                 webResult.Errors.Add(ex.Message);
             }
             return webResult;

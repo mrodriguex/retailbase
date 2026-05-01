@@ -10,7 +10,7 @@ export async function getAll({ enabled, pageIndex = 1, pageSize = 20 } = {}) {
 
 export async function getById(idProductPresentation) {
   const response = await apiClient.get('/api/v1/ProductPresentation/GetById', {
-    params: { idProductPresentation },
+    params: { id: idProductPresentation },
   });
   return unwrap(response);
 }
@@ -27,7 +27,7 @@ export async function update(productPresentation) {
 
 export async function remove(idProductPresentation) {
   const response = await apiClient.delete('/api/v1/ProductPresentation/Delete', {
-    params: { idProductPresentation },
+    params: { id: idProductPresentation },
   });
   return unwrap(response);
 }

@@ -1,13 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
 import * as userService from "../services/userService";
+import * as roleService from "../services/roleService";
+import * as companyService from "../services/companyService";
+import avatar from "../assets/avatar.png";
 
 const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 
 const emptyForm = {
   id: 0,
   name: "",
-  abreviation: "",
-  descripcion: "",
+  abbreviation: "",
+  description: "",
   userName: "",
   firstName: "",
   lastNameFather: "",
@@ -17,7 +20,6 @@ const emptyForm = {
   employeeId: 0,
   order: 0,
   enabled: true,
-  estatus: true
 };
 
 function normalizeUser(raw = {}) {
@@ -25,8 +27,8 @@ function normalizeUser(raw = {}) {
     ...raw,
     id: raw.id ?? raw.idUser ?? raw.Id ?? raw.IdUser ?? 0,
     name: raw.name ?? raw.Name ?? "",
-    abreviation: raw.abreviation ?? raw.Abreviation ?? "",
-    descripcion: raw.descripcion ?? raw.Descripcion ?? "",
+    abbreviation: raw.abbreviation ?? raw.abreviation ?? raw.Abbreviation ?? raw.Abreviation ?? "",
+    description: raw.description ?? raw.descripcion ?? raw.Description ?? raw.Descripcion ?? "",
     userName: raw.userName ?? raw.UserName ?? "",
     firstName: raw.firstName ?? raw.FirstName ?? "",
     lastNameFather: raw.lastNameFather ?? raw.LastNameFather ?? "",
@@ -36,9 +38,9 @@ function normalizeUser(raw = {}) {
     order: raw.order ?? raw.Order ?? 0,
     enabled: raw.enabled ?? raw.Enabled ?? false,
     attempts: raw.attempts ?? raw.Attempts ?? 0,
-    avatar: raw.avatar ?? raw.Avatar ?? "",
+    avatar: avatar,
     roles: raw.roles ?? raw.Roles ?? [],
-    companies: raw.companies ?? raw.Companies ?? [],
+    companys: raw.companys ?? raw.companies ?? raw.Companys ?? raw.Companies ?? [],
   };
 }
 
@@ -70,6 +72,22 @@ export default function Users() {
   // Delete confirmation
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
+
+  // Roles modal
+  const [rolesModal, setRolesModal] = useState({
+    open: false, userId: null, userName: "",
+    userRoles: [], allRoles: [],
+    loading: false, actionLoading: false,
+    selectedRoleId: "", error: "",
+  });
+
+  // Companies modal
+  const [companiesModal, setCompaniesModal] = useState({
+    open: false, userId: null, userName: "",
+    userCompanies: [], allCompanies: [],
+    loading: false, actionLoading: false,
+    selectedCompanyId: "", error: "",
+  });
 
   // ── Data loading ──────────────────────────────────────────────────────────
   const loadUsers = useCallback(async () => {
@@ -112,7 +130,7 @@ export default function Users() {
     try {
       await userService.unlockUser(u.id);
       loadUsers();
-      if (detail?.id === u.id) setDetail((d) => ({ ...d, bloqueado: false, attempts: 0 }));
+      if (detail?.id === u.id) setDetail((d) => ({ ...d, attempts: 0 }));
     } catch (e) {
       setError(e.message || "Error al desbloquear user.");
     }
@@ -142,7 +160,6 @@ export default function Users() {
         ...source,
         userName: source.userName ?? "",
         password: "",
-        idUserPorAusencia: source.idUserPorAusencia ?? "",
       },
     });
     setModalError("");
@@ -169,10 +186,20 @@ export default function Users() {
     setSaving(true);
     try {
       const payload = {
-        ...modal.data,
-        idUserPorAusencia: modal.data.idUserPorAusencia === "" ? null : Number(modal.data.idUserPorAusencia),
+        id: modal.data.id,
+        name: modal.data.name,
+        abbreviation: modal.data.abbreviation,
+        description: modal.data.description,
+        userName: modal.data.userName,
+        firstName: modal.data.firstName,
+        lastNameFather: modal.data.lastNameFather,
+        lastNameMother: modal.data.lastNameMother,
+        email: modal.data.email,
+        employeeId: modal.data.employeeId,
+        order: modal.data.order,
+        enabled: modal.data.enabled,
+        ...(modal.data.password ? { password: modal.data.password } : {}),
       };
-      if (!payload.password) delete payload.password; // skip empty password on edit
       if (modal.mode === "add") {
         await userService.add(payload);
       } else {
@@ -224,7 +251,105 @@ export default function Users() {
     }
   }
 
+  // ── Role management ───────────────────────────────────────────────────────
+  async function openRolesModal(u) {
+    setRolesModal({ open: true, userId: u.id, userName: u.name, userRoles: [], allRoles: [], loading: true, actionLoading: false, selectedRoleId: "", error: "" });
+    try {
+      const [userRoles, allResult] = await Promise.all([
+        roleService.getUserProfiles(u.id),
+        roleService.getAll({ pageSize: 9999 }),
+      ]);
+      const normalizedRoles = Array.isArray(userRoles) ? userRoles : [];
+      setRolesModal(m => ({
+        ...m,
+        loading: false,
+        userRoles: normalizedRoles,
+        allRoles: allResult?.items ?? (Array.isArray(allResult) ? allResult : []),
+      }));
+      setUsers(prev => prev.map(usr => usr.id === u.id ? { ...usr, roles: normalizedRoles } : usr));
+    } catch (e) {
+      setRolesModal(m => ({ ...m, loading: false, error: e.message || "Error loading roles." }));
+    }
+  }
+
+  async function handleAssignRole(idRole) {
+    setRolesModal(m => ({ ...m, actionLoading: true, error: "" }));
+    try {
+      await roleService.assignProfileToUser(rolesModal.userId, idRole);
+      const userRoles = await roleService.getUserProfiles(rolesModal.userId);
+      const normalizedRoles = Array.isArray(userRoles) ? userRoles : [];
+      setRolesModal(m => ({ ...m, actionLoading: false, selectedRoleId: "", userRoles: normalizedRoles }));
+      setUsers(prev => prev.map(u => u.id === rolesModal.userId ? { ...u, roles: normalizedRoles } : u));
+    } catch (e) {
+      const message = e.response?.data?.error || e.message;
+      setRolesModal(m => ({ ...m, actionLoading: false, error: message }));
+    }
+  }
+
+  async function handleRemoveRole(idRole) {
+    setRolesModal(m => ({ ...m, actionLoading: true, error: "" }));
+    try {
+      await roleService.removeProfileFromUser(rolesModal.userId, idRole);
+      const userRoles = await roleService.getUserProfiles(rolesModal.userId);
+      const normalizedRoles = Array.isArray(userRoles) ? userRoles : [];
+      setRolesModal(m => ({ ...m, actionLoading: false, userRoles: normalizedRoles }));
+      setUsers(prev => prev.map(u => u.id === rolesModal.userId ? { ...u, roles: normalizedRoles } : u));
+    } catch (e) {
+      const message = e.response?.data?.error || e.message;
+      setRolesModal(m => ({ ...m, actionLoading: false, error: message }));
+    }
+  }
+
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  // ── Company management ───────────────────────────────────────────────
+  async function openCompaniesModal(u) {
+    setCompaniesModal({ open: true, userId: u.id, userName: u.name, userCompanies: [], allCompanies: [], loading: true, actionLoading: false, selectedCompanyId: "", error: "" });
+    try {
+      const [userCompanies, allResult] = await Promise.all([
+        companyService.getCompaniesByUser(u.id),
+        companyService.getAll({ pageSize: 9999 }),
+      ]);
+      const normalizedCompanies = Array.isArray(userCompanies) ? userCompanies : (userCompanies?.items ?? []);
+      setCompaniesModal(m => ({
+        ...m,
+        loading: false,
+        userCompanies: normalizedCompanies,
+        allCompanies: allResult?.items ?? (Array.isArray(allResult) ? allResult : []),
+      }));
+      setUsers(prev => prev.map(usr => usr.id === u.id ? { ...usr, companys: normalizedCompanies } : usr));
+    } catch (e) {
+      setCompaniesModal(m => ({ ...m, loading: false, error: e.message || "Error loading companies." }));
+    }
+  }
+
+  async function handleAssignCompany(idCompany) {
+    setCompaniesModal(m => ({ ...m, actionLoading: true, error: "" }));
+    try {
+      await companyService.assignCompanyToUser(companiesModal.userId, idCompany);
+      const userCompanies = await companyService.getCompaniesByUser(companiesModal.userId);
+      const normalizedCompanies = Array.isArray(userCompanies) ? userCompanies : (userCompanies?.items ?? []);
+      setCompaniesModal(m => ({ ...m, actionLoading: false, selectedCompanyId: "", userCompanies: normalizedCompanies }));
+      setUsers(prev => prev.map(u => u.id === companiesModal.userId ? { ...u, companys: normalizedCompanies } : u));
+    } catch (e) {
+      const message = e.response?.data?.error || e.message;
+      setCompaniesModal(m => ({ ...m, actionLoading: false, error: message }));
+    }
+  }
+
+  async function handleRemoveCompany(idCompany) {
+    setCompaniesModal(m => ({ ...m, actionLoading: true, error: "" }));
+    try {
+      await companyService.removeCompanyFromUser(companiesModal.userId, idCompany);
+      const userCompanies = await companyService.getCompaniesByUser(companiesModal.userId);
+      const normalizedCompanies = Array.isArray(userCompanies) ? userCompanies : (userCompanies?.items ?? []);
+      setCompaniesModal(m => ({ ...m, actionLoading: false, userCompanies: normalizedCompanies }));
+      setUsers(prev => prev.map(u => u.id === companiesModal.userId ? { ...u, companys: normalizedCompanies } : u));
+    } catch (e) {
+      const message = e.response?.data?.error || e.message;
+      setCompaniesModal(m => ({ ...m, actionLoading: false, error: message }));
+    }
+  }
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
@@ -232,7 +357,7 @@ export default function Users() {
 
       {/* ── Toolbar ── */}
       <div className="flex flex-wrap gap-2 sm:gap-3 items-center mb-5">
-        <button onClick={openAdd} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition-colors text-sm">
+        <button onClick={openAdd} className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold transition-colors text-sm">
           + New User
         </button>
 
@@ -272,7 +397,7 @@ export default function Users() {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>
-              {["ID", "Full Name", "User", "Email", "Nº Emp.", "Roles", "Estatus", "Actions"].map((h) => (
+              {["ID", "Full Name", "User", "Email", "Nº Emp.", "Roles", "Companies", "Estatus", "Actions"].map((h) => (
                 <th key={h} className="px-4 py-3 text-left font-semibold text-gray-600 whitespace-nowrap">{h}</th>
               ))}
             </tr>
@@ -287,16 +412,35 @@ export default function Users() {
                 <tr key={u.id} className="border-b last:border-0 hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-3 text-gray-500">{u.id}</td>
                   <td className="px-4 py-3">
-                    <div className="font-medium text-gray-900">{u.nameCompleto || `${u.name ?? ""}`}</div>
+                    <div className="font-medium text-gray-900">{u.name}</div>
                     <div className="text-xs text-gray-400">{u.lastNameFather} {u.lastNameMother}</div>
                   </td>
                   <td className="px-4 py-3 text-gray-600 font-mono text-xs">{u.userName ?? u.firstName}</td>
                   <td className="px-4 py-3 text-gray-600">{u.email}</td>
                   <td className="px-4 py-3 text-gray-600 text-center">{u.employeeId || <span className="text-gray-300">—</span>}</td>
                   <td className="px-4 py-3">
-                    {u.roles?.length > 0
-                      ? <span className="bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-1 rounded-full">{u.roles.length}</span>
-                      : <span className="text-gray-300">—</span>}
+                    <button
+                      onClick={() => openRolesModal(u)}
+                      className={`text-xs font-semibold px-2 py-1 rounded-full transition-colors ${
+                        u.roles?.length > 0
+                          ? "bg-purple-100 text-purple-700 hover:bg-purple-200"
+                          : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                      }`}
+                    >
+                      {u.roles?.length ?? 0}
+                    </button>
+                  </td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => openCompaniesModal(u)}
+                      className={`text-xs font-semibold px-2 py-1 rounded-full transition-colors ${
+                        u.companys?.length > 0
+                          ? "bg-green-100 text-green-700 hover:bg-green-200"
+                          : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                      }`}
+                    >
+                      {u.companys?.length ?? 0}
+                    </button>
                   </td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${u.enabled ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
@@ -306,12 +450,14 @@ export default function Users() {
                   <td className="px-4 py-3">
                     <div className="flex gap-1 flex-wrap">
                       <button onClick={() => openDetail(u)} className="text-gray-600 hover:text-gray-800 text-xs border border-gray-300 px-2 py-1 rounded hover:bg-gray-50 transition-colors">View</button>
-                      <button onClick={() => openEdit(u)} className="text-blue-600 hover:text-blue-800 text-xs border border-blue-300 px-2 py-1 rounded hover:bg-blue-50 transition-colors">Edit</button>
-                      <button onClick={() => openPwdModal(u)} className="text-amber-600 hover:text-amber-800 text-xs border border-amber-300 px-2 py-1 rounded hover:bg-amber-50 transition-colors">Clave</button>
-                      {u.bloqueado && (
+                      <button onClick={() => openEdit(u)} className="text-green-600 hover:text-green-800 text-xs border border-green-300 px-2 py-1 rounded hover:bg-green-50 transition-colors">Edit</button>
+                      <button onClick={() => openPwdModal(u)} className="text-amber-600 hover:text-amber-800 text-xs border border-amber-300 px-2 py-1 rounded hover:bg-amber-50 transition-colors">Pass</button>
+                      <button onClick={() => openRolesModal(u)} className="text-purple-600 hover:text-purple-800 text-xs border border-purple-300 px-2 py-1 rounded hover:bg-purple-50 transition-colors">Roles</button>
+                      <button onClick={() => openCompaniesModal(u)} className="text-green-600 hover:text-green-800 text-xs border border-green-300 px-2 py-1 rounded hover:bg-green-50 transition-colors">Companies</button>
+                      {u.attempts > 0 && (
                         <button onClick={() => handleUnlock(u)} className="text-green-600 hover:text-green-800 text-xs border border-green-300 px-2 py-1 rounded hover:bg-green-50 transition-colors">Desbloquear</button>
                       )}
-                      <button onClick={() => setDeleteTarget({ id: u.id, name: u.nameCompleto || u.name })} className="text-red-600 hover:text-red-800 text-xs border border-red-300 px-2 py-1 rounded hover:bg-red-50 transition-colors">Delete</button>
+                      <button onClick={() => setDeleteTarget({ id: u.id, name: u.name })} className="text-red-600 hover:text-red-800 text-xs border border-red-300 px-2 py-1 rounded hover:bg-red-50 transition-colors">Delete</button>
                     </div>
                   </td>
                 </tr>
@@ -338,7 +484,7 @@ export default function Users() {
         <div className="fixed inset-0 bg-black/50 flex justify-end z-50">
           <div className="bg-white w-full max-w-md h-full overflow-y-auto shadow-xl flex flex-col">
             <div className="flex items-center justify-between px-6 py-4 border-b bg-gray-50">
-              <h2 className="text-lg font-bold">Detalle de User</h2>
+              <h2 className="text-lg font-bold">User Details</h2>
               <button onClick={() => setDetail(null)} className="text-gray-400 hover:text-gray-600 text-2xl font-bold leading-none">×</button>
             </div>
 
@@ -351,12 +497,10 @@ export default function Users() {
                   {detail.avatar ? (
                     <img src={detail.avatar} alt="foto" className="w-16 h-16 rounded-full object-cover border" />
                   ) : (
-                    <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-2xl font-bold select-none">
-                      {(detail.name ?? "?")[0]?.toUpperCase()}
-                    </div>
+                    <img src={avatar} alt="default avatar" className="w-16 h-16 rounded-full object-cover border" />
                   )}
                   <div>
-                    <p className="font-bold text-lg">{detail.nameCompleto || detail.name}</p>
+                    <p className="font-bold text-lg">{detail.name}</p>
                     <p className="text-gray-400 font-mono">{detail.userName ?? detail.firstName}</p>
                     <p className="text-gray-500">{detail.email}</p>
                   </div>
@@ -365,31 +509,30 @@ export default function Users() {
                 {/* Flags */}
                 <div className="flex gap-2 flex-wrap">
                   <span className={`px-2 py-1 rounded-full text-xs font-semibold ${detail.enabled ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>{detail.enabled ? "Enabled" : "Inenabled"}</span>
-                  {detail.cambioPassword && <span className="px-2 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">Cambio de clave requerido</span>}
+                  {/* No cambioPassword flag in API model */}
                 </div>
 
                 {/* Fields */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
                     ["ID", detail.id],
-                    ["Clave de user", detail.userName || "—"],
+                    ["Password de user", detail.userName || "—"],
                     ["Nº Empleado", detail.employeeId || "—"],
                     ["Apellido Paterno", detail.lastNameFather || "—"],
                     ["Apellido Materno", detail.lastNameMother || "—"],
-                    ["Abreviation", detail.abreviation || "—"],
+                    ["Abbreviation", detail.abbreviation || "—"],
                     ["Order", detail.order],
-                    ["Intentos fallidos", detail.attempts ?? 0],
-                    ["ID Sustituto", detail.idUserPorAusencia ?? "—"],
+                    ["Failed Attempts", detail.attempts ?? 0],
                   ].map(([label, val]) => (
                     <div key={label}>
                       <p className="text-gray-400 text-xs uppercase tracking-wide mb-0.5">{label}</p>
                       <p className="font-medium">{val}</p>
                     </div>
                   ))}
-                  {detail.descripcion && (
+                  {detail.description && (
                     <div className="col-span-2">
-                      <p className="text-gray-400 text-xs uppercase tracking-wide mb-0.5">Descripción</p>
-                      <p>{detail.descripcion}</p>
+                      <p className="text-gray-400 text-xs uppercase tracking-wide mb-0.5">Description</p>
+                      <p>{detail.description}</p>
                     </div>
                   )}
                 </div>
@@ -400,7 +543,7 @@ export default function Users() {
                   {detail.roles?.length > 0 ? (
                     <ul className="space-y-1">
                       {detail.roles.map((p) => (
-                        <li key={p.id} className="bg-purple-50 rounded px-3 py-2 font-medium text-purple-800">{p.name} <span className="text-purple-400 font-normal text-xs ml-1">({p.abreviation})</span></li>
+                        <li key={p.id} className="bg-purple-50 rounded px-3 py-2 font-medium text-purple-800">{p.name} <span className="text-purple-400 font-normal text-xs ml-1">({p.abbreviation})</span></li>
                       ))}
                     </ul>
                   ) : <p className="text-gray-400">Sin roles asignados.</p>}
@@ -408,11 +551,11 @@ export default function Users() {
 
                 {/* Companies */}
                 <div>
-                  <p className="text-gray-400 text-xs uppercase tracking-wide mb-2">Companies ({detail.companies?.length ?? 0})</p>
-                  {detail.companies?.length > 0 ? (
+                  <p className="text-gray-400 text-xs uppercase tracking-wide mb-2">Companies ({detail.companys?.length ?? 0})</p>
+                  {detail.companys?.length > 0 ? (
                     <ul className="space-y-1">
-                      {detail.companies.map((e) => (
-                        <li key={e.id} className="bg-blue-50 rounded px-3 py-2 font-medium text-blue-800">{e.name} <span className="text-blue-400 font-normal text-xs ml-1">({e.abreviation})</span></li>
+                      {detail.companys.map((e) => (
+                        <li key={e.id} className="bg-green-50 rounded px-3 py-2 font-medium text-green-800">{e.name} <span className="text-green-400 font-normal text-xs ml-1">({e.abbreviation})</span></li>
                       ))}
                     </ul>
                   ) : <p className="text-gray-400">Sin companies asignadas.</p>}
@@ -420,10 +563,12 @@ export default function Users() {
 
                 {/* Actions */}
                 <div className="flex gap-2 pt-2 flex-wrap">
-                  <button onClick={() => { setDetail(null); openEdit(detail); }} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-sm font-semibold transition-colors">Edit</button>
-                  <button onClick={() => { openPwdModal(detail); setDetail(null); }} className="flex-1 bg-amber-500 hover:bg-amber-600 text-white py-2 rounded text-sm font-semibold transition-colors">Cambiar Clave</button>
-                  {detail.bloqueado && (
-                    <button onClick={() => handleUnlock(detail)} className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded text-sm font-semibold transition-colors">Desbloquear</button>
+                  <button onClick={() => { setDetail(null); openEdit(detail); }} className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded text-sm font-semibold transition-colors">Edit</button>
+                  <button onClick={() => { setDetail(null); openRolesModal(detail); }} className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded text-sm font-semibold transition-colors">Roles</button>
+                  <button onClick={() => { setDetail(null); openCompaniesModal(detail); }} className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded text-sm font-semibold transition-colors">Companies</button>
+                  <button onClick={() => { openPwdModal(detail); setDetail(null); }} className="flex-1 bg-amber-500 hover:bg-amber-600 text-white py-2 rounded text-sm font-semibold transition-colors">Pass</button>
+                  {detail.attempts > 0 && (
+                    <button onClick={() => handleUnlock(detail)} className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded text-sm font-semibold transition-colors">Unlock</button>
                   )}
                   <button onClick={() => setDetail(null)} className="flex-1 border border-gray-300 hover:bg-gray-50 py-2 rounded text-sm transition-colors">Cerrar</button>
                 </div>
@@ -447,31 +592,31 @@ export default function Users() {
 
               {/* Name section */}
               <div>
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Datos personales</p>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Personal Data</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Name <span className="text-red-500">*</span></label>
-                    <input name="name" required value={modal.data.name} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <input name="name" required value={modal.data.name} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Abreviation</label>
-                    <input name="abreviation" value={modal.data.abreviation ?? ""} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Abbreviation</label>
+                    <input name="abbreviation" value={modal.data.abbreviation ?? ""} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Apellido Paterno</label>
-                    <input name="lastNameFather" value={modal.data.lastNameFather ?? ""} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Last Name (Father)</label>
+                    <input name="lastNameFather" value={modal.data.lastNameFather ?? ""} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Apellido Materno</label>
-                    <input name="lastNameMother" value={modal.data.lastNameMother ?? ""} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Last Name (Mother)</label>
+                    <input name="lastNameMother" value={modal.data.lastNameMother ?? ""} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input name="email" type="email" value={modal.data.email ?? ""} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <input name="email" type="email" value={modal.data.email ?? ""} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Nº Empleado</label>
-                    <input name="employeeId" type="number" min={0} value={modal.data.employeeId ?? 0} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <input name="employeeId" type="number" min={0} value={modal.data.employeeId ?? 0} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
                   </div>
                 </div>
               </div>
@@ -481,54 +626,45 @@ export default function Users() {
                 <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Cuenta</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Clave de user <span className="text-red-500">*</span></label>
-                    <input name="userName" required value={modal.data.userName ?? ""} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <label className="block text-sm font-medium text-gray-700 mb-1">User Password <span className="text-red-500">*</span></label>
+                    <input name="userName" required value={modal.data.userName ?? ""} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-green-500" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Name de user</label>
-                    <input name="firstName" value={modal.data.firstName ?? ""} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <label className="block text-sm font-medium text-gray-700 mb-1">User Name</label>
+                    <input name="firstName" value={modal.data.firstName ?? ""} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-green-500" />
                   </div>
                   {modal.mode === "add" && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Password <span className="text-red-500">*</span>
                     </label>
-                    <input name="password" type="password" required value={modal.data.password ?? ""} onChange={handleFormChange} autoComplete="new-password" className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <input name="password" type="password" required value={modal.data.password ?? ""} onChange={handleFormChange} autoComplete="new-password" className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
                   </div>
                   )}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
-                    <input name="order" type="number" min={0} value={modal.data.order ?? 0} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">ID User por Ausencia</label>
-                    <input name="idUserPorAusencia" type="number" min={0} value={modal.data.idUserPorAusencia ?? ""} onChange={handleFormChange} placeholder="Vacío = ninguno" className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <input name="order" type="number" min={0} value={modal.data.order ?? 0} onChange={handleFormChange} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
                   </div>
                 </div>
 
                 {/* Flags */}
                 <div className="flex flex-wrap gap-6 mt-4">
-                  {[
-                    { name: "enabled", label: "Enabled" },
-                    { name: "cambioPassword", label: "Forzar cambio de clave" },
-                  ].map(({ name, label }) => (
-                    <div key={name} className="flex items-center gap-2">
-                      <input id={`flag-${name}`} name={name} type="checkbox" checked={modal.data[name] ?? false} onChange={handleFormChange} className="w-4 h-4 accent-blue-600" />
-                      <label htmlFor={`flag-${name}`} className="text-sm font-medium text-gray-700">{label}</label>
-                    </div>
-                  ))}
+                  <div className="flex items-center gap-2">
+                    <input id="flag-enabled" name="enabled" type="checkbox" checked={modal.data.enabled ?? false} onChange={handleFormChange} className="w-4 h-4 accent-green-600" />
+                    <label htmlFor="flag-enabled" className="text-sm font-medium text-gray-700">Enabled</label>
+                  </div>
                 </div>
               </div>
 
               {/* Descripción */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                <textarea name="descripcion" value={modal.data.descripcion ?? ""} onChange={handleFormChange} rows={2} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea name="description" value={modal.data.description ?? ""} onChange={handleFormChange} rows={2} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none" />
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
                 <button type="button" onClick={closeModal} className="px-4 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors">Cancel</button>
-                <button type="submit" disabled={saving} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white rounded text-sm font-semibold transition-colors">
+                <button type="submit" disabled={saving} className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white rounded text-sm font-semibold transition-colors">
                   {saving ? "Guardando..." : "Guardar"}
                 </button>
               </div>
@@ -542,7 +678,7 @@ export default function Users() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-sm">
             <div className="flex items-center justify-between px-6 py-4 border-b">
-              <h2 className="text-lg font-bold">Cambiar Password</h2>
+              <h2 className="text-lg font-bold">Change Password</h2>
               <button onClick={() => setPwdModal((m) => ({ ...m, open: false }))} className="text-gray-400 hover:text-gray-600 text-2xl font-bold leading-none">×</button>
             </div>
             <form onSubmit={handlePwdSave} className="p-6 space-y-4">
@@ -553,19 +689,171 @@ export default function Users() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">New password <span className="text-red-500">*</span></label>
-                <input type="password" required autoComplete="new-password" value={pwdModal.password} onChange={(e) => setPwdModal((m) => ({ ...m, password: e.target.value }))} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <input type="password" required autoComplete="new-password" value={pwdModal.password} onChange={(e) => setPwdModal((m) => ({ ...m, password: e.target.value }))} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Confirmar password <span className="text-red-500">*</span></label>
-                <input type="password" required value={pwdModal.confirm} onChange={(e) => setPwdModal((m) => ({ ...m, confirm: e.target.value }))} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Confirm password <span className="text-red-500">*</span></label>
+                <input type="password" required value={pwdModal.confirm} onChange={(e) => setPwdModal((m) => ({ ...m, confirm: e.target.value }))} className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
               </div>
               <div className="flex justify-end gap-3 pt-2">
                 <button type="button" onClick={() => setPwdModal((m) => ({ ...m, open: false }))} className="px-4 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors">Cancel</button>
                 <button type="submit" disabled={pwdModal.saving} className="px-4 py-2 bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white rounded text-sm font-semibold transition-colors">
-                  {pwdModal.saving ? "Guardando..." : "Cambiar Clave"}
+                  {pwdModal.saving ? "Guardando..." : "Change Password"}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Companies Modal ── */}
+      {companiesModal.open && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div className="flex items-center justify-between px-6 py-4 border-b">
+              <h2 className="text-lg font-bold">Companies — {companiesModal.userName}</h2>
+              <button onClick={() => setCompaniesModal(m => ({ ...m, open: false }))} className="text-gray-400 hover:text-gray-600 text-2xl font-bold leading-none">×</button>
+            </div>
+            <div className="p-6 space-y-4">
+              {companiesModal.error && (
+                <div className="p-2 bg-red-100 border border-red-400 text-red-700 rounded text-sm flex justify-between">
+                  <span>{companiesModal.error}</span>
+                  <button onClick={() => setCompaniesModal(m => ({ ...m, error: "" }))} className="font-bold ml-4">×</button>
+                </div>
+              )}
+
+              {/* Assign new company */}
+              <div className="flex gap-2">
+                <select
+                  value={companiesModal.selectedCompanyId}
+                  onChange={(e) => setCompaniesModal(m => ({ ...m, selectedCompanyId: e.target.value }))}
+                  disabled={companiesModal.loading || companiesModal.actionLoading}
+                  className="flex-1 border border-gray-300 rounded p-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50"
+                >
+                  <option value="">— Select company to assign —</option>
+                  {companiesModal.allCompanies
+                    .filter(c => !companiesModal.userCompanies.some(uc => uc.id === c.id))
+                    .map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+                <button
+                  onClick={() => companiesModal.selectedCompanyId && handleAssignCompany(Number(companiesModal.selectedCompanyId))}
+                  disabled={!companiesModal.selectedCompanyId || companiesModal.actionLoading || companiesModal.loading}
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white rounded text-sm font-semibold transition-colors whitespace-nowrap"
+                >
+                  {companiesModal.actionLoading ? "..." : "Assign"}
+                </button>
+              </div>
+
+              {/* Current companies list */}
+              <div>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+                  Assigned companies ({companiesModal.userCompanies.length})
+                </p>
+                {companiesModal.loading ? (
+                  <div className="py-6 text-center text-gray-400 animate-pulse">Loading...</div>
+                ) : companiesModal.userCompanies.length === 0 ? (
+                  <p className="text-gray-400 text-sm">No companies assigned.</p>
+                ) : (
+                  <ul className="space-y-2">
+                    {companiesModal.userCompanies.map(company => (
+                      <li key={company.id} className="flex items-center justify-between bg-green-50 rounded px-3 py-2">
+                        <span className="font-medium text-green-800 text-sm">
+                          {company.name}
+                          {company.abbreviation && <span className="text-green-400 font-normal text-xs ml-2">({company.abbreviation})</span>}
+                        </span>
+                        <button
+                          onClick={() => handleRemoveCompany(company.id)}
+                          disabled={companiesModal.actionLoading}
+                          className="text-red-500 hover:text-red-700 text-xs border border-red-300 px-2 py-0.5 rounded hover:bg-red-50 transition-colors disabled:opacity-50 ml-3"
+                        >
+                          Remove
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button onClick={() => setCompaniesModal(m => ({ ...m, open: false }))} className="px-4 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Roles Modal ── */}
+      {rolesModal.open && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div className="flex items-center justify-between px-6 py-4 border-b">
+              <h2 className="text-lg font-bold">Roles — {rolesModal.userName}</h2>
+              <button onClick={() => setRolesModal(m => ({ ...m, open: false }))} className="text-gray-400 hover:text-gray-600 text-2xl font-bold leading-none">×</button>
+            </div>
+            <div className="p-6 space-y-4">
+              {rolesModal.error && (
+                <div className="p-2 bg-red-100 border border-red-400 text-red-700 rounded text-sm flex justify-between">
+                  <span>{rolesModal.error}</span>
+                  <button onClick={() => setRolesModal(m => ({ ...m, error: "" }))} className="font-bold ml-4">×</button>
+                </div>
+              )}
+
+              {/* Assign new role */}
+              <div className="flex gap-2">
+                <select
+                  value={rolesModal.selectedRoleId}
+                  onChange={(e) => setRolesModal(m => ({ ...m, selectedRoleId: e.target.value }))}
+                  disabled={rolesModal.loading || rolesModal.actionLoading}
+                  className="flex-1 border border-gray-300 rounded p-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50"
+                >
+                  <option value="">— Select role to assign —</option>
+                  {rolesModal.allRoles
+                    .filter(r => !rolesModal.userRoles.some(ur => ur.id === r.id))
+                    .map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                </select>
+                <button
+                  onClick={() => rolesModal.selectedRoleId && handleAssignRole(Number(rolesModal.selectedRoleId))}
+                  disabled={!rolesModal.selectedRoleId || rolesModal.actionLoading || rolesModal.loading}
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-300 text-white rounded text-sm font-semibold transition-colors whitespace-nowrap"
+                >
+                  {rolesModal.actionLoading ? "..." : "Assign"}
+                </button>
+              </div>
+
+              {/* Current roles list */}
+              <div>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+                  Assigned roles ({rolesModal.userRoles.length})
+                </p>
+                {rolesModal.loading ? (
+                  <div className="py-6 text-center text-gray-400 animate-pulse">Loading...</div>
+                ) : rolesModal.userRoles.length === 0 ? (
+                  <p className="text-gray-400 text-sm">No roles assigned.</p>
+                ) : (
+                  <ul className="space-y-2">
+                    {rolesModal.userRoles.map(role => (
+                      <li key={role.id} className="flex items-center justify-between bg-purple-50 rounded px-3 py-2">
+                        <span className="font-medium text-purple-800 text-sm">
+                          {role.name}
+                          {role.abbreviation && <span className="text-purple-400 font-normal text-xs ml-2">({role.abbreviation})</span>}
+                        </span>
+                        <button
+                          onClick={() => handleRemoveRole(role.id)}
+                          disabled={rolesModal.actionLoading}
+                          className="text-red-500 hover:text-red-700 text-xs border border-red-300 px-2 py-0.5 rounded hover:bg-red-50 transition-colors disabled:opacity-50 ml-3"
+                        >
+                          Remove
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button onClick={() => setRolesModal(m => ({ ...m, open: false }))} className="px-4 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors">Close</button>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -574,7 +862,7 @@ export default function Users() {
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
-            <h2 className="text-lg font-bold mb-2">Confirmar eliminación</h2>
+            <h2 className="text-lg font-bold mb-2">Confirm eliminación</h2>
             <p className="text-sm text-gray-600 mb-6">
               ¿Estás seguro de que deseas eliminar al user <strong>{deleteTarget.name || `#${deleteTarget.id}`}</strong>? Esta acción no se puede deshacer.
             </p>

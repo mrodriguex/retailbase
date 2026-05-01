@@ -6,10 +6,10 @@ const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 const emptyForm = {
   id: 0,
   name: "",
-  abreviation: "",
-  descripcion: "",
-  rfc: "",
-  razonSocial: "",
+  abbreviation: "",
+  description: "",
+  taxid: "",
+  legalName: "",
   order: 0,
   enabled: true,
 };
@@ -75,7 +75,7 @@ export default function Companies() {
   }
 
   function openEdit(company) {
-    setModal({ open: true, mode: "edit", data: { ...company } });
+    setModal({ open: true, mode: "edit", data: { ...emptyForm, ...company } });
     setModalError("");
   }
 
@@ -99,10 +99,20 @@ export default function Companies() {
     setModalError("");
     setSaving(true);
     try {
+      const payload = {
+        id: modal.data.id,
+        name: modal.data.name,
+        abbreviation: modal.data.abbreviation,
+        description: modal.data.description,
+        taxid: modal.data.taxid,
+        legalName: modal.data.legalName,
+        order: modal.data.order,
+        enabled: modal.data.enabled,
+      };
       if (modal.mode === "add") {
-        await companyService.add(modal.data);
+        await companyService.add(payload);
       } else {
-        await companyService.update(modal.data);
+        await companyService.update(payload);
       }
       closeModal();
       loadCompanies();
@@ -140,7 +150,7 @@ export default function Companies() {
         <div className="flex flex-wrap gap-2 sm:gap-3 items-center mb-5">
           <button
             onClick={openAdd}
-            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition-colors text-sm"
+            className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold transition-colors text-sm"
           >
             + New Company
           </button>
@@ -190,7 +200,7 @@ export default function Companies() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b">
               <tr>
-                {["ID", "Name", "Abreviation", "RFC", "Razón Social", "Order", "Estatus", "Actions"].map((h) => (
+                {["ID", "Name", "Abbreviation", "Tax ID", "Legal Name", "Order", "Status", "Actions"].map((h) => (
                   <th key={h} className="px-4 py-3 text-left font-semibold text-gray-600 whitespace-nowrap">
                     {h}
                   </th>
@@ -215,9 +225,9 @@ export default function Companies() {
                   <tr key={c.id} className="border-b last:border-0 hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3 text-gray-500">{c.id}</td>
                     <td className="px-4 py-3 font-medium text-gray-900">{c.name}</td>
-                    <td className="px-4 py-3 text-gray-600">{c.abreviation}</td>
-                    <td className="px-4 py-3 text-gray-600">{c.rfc}</td>
-                    <td className="px-4 py-3 text-gray-600">{c.razonSocial}</td>
+                    <td className="px-4 py-3 text-gray-600">{c.abbreviation}</td>
+                    <td className="px-4 py-3 text-gray-600">{c.taxid}</td>
+                    <td className="px-4 py-3 text-gray-600">{c.legalName}</td>
                     <td className="px-4 py-3 text-gray-600">{c.order}</td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -232,7 +242,7 @@ export default function Companies() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => openEdit(c)}
-                          className="text-blue-600 hover:text-blue-800 text-xs border border-blue-300 px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+                          className="text-green-600 hover:text-green-800 text-xs border border-green-300 px-2 py-1 rounded hover:bg-green-50 transition-colors"
                         >
                           Edit
                         </button>
@@ -310,39 +320,39 @@ export default function Companies() {
                     required
                     value={modal.data.name}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Abreviation
+                    Abbreviation
                   </label>
                   <input
-                    name="abreviation"
-                    value={modal.data.abreviation ?? ""}
+                    name="abbreviation"
+                    value={modal.data.abbreviation ?? ""}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">RFC</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Tax ID</label>
                   <input
-                    name="rfc"
-                    value={modal.data.rfc ?? ""}
+                    name="taxid"
+                    value={modal.data.taxid ?? ""}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Razón Social</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Legal Name</label>
                   <input
-                    name="razonSocial"
-                    value={modal.data.razonSocial ?? ""}
+                    name="legalName"
+                    value={modal.data.legalName ?? ""}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
@@ -354,7 +364,7 @@ export default function Companies() {
                     min={0}
                     value={modal.data.order ?? 0}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
@@ -365,7 +375,7 @@ export default function Companies() {
                     type="checkbox"
                     checked={modal.data.enabled ?? true}
                     onChange={handleFormChange}
-                    className="w-4 h-4 accent-blue-600"
+                    className="w-4 h-4 accent-green-600"
                   />
                   <label htmlFor="enabled-check" className="text-sm font-medium text-gray-700">
                     Enabled
@@ -374,13 +384,13 @@ export default function Companies() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                 <textarea
-                  name="descripcion"
-                  value={modal.data.descripcion ?? ""}
+                  name="description"
+                  value={modal.data.description ?? ""}
                   onChange={handleFormChange}
                   rows={2}
-                  className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
                 />
               </div>
 
@@ -395,7 +405,7 @@ export default function Companies() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white rounded text-sm font-semibold transition-colors"
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white rounded text-sm font-semibold transition-colors"
                 >
                   {saving ? "Guardando..." : "Guardar"}
                 </button>
@@ -409,7 +419,7 @@ export default function Companies() {
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
-            <h2 className="text-lg font-bold mb-2">Confirmar eliminación</h2>
+            <h2 className="text-lg font-bold mb-2">Confirm eliminación</h2>
             <p className="text-sm text-gray-600 mb-6">
               ¿Estás seguro de que deseas eliminar la company{" "}
               <strong>{deleteTarget.name || `#${deleteTarget.id}`}</strong>?{" "}

@@ -1,5 +1,5 @@
-using Asp.Viewsioning;
-using Asp.Viewsioning.ApiExplorer;
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 
 using Microsoft.AspNetCore.SignalR;
 using RETAIL.BASE.API.Controllers.Hubs;
@@ -18,19 +18,19 @@ builder.Services.AddApplicationServices(builder.Configuration);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// 1. Add API Viewsioning services (NEW WAY FOR .NET 6+)
-builder.Services.AddApiViewsioning(options =>
+// 1. Add API Versioning services (NEW WAY FOR .NET 6+)
+builder.Services.AddApiVersioning(options =>
 {
-    options.DefaultApiViewsion = new ApiViewsion(1, 0);
-    options.AssumeDefaultViewsionWhenUnspecified = true;
-    options.ReportApiViewsions = true;
-    options.ApiViewsionReader = new UrlSegmentApiViewsionReader();
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
 })
 .AddMvc() // <- �Este .AddMvc() es NECESARIO ahora!
 .AddApiExplorer(options => // <- Ahora esto funcionar�
 {
     options.GroupNameFormat = "'v'VVV";
-    options.SubstituteApiViewsionInUrl = true;
+    options.SubstituteApiVersionInUrl = true;
 });
 
 
@@ -85,7 +85,6 @@ builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
     {
         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-        options.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
     });
 
 var app = builder.Build();
@@ -104,13 +103,13 @@ if (!app.Environment.IsDevelopment())
 
 
 // 5. Get the service that knows about all our API versions
-var apiViewsionDescriptionProvider = app.Services.GetRequiredService<IApiViewsionDescriptionProvider>();
+var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 // Habilitar el middleware de Swagger solo en el entorno de desarrollo
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     // 6. Build a Swagger endpoint for each discovered API version
-    foreach (var description in apiViewsionDescriptionProvider.ApiViewsionDescriptions)
+    foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
     {
         options.SwaggerEndpoint(
             url: $"./{description.GroupName}/swagger.json",

@@ -1,4 +1,4 @@
-﻿using Asp.Viewsioning;
+﻿using Asp.Versioning;
 using RETAIL.BASE.API.Controllers.Base;
 using RETAIL.BASE.NEG.Interfaces;
 using RETAIL.BASE.OBJ;
@@ -17,8 +17,8 @@ namespace RETAIL.BASE.API.Controllers.V1
     /// This controller provides endpoints for managing user companies.
     /// </remarks>
     [Authorize]
-    [ApiViewsion("1.0")]
-    [Route("api/v{version:apiViewsion}/[controller]")] // Viewsion in the URL path
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")] // Version in the URL path
     [ApiController]
     public class CompanyController : BaseController
     {
@@ -71,7 +71,7 @@ namespace RETAIL.BASE.API.Controllers.V1
                 PageIndex = pageIndex,
                 PageSize = pageSize
             };
-            
+
             var webResult = await _companyService.GetAllAsync(filter);
             return webResult.Success ? Ok(webResult) : BadRequest(webResult);
         }
@@ -113,5 +113,28 @@ namespace RETAIL.BASE.API.Controllers.V1
             return webResult.Success ? Ok(webResult) : BadRequest(webResult);
         }
 
+        /// <summary>
+        /// Assigns a company to a user.
+        /// </summary>
+        /// <param name="idUser">The unique key identifying the user.</param>
+        /// <param name="idCompany">The unique key identifying the company.</param>
+        /// <returns>A result indicating the success or failure of the operation.</returns>
+        [HttpPost("AssignCompanyToUser")]
+        public async Task<IActionResult> AssignCompanyToUser([FromQuery, Required] int idUser, [FromQuery, Required] int idCompany)
+        {
+            var webResult = await _companyService.AssignCompanyToUserAsync(idUser, idCompany);
+            return webResult.Success ? Ok(webResult) : BadRequest(webResult);
+        }
+
+        /// <summary> Removes a company from a user.
+        /// </summary> <param name="idUser">The unique key identifying the user.</param>
+        /// <param name="idCompany">The unique key identifying the company.</param>
+        /// <returns>A result indicating the success or failure of the operation.</returns>
+        [HttpPost("RemoveCompanyFromUser")]
+        public async Task<IActionResult> RemoveCompanyFromUser([FromQuery, Required] int idUser, [FromQuery, Required] int idCompany)
+        {
+            var webResult = await _companyService.RemoveCompanyFromUserAsync(idUser, idCompany);
+            return webResult.Success ? Ok(webResult) : BadRequest(webResult);
+        }
     }
 }

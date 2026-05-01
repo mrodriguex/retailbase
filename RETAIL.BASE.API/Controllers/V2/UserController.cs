@@ -1,4 +1,4 @@
-﻿using Asp.Viewsioning;
+﻿using Asp.Versioning;
 using RETAIL.BASE.API.Controllers.Base;
 using RETAIL.BASE.NEG.Interfaces;
 using RETAIL.BASE.OBJ;
@@ -12,8 +12,8 @@ namespace RETAIL.BASE.API.Controllers.V2
 {
     [Authorize]
     [ApiController]
-    [ApiViewsion("2.0")]
-    [Route("api/v{version:apiViewsion}/[controller]")] // Viewsion in the URL path
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/[controller]")] // Version in the URL path
     /// <summary>
     /// Controller for user management.
     /// </summary>  

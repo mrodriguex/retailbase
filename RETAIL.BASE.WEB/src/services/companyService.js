@@ -10,7 +10,21 @@ export async function getAll({ enabled, pageIndex = 1, pageSize = 20 } = {}) {
 
 export async function getCompaniesByUser(idUsuario) {
   const response = await apiClient.get('/api/v1/Company/GetCompaniesByUser', {
-    params: { idUsuario },
+    params: { idUser: idUsuario },
+  });
+  return unwrap(response);
+}
+
+export async function assignCompanyToUser(idUser, idCompany) {
+  const response = await apiClient.post('/api/v1/Company/AssignCompanyToUser', null, {
+    params: { idUser, idCompany },
+  });
+  return unwrap(response);
+}
+
+export async function removeCompanyFromUser(idUser, idCompany) {
+  const response = await apiClient.post('/api/v1/Company/RemoveCompanyFromUser', null, {
+    params: { idUser, idCompany },
   });
   return unwrap(response);
 }

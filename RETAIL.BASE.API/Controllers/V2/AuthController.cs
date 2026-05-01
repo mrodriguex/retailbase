@@ -1,4 +1,4 @@
-﻿using Asp.Viewsioning;
+﻿using Asp.Versioning;
 using RETAIL.BASE.API.Controllers.Base;
 using RETAIL.BASE.API.Helpers;
 using RETAIL.BASE.NEG.Interfaces;
@@ -18,8 +18,8 @@ namespace RETAIL.BASE.API.Controllers.V2
 {
     [AllowAnonymous]
     [ApiController]
-    [ApiViewsion("2.0")]
-    [Route("api/v{version:apiViewsion}/[controller]")] // Viewsion in the URL path 
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/[controller]")] // Version in the URL path 
     public class AuthController : BaseController
     {
         private readonly IConfiguration _config;

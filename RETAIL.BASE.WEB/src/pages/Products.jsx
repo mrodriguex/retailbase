@@ -1,22 +1,25 @@
 import { useState, useEffect, useCallback } from "react";
 import * as productService from "../services/productService";
+import * as brandService from "../services/brandService";
+import * as categoryService from "../services/categoryService";
 
 const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 
 const emptyForm = {
   id: 0,
   name: "",
-  abreviation: "",
-  descripcion: "",
-  rfc: "",
-  razonSocial: "",
-  idProductPadre: "",
+  abbreviation: "",
+  description: "",
+  brandId: "",
+  categoryId: "",
   order: 0,
   enabled: true,
 };
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -69,6 +72,11 @@ export default function Products() {
     loadProducts();
   }, [loadProducts]);
 
+  useEffect(() => {
+    brandService.getAll({ enabled: true, pageSize: 9999 }).then(r => setBrands(r?.items ?? r ?? [])).catch(() => {});
+    categoryService.getAll({ enabled: true, pageSize: 9999 }).then(r => setCategories(r?.items ?? r ?? [])).catch(() => {});
+  }, []);
+
   // ── Modal helpers ─────────────────────────────────────────────────────────
   function openAdd() {
     setModal({ open: true, mode: "add", data: { ...emptyForm } });
@@ -79,7 +87,7 @@ export default function Products() {
     setModal({
       open: true,
       mode: "edit",
-      data: { ...product, idProductPadre: product.idProductPadre ?? "" },
+      data: { ...emptyForm, ...product },
     });
     setModalError("");
   }
@@ -110,8 +118,14 @@ export default function Products() {
     setSaving(true);
     try {
       const payload = {
-        ...modal.data,
-        idProductPadre: modal.data.idProductPadre === "" ? null : Number(modal.data.idProductPadre),
+        id: modal.data.id,
+        name: modal.data.name,
+        abbreviation: modal.data.abbreviation,
+        description: modal.data.description,
+        brandId: modal.data.brandId === "" ? 0 : Number(modal.data.brandId),
+        categoryId: modal.data.categoryId === "" ? 0 : Number(modal.data.categoryId),
+        order: modal.data.order,
+        enabled: modal.data.enabled,
       };
       if (modal.mode === "add") {
         await productService.add(payload);
@@ -153,7 +167,7 @@ export default function Products() {
       <div className="flex flex-wrap gap-2 sm:gap-3 items-center mb-5">
         <button
           onClick={openAdd}
-          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition-colors text-sm"
+          className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold transition-colors text-sm"
         >
           + New Product
         </button>
@@ -203,7 +217,7 @@ export default function Products() {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>
-              {["ID", "Name", "Abreviation", "RFC", "Razón Social", "Product Padre", "Order", "Estatus", "Actions"].map((h) => (
+              {["ID", "Name", "Abbreviation", "Brand", "Category", "Order", "Status", "Actions"].map((h) => (
                 <th key={h} className="px-4 py-3 text-left font-semibold text-gray-600 whitespace-nowrap">
                   {h}
                 </th>
@@ -213,13 +227,13 @@ export default function Products() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={9} className="text-center py-12 text-gray-400">
+                  <td colSpan={8} className="text-center py-12 text-gray-400">
                   <span className="inline-block animate-pulse">Loading...</span>
                 </td>
               </tr>
             ) : products.length === 0 ? (
               <tr>
-                <td colSpan={9} className="text-center py-12 text-gray-400">
+                <td colSpan={8} className="text-center py-12 text-gray-400">
                   Sin registros
                 </td>
               </tr>
@@ -228,12 +242,9 @@ export default function Products() {
                 <tr key={c.id} className="border-b last:border-0 hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-3 text-gray-500">{c.id}</td>
                   <td className="px-4 py-3 font-medium text-gray-900">{c.name}</td>
-                  <td className="px-4 py-3 text-gray-600">{c.abreviation}</td>
-                  <td className="px-4 py-3 text-gray-600">{c.rfc}</td>
-                  <td className="px-4 py-3 text-gray-600">{c.razonSocial}</td>
-                  <td className="px-4 py-3 text-gray-600">
-                    {c.idProductPadre ?? <span className="text-gray-300">—</span>}
-                  </td>
+                  <td className="px-4 py-3 text-gray-600">{c.abbreviation}</td>
+                  <td className="px-4 py-3 text-gray-600">{brands.find(b => b.id === c.brandId)?.name ?? c.brandId}</td>
+                  <td className="px-4 py-3 text-gray-600">{categories.find(cat => cat.id === c.categoryId)?.name ?? c.categoryId}</td>
                   <td className="px-4 py-3 text-gray-600">{c.order}</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -246,7 +257,7 @@ export default function Products() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => openEdit(c)}
-                        className="text-blue-600 hover:text-blue-800 text-xs border border-blue-300 px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+                        className="text-green-600 hover:text-green-800 text-xs border border-green-300 px-2 py-1 rounded hover:bg-green-50 transition-colors"
                       >
                         Edit
                       </button>
@@ -319,51 +330,50 @@ export default function Products() {
                     required
                     value={modal.data.name}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Abreviation</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Abbreviation</label>
                   <input
-                    name="abreviation"
-                    value={modal.data.abreviation ?? ""}
+                    name="abbreviation"
+                    value={modal.data.abbreviation ?? ""}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">RFC</label>
-                  <input
-                    name="rfc"
-                    value={modal.data.rfc ?? ""}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Brand <span className="text-red-500">*</span></label>
+                  <select
+                    name="brandId"
+                    required
+                    value={modal.data.brandId ?? ""}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
+                  >
+                    <option value="">— Select brand —</option>
+                    {brands.map(b => (
+                      <option key={b.id} value={b.id}>{b.name}</option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Razón Social</label>
-                  <input
-                    name="razonSocial"
-                    value={modal.data.razonSocial ?? ""}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Category <span className="text-red-500">*</span></label>
+                  <select
+                    name="categoryId"
+                    required
+                    value={modal.data.categoryId ?? ""}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Product Padre (ID)</label>
-                  <input
-                    name="idProductPadre"
-                    type="number"
-                    min={0}
-                    value={modal.data.idProductPadre ?? ""}
-                    onChange={handleFormChange}
-                    placeholder="Vacío = raíz"
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
+                  >
+                    <option value="">— Select category —</option>
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
@@ -374,7 +384,7 @@ export default function Products() {
                     min={0}
                     value={modal.data.order ?? 0}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
@@ -385,7 +395,7 @@ export default function Products() {
                     type="checkbox"
                     checked={modal.data.enabled ?? true}
                     onChange={handleFormChange}
-                    className="w-4 h-4 accent-blue-600"
+                    className="w-4 h-4 accent-green-600"
                   />
                   <label htmlFor="product-enabled-check" className="text-sm font-medium text-gray-700">
                     Enabled
@@ -394,13 +404,13 @@ export default function Products() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                 <textarea
-                  name="descripcion"
-                  value={modal.data.descripcion ?? ""}
+                  name="description"
+                  value={modal.data.description ?? ""}
                   onChange={handleFormChange}
                   rows={2}
-                  className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
                 />
               </div>
 
@@ -415,7 +425,7 @@ export default function Products() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white rounded text-sm font-semibold transition-colors"
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white rounded text-sm font-semibold transition-colors"
                 >
                   {saving ? "Guardando..." : "Guardar"}
                 </button>
@@ -429,7 +439,7 @@ export default function Products() {
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
-            <h2 className="text-lg font-bold mb-2">Confirmar eliminación</h2>
+            <h2 className="text-lg font-bold mb-2">Confirm eliminación</h2>
             <p className="text-sm text-gray-600 mb-6">
               ¿Estás seguro de que deseas eliminar el product{" "}
               <strong>{deleteTarget.name || `#${deleteTarget.id}`}</strong>?{" "}

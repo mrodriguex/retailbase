@@ -65,7 +65,7 @@ export default function Mensajes() {
                 onClick={() => setMode("all")}
                 className={`px-3 py-2 rounded border text-sm ${
                   mode === "all"
-                    ? "bg-blue-600 text-white border-blue-600"
+                    ? "bg-green-600 text-white border-green-600"
                     : "bg-white text-gray-700 border-gray-300"
                 }`}
               >
@@ -76,7 +76,7 @@ export default function Mensajes() {
                 onClick={() => setMode("user")}
                 className={`px-3 py-2 rounded border text-sm ${
                   mode === "user"
-                    ? "bg-blue-600 text-white border-blue-600"
+                    ? "bg-green-600 text-white border-green-600"
                     : "bg-white text-gray-700 border-gray-300"
                 }`}
               >
@@ -94,7 +94,7 @@ export default function Mensajes() {
                 type="text"
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
-                className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 placeholder="Ej: 123 o GUID del usuario"
                 disabled={sending}
               />
@@ -109,7 +109,7 @@ export default function Mensajes() {
               rows={4}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Escribe el mensaje a enviar"
               disabled={sending}
             />
@@ -130,7 +130,7 @@ export default function Mensajes() {
           <button
             type="submit"
             disabled={sending}
-            className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white px-4 py-2 rounded font-semibold text-sm"
+            className="bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white px-4 py-2 rounded font-semibold text-sm"
           >
             {sending ? "Enviando..." : "Send message"}
           </button>

@@ -33,7 +33,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Equal(user, result.Data);
             Assert.Equal("Información del user obtenida exitosamente.", result.Message);
             Assert.Empty(result.Errors);
-            _userRepositoryMock.Viewify(x => x.GetByIdAsync(10), Times.Once);
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(10), Times.Once);
         }
 
         [Fact]
@@ -49,7 +49,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Null(result.Data);
             Assert.Equal("Error al obtener la información del user.", result.Message);
             Assert.Contains("db error", result.Errors);
-            _userRepositoryMock.Viewify(x => x.GetByIdAsync(10), Times.Once);
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(10), Times.Once);
         }
 
         [Fact]
@@ -70,11 +70,11 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.Equal(2, result.Data.Data.Count());
             Assert.Equal("Información obtenida exitosamente.", result.Message);
-            _userRepositoryMock.Viewify(x => x.GetAllAsync(It.Is<BaseFilter>(f =>
+            _userRepositoryMock.Verify(x => x.GetAllAsync(It.Is<BaseFilter>(f =>
                 f.PageIndex == 2 &&
                 f.PageSize == 5 &&
                 f.Enabled == true)), Times.Once);
-            _userRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<User>()), Times.Never);
+            _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Never);
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Null(result.Data);
             Assert.Equal("Error al obtener la información de los users.", result.Message);
             Assert.Contains("query failed", result.Errors);
-            _userRepositoryMock.Viewify(x => x.GetAllAsync(It.IsAny<BaseFilter>()), Times.Once);
+            _userRepositoryMock.Verify(x => x.GetAllAsync(It.IsAny<BaseFilter>()), Times.Once);
         }
 
         [Fact]
@@ -117,8 +117,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Equal(99, capturedUser.IdUserModification);
             Assert.InRange(capturedUser.DateTimeCreation, before, after);
             Assert.InRange(capturedUser.DateTimeModification, before, after);
-            _userRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
-            _userRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never);
+            _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
+            _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never);
         }
 
         [Fact]
@@ -136,7 +136,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Equal(0, result.Data);
             Assert.Equal("Error al agregar el user.", result.Message);
             Assert.Contains("insert error", result.Errors);
-            _userRepositoryMock.Viewify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
+            _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
         }
 
         [Fact]
@@ -164,9 +164,9 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.NotNull(capturedUser);
             Assert.Equal(44, capturedUser.IdUserModification);
             Assert.InRange(capturedUser.DateTimeModification, before, after);
-            _userRepositoryMock.Viewify(x => x.GetByIdAsync(8), Times.Once);
-            _userRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<User>()), Times.Once);
-            _userRepositoryMock.Viewify(x => x.DeleteAsync(It.IsAny<int>()), Times.Never);
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(8), Times.Once);
+            _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Once);
+            _userRepositoryMock.Verify(x => x.DeleteAsync(It.IsAny<int>()), Times.Never);
         }
 
         [Fact]
@@ -188,8 +188,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.False(result.Data);
             Assert.Equal("Error al actualizar el user.", result.Message);
             Assert.Contains("update error", result.Errors);
-            _userRepositoryMock.Viewify(x => x.GetByIdAsync(8), Times.Once);
-            _userRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<User>()), Times.Once);
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(8), Times.Once);
+            _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Once);
         }
 
         [Fact]
@@ -227,8 +227,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.Equal("Name actual", capturedUser!.Name);
             Assert.Equal("login.actual", capturedUser.FirstName);
             Assert.Equal("pwd-hash", capturedUser.Password);
-            _userRepositoryMock.Viewify(x => x.GetByIdAsync(8), Times.Once);
-            _userRepositoryMock.Viewify(x => x.UpdateAsync(It.IsAny<User>()), Times.Once);
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(8), Times.Once);
+            _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Once);
         }
 
         [Fact]
@@ -243,8 +243,8 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.True(result.Data);
             Assert.Equal("User eliminado exitosamente.", result.Message);
-            _userRepositoryMock.Viewify(x => x.DeleteAsync(13), Times.Once);
-            _userRepositoryMock.Viewify(x => x.GetByIdAsync(It.IsAny<int>()), Times.Never);
+            _userRepositoryMock.Verify(x => x.DeleteAsync(13), Times.Once);
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<int>()), Times.Never);
         }
 
         [Fact]
@@ -260,7 +260,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.False(result.Data);
             Assert.Equal("Error al eliminar el user.", result.Message);
             Assert.Contains("delete error", result.Errors);
-            _userRepositoryMock.Viewify(x => x.DeleteAsync(13), Times.Once);
+            _userRepositoryMock.Verify(x => x.DeleteAsync(13), Times.Once);
         }
 
         [Fact]
@@ -276,7 +276,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.True(result.Success);
             Assert.True(result.Data);
             Assert.Equal("Viewificación de existencia del user realizada exitosamente.", result.Message);
-            _userRepositoryMock.Viewify(x => x.GetByIdAsync(13), Times.Once);
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(13), Times.Once);
         }
 
         [Fact]
@@ -292,7 +292,7 @@ namespace RETAIL.BASE.NEG.Tests.Services
             Assert.False(result.Data);
             Assert.Equal("Error al verificar la existencia del user.", result.Message);
             Assert.Contains("exists error", result.Errors);
-            _userRepositoryMock.Viewify(x => x.GetByIdAsync(13), Times.Once);
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(13), Times.Once);
         }
 
         private static User CreateUser(int id = 1)

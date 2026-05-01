@@ -6,8 +6,8 @@ const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 const emptyForm = {
   id: 0,
   name: "",
-  abreviation: "",
-  descripcion: "",
+  abbreviation: "",
+  description: "",
   order: 0,
   enabled: true,
 };
@@ -120,10 +120,18 @@ export default function Roles() {
     setModalError("");
     setSaving(true);
     try {
+      const payload = {
+        id: modal.data.id,
+        name: modal.data.name,
+        abbreviation: modal.data.abbreviation,
+        description: modal.data.description,
+        order: modal.data.order,
+        enabled: modal.data.enabled,
+      };
       if (modal.mode === "add") {
-        await roleService.add(modal.data);
+        await roleService.add(payload);
       } else {
-        await roleService.update(modal.data);
+        await roleService.update(payload);
       }
       closeModal();
       loadRoles();
@@ -160,7 +168,7 @@ export default function Roles() {
       <div className="flex flex-wrap gap-2 sm:gap-3 items-center mb-5">
         <button
           onClick={openAdd}
-          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition-colors text-sm"
+          className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold transition-colors text-sm"
         >
           + New Role
         </button>
@@ -210,7 +218,7 @@ export default function Roles() {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>
-              {["ID", "Name", "Abreviation", "Descripción", "Order", "Usuarios", "Menús", "Estatus", "Actions"].map((h) => (
+              {["ID", "Name", "Abbreviation", "Description", "Order", "Users", "Menu Items", "Status", "Actions"].map((h) => (
                 <th key={h} className="px-4 py-3 text-left font-semibold text-gray-600 whitespace-nowrap">
                   {h}
                 </th>
@@ -235,24 +243,24 @@ export default function Roles() {
                 <tr key={p.id} className="border-b last:border-0 hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-3 text-gray-500">{p.id}</td>
                   <td className="px-4 py-3 font-medium text-gray-900">{p.name}</td>
-                  <td className="px-4 py-3 text-gray-600">{p.abreviation}</td>
-                  <td className="px-4 py-3 text-gray-500 max-w-[200px] truncate" title={p.descripcion}>
-                    {p.descripcion || <span className="text-gray-300">—</span>}
+                  <td className="px-4 py-3 text-gray-600">{p.abbreviation}</td>
+                  <td className="px-4 py-3 text-gray-500 max-w-[200px] truncate" title={p.description}>
+                    {p.description || <span className="text-gray-300">—</span>}
                   </td>
                   <td className="px-4 py-3 text-gray-600">{p.order}</td>
                   <td className="px-4 py-3">
-                    {p.usuarios?.length > 0 ? (
-                      <span className="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-1 rounded-full">
-                        {p.usuarios.length}
+                    {p.users?.length > 0 ? (
+                      <span className="bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-full">
+                        {p.users.length}
                       </span>
                     ) : (
                       <span className="text-gray-300">—</span>
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    {p.menus?.length > 0 ? (
+                    {p.menuItems?.length > 0 ? (
                       <span className="bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-1 rounded-full">
-                        {p.menus.length}
+                        {p.menuItems.length}
                       </span>
                     ) : (
                       <span className="text-gray-300">—</span>
@@ -275,7 +283,7 @@ export default function Roles() {
                       </button>
                       <button
                         onClick={() => openEdit(p)}
-                        className="text-blue-600 hover:text-blue-800 text-xs border border-blue-300 px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+                        className="text-green-600 hover:text-green-800 text-xs border border-green-300 px-2 py-1 rounded hover:bg-green-50 transition-colors"
                       >
                         Edit
                       </button>
@@ -323,7 +331,7 @@ export default function Roles() {
         <div className="fixed inset-0 bg-black/50 flex justify-end z-50">
           <div className="bg-white w-full max-w-md h-full overflow-y-auto shadow-xl flex flex-col">
             <div className="flex items-center justify-between px-6 py-4 border-b bg-gray-50">
-              <h2 className="text-lg font-bold">Detalle de Role</h2>
+              <h2 className="text-lg font-bold">Role Details</h2>
               <button
                 onClick={() => setDetail(null)}
                 className="text-gray-400 hover:text-gray-600 text-2xl font-bold leading-none"
@@ -345,16 +353,16 @@ export default function Roles() {
                     <p className="font-medium">{detail.id}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">Abreviation</p>
-                    <p className="font-medium">{detail.abreviation || "—"}</p>
+                    <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">Abbreviation</p>
+                    <p className="font-medium">{detail.abbreviation || "—"}</p>
                   </div>
                   <div className="col-span-2">
                     <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">Name</p>
                     <p className="font-semibold text-base">{detail.name}</p>
                   </div>
                   <div className="col-span-2">
-                    <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">Descripción</p>
-                    <p>{detail.descripcion || "—"}</p>
+                    <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">Description</p>
+                    <p>{detail.description || "—"}</p>
                   </div>
                   <div>
                     <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">Order</p>
@@ -373,13 +381,13 @@ export default function Roles() {
                 {/* Menus */}
                 <div>
                   <p className="text-gray-400 text-xs uppercase tracking-wide mb-2">
-                    Menús asignados ({detail.menus?.length ?? 0})
+                    Menu Items ({detail.menuItems?.length ?? 0})
                   </p>
-                  {detail.menus?.length > 0 ? (
+                  {detail.menuItems?.length > 0 ? (
                     <ul className="space-y-1">
-                      {detail.menus.map((m) => (
+                      {detail.menuItems.map((m) => (
                         <li key={m.id} className="flex items-center gap-2 text-sm bg-purple-50 rounded px-3 py-2">
-                          <span className="font-mono text-purple-700 text-xs">{m.ruta || "—"}</span>
+                          <span className="font-mono text-purple-700 text-xs">{m.path || "—"}</span>
                           <span className="font-medium text-gray-700">{m.name}</span>
                         </li>
                       ))}
@@ -392,13 +400,13 @@ export default function Roles() {
                 {/* Users */}
                 <div>
                   <p className="text-gray-400 text-xs uppercase tracking-wide mb-2">
-                    Usuarios asignados ({detail.usuarios?.length ?? 0})
+                    Users ({detail.users?.length ?? 0})
                   </p>
-                  {detail.usuarios?.length > 0 ? (
+                  {detail.users?.length > 0 ? (
                     <ul className="space-y-1">
-                      {detail.usuarios.map((u) => (
-                        <li key={u.id} className="flex items-center gap-2 text-sm bg-blue-50 rounded px-3 py-2">
-                          <span className="font-medium text-blue-800">{u.nameCompleto || u.name}</span>
+                      {detail.users.map((u) => (
+                        <li key={u.id} className="flex items-center gap-2 text-sm bg-green-50 rounded px-3 py-2">
+                          <span className="font-medium text-green-800">{u.name}</span>
                           <span className="text-gray-400 text-xs ml-auto">{u.email}</span>
                         </li>
                       ))}
@@ -411,7 +419,7 @@ export default function Roles() {
                 <div className="pt-2 flex gap-3">
                   <button
                     onClick={() => { setDetail(null); openEdit(detail); }}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-sm font-semibold transition-colors"
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded text-sm font-semibold transition-colors"
                   >
                     Edit
                   </button>
@@ -458,17 +466,17 @@ export default function Roles() {
                     required
                     value={modal.data.name}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Abreviation</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Abbreviation</label>
                   <input
-                    name="abreviation"
-                    value={modal.data.abreviation ?? ""}
+                    name="abbreviation"
+                    value={modal.data.abbreviation ?? ""}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
@@ -480,7 +488,7 @@ export default function Roles() {
                     min={0}
                     value={modal.data.order ?? 0}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
 
@@ -491,7 +499,7 @@ export default function Roles() {
                     type="checkbox"
                     checked={modal.data.enabled ?? true}
                     onChange={handleFormChange}
-                    className="w-4 h-4 accent-blue-600"
+                    className="w-4 h-4 accent-green-600"
                   />
                   <label htmlFor="role-enabled-check" className="text-sm font-medium text-gray-700">
                     Enabled
@@ -500,13 +508,13 @@ export default function Roles() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                 <textarea
-                  name="descripcion"
-                  value={modal.data.descripcion ?? ""}
+                  name="description"
+                  value={modal.data.description ?? ""}
                   onChange={handleFormChange}
                   rows={3}
-                  className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
                 />
               </div>
 
@@ -521,7 +529,7 @@ export default function Roles() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white rounded text-sm font-semibold transition-colors"
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white rounded text-sm font-semibold transition-colors"
                 >
                   {saving ? "Guardando..." : "Guardar"}
                 </button>
@@ -535,7 +543,7 @@ export default function Roles() {
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
-            <h2 className="text-lg font-bold mb-2">Confirmar eliminación</h2>
+            <h2 className="text-lg font-bold mb-2">Confirm eliminación</h2>
             <p className="text-sm text-gray-600 mb-6">
               ¿Estás seguro de que deseas eliminar el role{" "}
               <strong>{deleteTarget.name || `#${deleteTarget.id}`}</strong>?{" "}

@@ -1,4 +1,4 @@
-﻿using Asp.Viewsioning;
+﻿using Asp.Versioning;
 using RETAIL.BASE.API.Controllers.Base;
 using RETAIL.BASE.NEG.Interfaces;
 using RETAIL.BASE.OBJ;
@@ -17,8 +17,8 @@ namespace RETAIL.BASE.API.Controllers.V1
     /// This controller provides endpoints for managing user profiles.
     /// </remarks>
     [Authorize]
-    [ApiViewsion("1.0")]
-    [Route("api/v{version:apiViewsion}/[controller]")] // Viewsion in the URL path
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")] // Version in the URL path
     [ApiController]
     public class RoleController : BaseController
     {
@@ -89,6 +89,11 @@ namespace RETAIL.BASE.API.Controllers.V1
             return webResult.Success ? Ok(webResult) : BadRequest(webResult);
         }
 
+        /// <summary>
+        /// Deletes a profile by its unique key.
+        /// </summary>
+        /// <param name="idRole">The unique key identifying the profile.</param>
+        /// <returns>True if the deletion was successful; otherwise, false.</returns>
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete([FromQuery, Required] int idRole)
         {
@@ -108,5 +113,30 @@ namespace RETAIL.BASE.API.Controllers.V1
             return webResult.Success ? Ok(webResult) : BadRequest(webResult);
         }
 
+        /// <summary>
+        /// Assigns a profile to a user.
+        /// </summary>
+        /// <param name="idUser">The unique key identifying the user.</param>
+        /// <param name="idRole">The unique key identifying the profile.</param>
+        /// <returns>True if the assignment was successful; otherwise, false.</returns>
+        [HttpPost("AssignProfileToUser")]
+        public async Task<IActionResult> AssignProfileToUser([FromQuery, Required] int idUser, [FromQuery, Required] int idRole)
+        {
+            var webResult = await _roleService.AssignProfileToUserAsync(idUser, idRole);
+            return webResult.Success ? Ok(webResult) : BadRequest(webResult);
+        }
+
+        /// <summary>
+        /// Removes a profile from a user.
+        /// </summary>
+        /// <param name="idUser">The unique key identifying the user.</param>
+        /// <param name="idRole">The unique key identifying the profile.</param>
+        /// <returns>True if the removal was successful; otherwise, false.</returns>
+        [HttpPost("RemoveProfileFromUser")]
+        public async Task<IActionResult> RemoveProfileFromUser([FromQuery, Required] int idUser, [FromQuery, Required] int idRole)
+        {
+            var webResult = await _roleService.RemoveProfileFromUserAsync(idUser, idRole);
+            return webResult.Success ? Ok(webResult) : BadRequest(webResult);
+        }
     }
 }

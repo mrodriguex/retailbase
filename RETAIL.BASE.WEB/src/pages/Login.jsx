@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { login } from "../services/authService";
+import projectLogo from "../assets/project_logo.png";
 
 export default function Login({ onLoginSuccess, sessionMessage = "" }) {
   const [username, setUsername] = useState("");
@@ -36,6 +37,9 @@ export default function Login({ onLoginSuccess, sessionMessage = "" }) {
         className="bg-white p-6 sm:p-8 rounded shadow-md w-full max-w-sm"
         noValidate
       >
+        <div className="text-center mb-6">
+          <img src={projectLogo} alt="Project Logo" className="mx-auto h-16 w-auto" />
+        </div>
         <h1 className="text-2xl font-bold mb-6 text-center">Log In</h1>
 
         {sessionMessage && (
@@ -56,7 +60,7 @@ export default function Login({ onLoginSuccess, sessionMessage = "" }) {
         <input
           type="text"
           placeholder="Username"
-          className="w-full border border-gray-300 rounded p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full border border-gray-300 rounded p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-green-500"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           autoComplete="username"
@@ -69,7 +73,7 @@ export default function Login({ onLoginSuccess, sessionMessage = "" }) {
         <input
           type="password"
           placeholder="Password"
-          className="w-full border border-gray-300 rounded p-2 mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full border border-gray-300 rounded p-2 mb-6 focus:outline-none focus:ring-2 focus:ring-green-500"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="current-password"
@@ -79,7 +83,7 @@ export default function Login({ onLoginSuccess, sessionMessage = "" }) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold p-2 rounded transition-colors"
+          className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white font-semibold p-2 rounded transition-colors"
         >
           {loading ? "Logging in..." : "Log In"}
         </button>

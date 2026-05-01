@@ -28,7 +28,6 @@ namespace RETAIL.BASE.DAT.Repositories
         public async Task<User> GetByIdAsync(int id)
         {
             var user = await _context.Users
-                .AsNoTracking()
                 .Include(u => u.Companys)
                 .Include(u => u.Roles)
                 .ThenInclude(p => p.MenuItems)
@@ -72,12 +71,17 @@ namespace RETAIL.BASE.DAT.Repositories
             var trackedEntity = _context.Users.Local.FirstOrDefault(u => u.Id == entity.Id);
             if (trackedEntity != null)
             {
-                _context.Entry(trackedEntity).State = EntityState.Detached;
+                // Entity is already tracked, update scalar properties
+                _context.Entry(trackedEntity).CurrentValues.SetValues(entity);
+                // Collections are modified in place, EF detects changes automatically
             }
-
-            foreach (var role in entity.Roles) { _context.Attach(role); }
-            foreach (var company in entity.Companys) { _context.Attach(company); }
-            _context.Users.Update(entity);
+            else
+            {
+                // Entity not tracked, attach related and update
+                foreach (var role in entity.Roles) { _context.Attach(role); }
+                foreach (var company in entity.Companys) { _context.Attach(company); }
+                _context.Users.Update(entity);
+            }
             await _context.SaveChangesAsync();
             return true;
         }

@@ -10,7 +10,7 @@ export async function getAll({ enabled, pageIndex = 1, pageSize = 20 } = {}) {
 
 export async function getById(idCategory) {
   const response = await apiClient.get('/api/v1/Category/GetById', {
-    params: { idCategory },
+    params: { id: idCategory },
   });
   return unwrap(response);
 }
@@ -27,7 +27,7 @@ export async function update(category) {
 
 export async function remove(idCategory) {
   const response = await apiClient.delete('/api/v1/Category/Delete', {
-    params: { idCategory },
+    params: { id: idCategory },
   });
   return unwrap(response);
 }
