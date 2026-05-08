@@ -9,6 +9,7 @@ bin/
 *.bak
 *.swp
 *.db
+!retailbase.db
 *.pdb
 *.sln.docstates
 *.suo
