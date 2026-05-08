@@ -144,3 +144,35 @@ Configuration is provided via the standard ASP.NET Core `IConfiguration` pipelin
 | API Versioning | URL segment versioning via `Asp.Versioning` (v1, v2) |
 | Real-time push | SignalR hub (`DataHub`) for broadcasting events to connected clients |
 | Audit fields | `IdUserCreation`, `IdUserModification`, `DateTimeCreation`, `DateTimeModification` set automatically in services |
+
+---
+
+## 8. CI/CD Pipeline
+
+The repository contains a `Jenkinsfile` that defines a declarative Jenkins pipeline. The pipeline runs inside a `mcr.microsoft.com/dotnet/sdk:8.0` Docker agent.
+
+### Stages
+
+| Stage | Description |
+|---|---|
+| **Prepare** | Installs `openssh-client` via `apt-get`; creates a writable home directory for the .NET CLI. |
+| **Checkout** | Clones the repository via `checkout scm`. |
+| **Set Variables** | Resolves environment-specific variables (`PROJECT_DIR`, `PROJECT_NAME`, `DEPLOY_DIR`, `DEPLOY_PATH`, `SERVICE`) from parameterized build inputs (`PROJECT`, `ENVIRONMENT`). |
+| **Build** | Runs `dotnet restore`, `dotnet build -c Release`, and `dotnet publish -c Release -o ./publish` on the selected project. |
+| **Deploy** | Copies the publish output to the remote server via `rsync` over SSH. |
+| **Restart** | Restarts the target `systemd` service on the remote host and verifies it is active. |
+
+### Environment variables
+
+| Variable | Value |
+|---|---|
+| `DOTNET_CLI_TELEMETRY_OPTOUT` | `1` |
+| `DOTNET_SKIP_FIRST_TIME_EXPERIENCE` | `1` |
+| `DOTNET_CLI_HOME` | `/tmp/dotnet-home` |
+| `USER` | `mrodriguex` |
+| `SERVER` | `62.72.3.22` |
+
+### Notes
+- Parameterized pipeline inputs (`PROJECT`, `ENVIRONMENT`, `SKIP_BUILD`) are commented out in the current `Jenkinsfile`; their `Set Variables` usage remains active in code but would fail without values being provided.
+- SSH key management is expected to be configured as a Jenkins credential; the `Jenkinsfile` does not embed keys.
+- The pipeline targets a Linux server running `systemd`.

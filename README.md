@@ -3,6 +3,10 @@
 
 RETAIL.BASE is a modular and extensible framework designed to facilitate rapid development of enterprise-grade applications. It provides a set of reusable components, libraries, and tools that streamline common development tasks and promote best practices.
 
+## System Specification
+
+A complete technical specification of the system is available in [`spec/README.md`](spec/README.md), covering architecture, API contracts, database schema, coding standards, and security analysis.
+
 ## Current repository status
 
 This README was regenerated from the current source tree on **2026-04-30**.

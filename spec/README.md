@@ -29,13 +29,43 @@ RETAIL.BASE.API → RETAIL.BASE.NEG → RETAIL.BASE.DAT → RETAIL.BASE.OBJ
 
 ## Guide for New Developers
 
-1. **Prerequisites** — .NET 8 SDK, PostgreSQL server.
-2. **Configuration** — Connection string and JWT settings are in `RETAIL.BASE.API/appsettings.json`. Update `SqlConn_RETAIL_BASE` for your database.
-3. **Database setup** — Apply EF migrations: `dotnet ef database update --project RETAIL.BASE.DAT --startup-project RETAIL.BASE.API`.
-4. **Run** — `dotnet run --project RETAIL.BASE.API`. Swagger UI is available at `/swagger`.
-5. **Authentication** — Call `POST /api/v1/Auth/login` with `{ "username": "...", "password": "..." }` to obtain a JWT. Include it as `Authorization: Bearer <token>` on subsequent requests.
-6. **Tests** — Run `dotnet test` from the solution root.
-7. **CI/CD** — A `Jenkinsfile` is present for pipeline-based deployments to a remote server via SSH.
+1. **Prerequisites** — .NET 8 SDK, PostgreSQL server, Node.js + npm (for front-end).
+2. **Clone**
+   ```bash
+   git clone https://github.com/mrodriguex/RETAIL.BASE.git
+   cd RETAIL.BASE
+   ```
+3. **Configuration** — Connection string and JWT settings are in `RETAIL.BASE.API/appsettings.json`. Update `ConnectionStrings:SqlConn_RETAIL_BASE` and `Jwt:Key` for your environment.
+4. **Database setup** — Apply EF migrations:
+   ```bash
+   dotnet ef database update --project RETAIL.BASE.DAT --startup-project RETAIL.BASE.API
+   ```
+5. **Build**
+   ```bash
+   dotnet build RETAIL.BASE.sln
+   ```
+6. **Run API**
+   ```bash
+   dotnet run --project RETAIL.BASE.API/RETAIL.BASE.API.csproj
+   ```
+   Swagger UI is available at `/swagger`.
+7. **Run front-end**
+   ```bash
+   cd RETAIL.BASE.WEB
+   npm install
+   npm run dev
+   ```
+8. **Authentication** — Call `POST /api/v1/Auth/login` with `{ "username": "...", "password": "..." }` to obtain a JWT. Include it as `Authorization: Bearer <token>` on subsequent requests.
+9. **Run tests**
+   ```bash
+   dotnet test RETAIL.BASE.sln
+   ```
+   Or run each project individually:
+   ```bash
+   dotnet test RETAIL.BASE.NEG.Tests/RETAIL.BASE.NEG.Tests.csproj
+   dotnet test RETAIL.BASE.DAT.Tests/RETAIL.BASE.DAT.Tests.csproj
+   ```
+10. **CI/CD** — A `Jenkinsfile` defines a Jenkins pipeline that builds, publishes, and deploys via SSH + rsync to a remote Linux server running systemd. See [architecture/architecture.md](architecture/architecture.md) §8 for details.
 
 ---
 
@@ -43,9 +73,10 @@ RETAIL.BASE.API → RETAIL.BASE.NEG → RETAIL.BASE.DAT → RETAIL.BASE.OBJ
 
 | File | Contents |
 |---|---|
-| [architecture/architecture.md](architecture/architecture.md) | Layers, dependencies, auth design, configuration |
+| [architecture/architecture.md](architecture/architecture.md) | Layers, dependencies, auth design, configuration, CI/CD |
 | [features/features-overview.md](features/features-overview.md) | All implemented features and user flows |
 | [api/api-contracts.md](api/api-contracts.md) | All controllers, endpoints, request/response shapes |
 | [database/database-spec.md](database/database-spec.md) | Entities, relationships, migrations |
-| [standards/coding-standards.md](standards/coding-standards.md) | Naming conventions, patterns, exception handling |
+| [standards/coding-standards.md](standards/coding-standards.md) | Naming conventions, patterns, exception handling, contributing |
 | [security/security-spec.md](security/security-spec.md) | Auth mechanism, password handling, known risks |
+| [testing/testing-spec.md](testing/testing-spec.md) | Test projects, frameworks, patterns, test inventory |

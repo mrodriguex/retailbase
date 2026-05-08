@@ -185,3 +185,46 @@ All features listed here are based strictly on the existing codebase. No functio
 ## 14. Reporting (Commented Out — Not Active)
 
 The `Controllers/RPT/` folder contains several reporting controller files (`ReportsController`, `ViewerController`, `ReportDesignerController`, `ReportsHistoryController`, and composed variants). **All controller code is commented out**. No reporting functionality is active in the codebase.
+
+---
+
+## 15. Messages — Broadcast and Unicast (Front-End UI Feature)
+
+**Description**: A messaging interface available in the web front-end (`RETAIL.BASE.WEB`) that allows users to send messages to all connected clients (broadcast) or to a specific user (unicast) via the SignalR hub.
+
+**Scope** (evidenced by screenshots in `docs/assets/images/`):
+- `img_ui_messages_broadcast.png` — Broadcast message UI (send to all connected clients).
+- `img_ui_messages_unicast.png` — Unicast message UI (send to a specific user by username).
+
+**Backend implementation** (see Feature 13):
+- Broadcast: calls `DataHub.SendMessage(string message)` → emits `ReceiveMessage` to all.
+- Unicast: calls `DataHub.SendMessageToUser(string userName, string message)` → emits `ReceiveMessage` to connections matching the target username.
+
+---
+
+## 16. Web Front-End (RETAIL.BASE.WEB)
+
+**Description**: A Vite-based front-end application (Vue or similar) that consumes the REST API and SignalR hub.
+
+**Scope** (derived from `README.md` and screenshot inventory in `docs/assets/images/`):
+- Login screen.
+- User management (list, details, edit, change password, roles assignment, companies assignment).
+- Role management (list, details, edit).
+- Company management (list, edit).
+- Customer management (list, edit).
+- Brand management (list, edit).
+- Category management (list, edit).
+- Product management (list, edit).
+- Product Presentation management (list, edit).
+- Menu management (list, edit).
+- Broadcast and unicast message UI.
+- Swagger UI access (via the API directly).
+
+**Run**:
+```bash
+cd RETAIL.BASE.WEB
+npm install
+npm run dev
+```
+
+**Note**: No source-level analysis of the front-end was performed. Feature scope is inferred from the documentation screenshots.

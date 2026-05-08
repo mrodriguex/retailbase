@@ -132,3 +132,35 @@ These conventions are inferred directly from the existing codebase. They represe
 - Regions (`#region`) are used in some services and repositories to group logical sections (e.g., `#region Implementation of IServiceBase`).
 - XML documentation comments (`///`) are present on public APIs in some controllers and service interfaces; not consistently applied across the codebase.
 - Spanish is used in exception messages, log messages, and some comments. English is used in code identifiers, XML doc comments, and `HubCommunicationService`.
+
+---
+
+## 9. Testing Conventions
+
+Derived from the test projects (`RETAIL.BASE.NEG.Tests`, `RETAIL.BASE.DAT.Tests`). See [testing/testing-spec.md](../testing/testing-spec.md) for full detail.
+
+- **Framework**: xUnit (`[Fact]` for individual cases; no `[Theory]` observed).
+- **Mocking**: Moq — all external dependencies mocked in NEG.Tests; no mocks needed in DAT.Tests (in-memory DB used directly).
+- **Pattern**: Arrange–Act–Assert in every test method.
+- **Naming**: `MethodName_WhenCondition_ExpectedOutcome` (e.g., `GetById_WhenBrandExists_ReturnsSuccess`).
+- **Isolation**: Each DAT.Tests test creates its own in-memory DB instance via `TestDataFactory.CreateContext()` (unique `Guid` name per test class).
+- **Coverage**: Every service method is expected to have at minimum a success case and an exception/failure case.
+- **New features must include tests** (stated in `README.md` contributing guidelines).
+
+---
+
+## 10. Contributing Conventions
+
+From `README.md`:
+
+1. Fork the repository.
+2. Create a feature branch: `git checkout -b feature/YourFeature`.
+3. Commit with descriptive messages: `git commit -am 'Add some feature'`.
+4. Push the branch: `git push origin feature/YourFeature`.
+5. Open a Pull Request.
+
+**Requirements for a PR to be accepted**:
+- Code follows the existing style (patterns and naming described in this document).
+- All existing tests pass (`dotnet test`).
+- New features include tests.
+- Documentation is updated.
