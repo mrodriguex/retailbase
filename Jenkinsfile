@@ -31,17 +31,14 @@ pipeline {
                 script {
                     // Evaluar condicionales AQUÍ dentro de script
                     
-                    env.USER = params.USER == '' ? 'mrodriguex' : params.USER
-
-                    env.SERVER = params.SERVER == '' ? 'localhost' : params.SERVER
-
-                    env.ENVIRONMENT = params.ENVIRONMENT == '' ? 'dev' : params.ENVIRONMENT
-
-                    env.PROJECT_NAME = params.PROJECT == '' ? 'web' : params.PROJECT
+                    env.USER = params.USER ?: 'mrodriguex'
+                    env.SERVER = params.SERVER ?: 'localhost'
+                    env.ENVIRONMENT = params.ENVIRONMENT ?: 'dev'
+                    env.PROJECT_NAME = params.PROJECT ?: 'RETAIL.BASE.API'
                     
                     env.PROJECT_DIR = env.PROJECT_NAME
                                         
-                    env.DEPLOY_PATH = params.DEPLOY_PATH == '' ? "/home/${params.USER}/www/services/${env.ENVIRONMENT}/${env.PROJECT_NAME}" : params.DEPLOY_PATH
+                    env.DEPLOY_PATH = params.DEPLOY_PATH ?: "/home/${env.USER}/www/services/${env.ENVIRONMENT}/${env.PROJECT_NAME}"
                     
                     env.SERVICE = "${env.PROJECT_NAME}-${env.ENVIRONMENT}.service"
                     
