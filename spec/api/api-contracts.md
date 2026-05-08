@@ -78,6 +78,8 @@ HTTP status mapping:
 | POST | `/api/v1/User/Add` | 🔒 | Create user |
 | PUT | `/api/v1/User/Update` | 🔒 | Update user |
 | DELETE | `/api/v1/User/Delete?idUser={int}` | 🔒 | Delete user |
+| PUT | `/api/v1/User/UpdatePassword` | 🔒 | Change password (body: `LoginModel`) |
+| PUT | `/api/v1/User/UnlockUser` | 🔒 | Unlock a locked-out user (body: `int idUser`) |
 
 **User body** (`User` entity):
 ```json
@@ -113,6 +115,9 @@ HTTP status mapping:
 | POST | `/api/v1/Role/Add` | 🔒 | Create role |
 | PUT | `/api/v1/Role/Update` | 🔒 | Update role |
 | DELETE | `/api/v1/Role/Delete?idRole={int}` | 🔒 | Delete role |
+| GET | `/api/v1/Role/GetUserProfiles?idUser={int}` | 🔒 | Get roles assigned to a user |
+| POST | `/api/v1/Role/AssignProfileToUser?idUser={int}&idRole={int}` | 🔒 | Assign a role to a user |
+| POST | `/api/v1/Role/RemoveProfileFromUser?idUser={int}&idRole={int}` | 🔒 | Remove a role from a user |
 
 **Role body** (`Role` entity):
 ```json
@@ -137,6 +142,7 @@ HTTP status mapping:
 | GET | `/api/v1/MenuItem/GetById?idMenuItem={int}` | 🔒 | Get menu item by ID |
 | GET | `/api/v1/MenuItem/GetAll?enabled={bool?}&pageIndex={int}&pageSize={int}` | 🔒 | List menu items (paginated) |
 | GET | `/api/v1/MenuItem/GetMenuItemsByUser?idUser={int}&idRole={int}` | 🔒 | Get menu items for a user/role |
+| GET | `/api/v1/MenuItem/GetMenuItemsByProfile?idRole={int}` | 🔒 | Get menu items for a role |
 | POST | `/api/v1/MenuItem/Add` | 🔒 | Create menu item |
 | PUT | `/api/v1/MenuItem/Update` | 🔒 | Update menu item |
 | DELETE | `/api/v1/MenuItem/Delete?idMenuItem={int}` | 🔒 | Delete menu item |
@@ -168,6 +174,9 @@ HTTP status mapping:
 | POST | `/api/v1/Company/Add` | 🔒 | Create company |
 | PUT | `/api/v1/Company/Update` | 🔒 | Update company |
 | DELETE | `/api/v1/Company/Delete?idCompany={int}` | 🔒 | Delete company |
+| GET | `/api/v1/Company/GetCompaniesByUser?idUser={int}&pageIndex={int}&pageSize={int}` | 🔒 | Get companies assigned to a user |
+| POST | `/api/v1/Company/AssignCompanyToUser?idUser={int}&idCompany={int}` | 🔒 | Assign a company to a user |
+| POST | `/api/v1/Company/RemoveCompanyFromUser?idUser={int}&idCompany={int}` | 🔒 | Remove a company from a user |
 
 **Company body**:
 ```json
@@ -332,7 +341,7 @@ HTTP status mapping:
 
 ### User — `/api/v2/User`
 
-Mirrors V1 `UserController` with the same endpoint signatures under `/api/v2/User/`.
+Shares most endpoint signatures with V1 `UserController` but has additional endpoints and no `Delete`.
 
 | Method | Route | Auth | Description |
 |---|---|---|---|
@@ -341,7 +350,11 @@ Mirrors V1 `UserController` with the same endpoint signatures under `/api/v2/Use
 | GET | `/api/v2/User/Exists?idUser={int}` | 🔓 | Check if user exists |
 | POST | `/api/v2/User/Add` | 🔒 | Create user |
 | PUT | `/api/v2/User/Update` | 🔒 | Update user |
-| DELETE | `/api/v2/User/Delete?idUser={int}` | 🔒 | Delete user |
+| POST | `/api/v2/User/AuthenticateUser` | 🔒 | Authenticate a user (V2-only) |
+| PUT | `/api/v2/User/UpdatePassword` | 🔒 | Change password (body: `LoginModel`) |
+| PUT | `/api/v2/User/UnlockUser` | 🔒 | Unlock a locked-out user |
+
+**Note**: V2 `UserController` does not expose a `Delete` endpoint. V2 adds `AuthenticateUser` which is not present in V1.
 
 ---
 

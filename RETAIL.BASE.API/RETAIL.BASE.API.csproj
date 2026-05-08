@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RETAIL.BASE.DAT\RETAIL.BASE.DAT.csproj" />
     <ProjectReference Include="..\RETAIL.BASE.NEG\RETAIL.BASE.NEG.csproj" />
     <ProjectReference Include="..\RETAIL.BASE.OBJ\RETAIL.BASE.OBJ.csproj" />
   </ItemGroup>

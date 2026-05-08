@@ -1,5 +1,5 @@
 using RETAIL.BASE.DAT;
-using RETAIL.BASE.DAT.Interfaces;
+using RETAIL.BASE.OBJ.Ports;
 using RETAIL.BASE.DAT.Repositories;
 using RETAIL.BASE.NEG.Helpers;
 using RETAIL.BASE.NEG.Interfaces;
@@ -59,7 +59,7 @@ public static class DependencyInjection
 
         // Register DbContext
         services.AddDbContext<RETAIL_BASEDbContext>(options =>
-            options.UseNpgsql(
+            options.UseSqlite(
                 configuration.GetConnectionString("SqlConn_RETAIL_BASE"),
                 b => b.MigrationsAssembly("RETAIL.BASE.DAT")
             ));

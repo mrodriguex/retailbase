@@ -10,13 +10,13 @@ namespace RETAIL.BASE.NEG.Tests.Services
 {
     public class ProductServiceTests
     {
-        private readonly Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<Product, BaseFilter, int>> _repositoryMock;
+        private readonly Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<Product, BaseFilter, int>> _repositoryMock;
         private readonly Mock<ILogger<ProductService>> _loggerMock;
         private readonly ProductService _service;
 
         public ProductServiceTests()
         {
-            _repositoryMock = new Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<Product, BaseFilter, int>>();
+            _repositoryMock = new Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<Product, BaseFilter, int>>();
             _loggerMock = new Mock<ILogger<ProductService>>();
             _service = new ProductService(_loggerMock.Object, _repositoryMock.Object);
         }

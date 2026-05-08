@@ -6,32 +6,10 @@ pipeline {
         }
     }
 
-    // parameters {
-    //     choice(
-    //         name: 'PROJECT',
-    //         choices: ['web', 'worker'],
-    //         description: 'Proyecto a desplegar'
-    //     )
-    //     choice(
-    //         name: 'ENVIRONMENT',
-    //         choices: ['pre', 'pro'],
-    //         description: 'Ambiente de despliegue'
-    //     )
-    //     booleanParam(
-    //         name: 'SKIP_BUILD',
-    //         defaultValue: false,
-    //         description: 'Saltar build (solo redeploy)'
-    //     )
-    // }
-
     environment {
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
         DOTNET_SKIP_FIRST_TIME_EXPERIENCE = '1'
         DOTNET_CLI_HOME = '/tmp/dotnet-home'
-
-        // Variables según parámetros
-        USER = 'mrodriguex'
-        SERVER = '62.72.3.22'
     }
 
     stages {
@@ -52,17 +30,24 @@ pipeline {
             steps {
                 script {
                     // Evaluar condicionales AQUÍ dentro de script
-                    env.PROJECT_DIR = params.PROJECT == 'web' ? 'Analitica' : 'AnaliticaWorker'
-                    env.PROJECT_NAME = params.PROJECT == 'web' ? 'Analitica' : 'AnaliticaWorker'
-                    env.DEPLOY_DIR = params.PROJECT == 'web' ? 'analitica' : 'analiticaWorker'
-                    env.DEPLOY_PATH = "/home/${env.USER}/www/analitica.net/${params.ENVIRONMENT}/${env.DEPLOY_DIR}"
-                    env.SERVICE = params.PROJECT == 'web' 
-                        ? "analitica-${params.ENVIRONMENT}.service"
-                        : "analitica-worker-${params.ENVIRONMENT}.service"
+                    
+                    env.USER = params.USER == '' ? 'mrodriguex' : params.USER
+
+                    env.SERVER = params.SERVER == '' ? 'localhost' : params.SERVER
+
+                    env.ENVIRONMENT = params.ENVIRONMENT == '' ? 'dev' : params.ENVIRONMENT
+
+                    env.PROJECT_NAME = params.PROJECT == '' ? 'web' : params.PROJECT
+                    
+                    env.PROJECT_DIR = env.PROJECT_NAME
+                                        
+                    env.DEPLOY_PATH = params.DEPLOY_PATH == '' ? "/home/${params.USER}/www/services/${env.ENVIRONMENT}/${env.PROJECT_NAME}" : params.DEPLOY_PATH
+                    
+                    env.SERVICE = "${env.PROJECT_NAME}-${env.ENVIRONMENT}.service"
                     
                     echo "Configuración:"
-                    echo "  PROYECTO: ${params.PROJECT}"
-                    echo "  AMBIENTE: ${params.ENVIRONMENT}"
+                    echo "  PROYECTO: ${env.PROJECT_NAME}"
+                    echo "  AMBIENTE: ${env.ENVIRONMENT}"
                     echo "  SERVICIO: ${env.SERVICE}"
                     echo "  PATH: ${env.DEPLOY_PATH}"
                 }
@@ -71,16 +56,16 @@ pipeline {
 
         stage('Build') {
             steps {
-                dir("${PROJECT_DIR}") {
-                    sh "dotnet restore ${PROJECT_NAME}.csproj"
-                    sh "dotnet build ${PROJECT_NAME}.csproj -c Release"
-                    sh "dotnet publish ${PROJECT_NAME}.csproj -c Release -o ./publish"
+                dir("${env.PROJECT_DIR}") {
+                    sh "dotnet restore ${env.PROJECT_NAME}.csproj"
+                    sh "dotnet build ${env.PROJECT_NAME}.csproj -c Release"
+                    sh "dotnet publish ${env.PROJECT_NAME}.csproj -c Release -o ./publish"
                     sh '''
                         echo "=== BUSCANDO appsettings ==="
                         find . -name "appsettings.json"
                     '''
                     sh "cat ./publish/appsettings.json"
-                    echo "✅ Build completado para ${params.PROJECT} en ${params.ENVIRONMENT}"
+                    echo "✅ Build completado para ${env.PROJECT_NAME} en ${env.ENVIRONMENT}"
                 }
             }
         }
@@ -88,23 +73,23 @@ pipeline {
         stage('Deploy') {
             steps {
                 sshagent(['server-deploy-key']) {
-                    dir("${PROJECT_DIR}") {
+                    dir("${env.PROJECT_DIR}") {
                         sh """
-                            echo "=== DESPLEGANDO ${params.PROJECT} en ${params.ENVIRONMENT} ==="
-                            ssh -o StrictHostKeyChecking=no ${USER}@${SERVER} "rm -rf ${DEPLOY_PATH}/*"
-                            ssh -o StrictHostKeyChecking=no ${USER}@${SERVER} "mkdir -p ${DEPLOY_PATH}"
-                            scp -o StrictHostKeyChecking=no -r publish/* ${USER}@${SERVER}:${DEPLOY_PATH}/
+                            echo "=== DESPLEGANDO ${env.PROJECT_NAME} en ${env.ENVIRONMENT} ==="
+                            ssh -o StrictHostKeyChecking=no ${env.USER}@${env.SERVER} "rm -rf ${env.DEPLOY_PATH}/*"
+                            ssh -o StrictHostKeyChecking=no ${env.USER}@${env.SERVER} "mkdir -p ${env.DEPLOY_PATH}"
+                            scp -o StrictHostKeyChecking=no -r publish/* ${env.USER}@${env.SERVER}:${env.DEPLOY_PATH}/
                             
                             echo "=== CONFIGURANDO SERVICIO ==="
-                            ssh -o StrictHostKeyChecking=no ${USER}@${SERVER} "
-                                chown -R ${USER}:${USER} ${DEPLOY_PATH}
+                            ssh -o StrictHostKeyChecking=no ${env.USER}@${env.SERVER} "
+                                chown -R ${env.USER}:${env.USER} ${env.DEPLOY_PATH}
                                 sudo /usr/bin/systemctl daemon-reload
-                                sudo /usr/bin/systemctl restart ${SERVICE}
+                                sudo /usr/bin/systemctl restart ${env.SERVICE}
                                 echo 'Service status:'
-                                sudo /usr/bin/systemctl status ${SERVICE} --no-pager | head -5
+                                sudo /usr/bin/systemctl status ${env.SERVICE} --no-pager | head -5
                             "
                             
-                            echo "✅ ${params.PROJECT} desplegado en ${params.ENVIRONMENT}"
+                            echo "✅ ${env.PROJECT_NAME} desplegado en ${env.ENVIRONMENT}"
                         """
                     }
                 }
@@ -114,10 +99,10 @@ pipeline {
 
     post {
         success { 
-            echo "✅ PIPELINE COMPLETADO - ${params.PROJECT} en ${params.ENVIRONMENT}"
+            echo "✅ PIPELINE COMPLETADO - ${env.PROJECT_NAME} en ${env.ENVIRONMENT}"
         }
         failure { 
-            echo "❌ FALLÓ - ${params.PROJECT} en ${params.ENVIRONMENT}"
+            echo "❌ FALLÓ - ${env.PROJECT_NAME} en ${env.ENVIRONMENT}"
         }
         always { 
             archiveArtifacts artifacts: 'publish/**', allowEmptyArchive: true 

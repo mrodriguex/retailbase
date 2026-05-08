@@ -12,15 +12,15 @@ namespace RETAIL.BASE.NEG.Tests.Services
 {
     public class CompanyServiceTests
     {
-        private readonly Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<Company, BaseFilter, int>> _companyRepositoryMock;
-        private readonly Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<User, BaseFilter, int>> _userRepositoryMock;
+        private readonly Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<Company, BaseFilter, int>> _companyRepositoryMock;
+        private readonly Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<User, BaseFilter, int>> _userRepositoryMock;
         private readonly Mock<ILogger<CompanyService>> _loggerMock;
         private readonly CompanyService _service;
 
         public CompanyServiceTests()
         {
-            _companyRepositoryMock = new Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<Company, BaseFilter, int>>();
-            _userRepositoryMock = new Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<User, BaseFilter, int>>();
+            _companyRepositoryMock = new Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<Company, BaseFilter, int>>();
+            _userRepositoryMock = new Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<User, BaseFilter, int>>();
             _loggerMock = new Mock<ILogger<CompanyService>>();
             _service = new CompanyService(_loggerMock.Object, _companyRepositoryMock.Object, _userRepositoryMock.Object);
         }

@@ -12,16 +12,16 @@ namespace RETAIL.BASE.NEG.Tests.Services
 {
     public class RoleServiceTests
     {
-        private readonly Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<Role, BaseFilter, int>> _roleRepositoryMock;
-        private readonly Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<User, BaseFilter, int>> _userRepositoryMock;
+        private readonly Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<Role, BaseFilter, int>> _roleRepositoryMock;
+        private readonly Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<User, BaseFilter, int>> _userRepositoryMock;
         private readonly Mock<ILogger<RoleService>> _loggerMock;
         private readonly Mock<IConfiguration> _configurationMock;
         private readonly RoleService _service;
 
         public RoleServiceTests()
         {
-            _roleRepositoryMock = new Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<Role, BaseFilter, int>>();
-            _userRepositoryMock = new Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<User, BaseFilter, int>>();
+            _roleRepositoryMock = new Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<Role, BaseFilter, int>>();
+            _userRepositoryMock = new Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<User, BaseFilter, int>>();
             _loggerMock = new Mock<ILogger<RoleService>>();
             _configurationMock = new Mock<IConfiguration>();
             _service = new RoleService(_loggerMock.Object, _roleRepositoryMock.Object, _userRepositoryMock.Object, _configurationMock.Object);

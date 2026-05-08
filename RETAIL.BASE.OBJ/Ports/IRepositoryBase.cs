@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using RETAIL.BASE.OBJ.Models;
-namespace RETAIL.BASE.DAT.Interfaces
+
+namespace RETAIL.BASE.OBJ.Ports
 {
     public interface IRepositoryBase<MyClass, FilterClass, IdType>
     {

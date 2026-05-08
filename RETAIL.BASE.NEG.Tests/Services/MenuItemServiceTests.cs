@@ -12,17 +12,17 @@ namespace RETAIL.BASE.NEG.Tests.Services
 {
     public class MenuItemServiceTests
     {
-        private readonly Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<MenuItem, BaseFilter, int>> _menuitemRepositoryMock;
-        private readonly Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<User, BaseFilter, int>> _userRepositoryMock;
-        private readonly Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<Role, BaseFilter, int>> _roleRepositoryMock;
+        private readonly Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<MenuItem, BaseFilter, int>> _menuitemRepositoryMock;
+        private readonly Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<User, BaseFilter, int>> _userRepositoryMock;
+        private readonly Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<Role, BaseFilter, int>> _roleRepositoryMock;
         private readonly Mock<ILogger<MenuItemService>> _loggerMock;
         private readonly MenuItemService _service;
 
         public MenuItemServiceTests()
         {
-            _menuitemRepositoryMock = new Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<MenuItem, BaseFilter, int>>();
-            _userRepositoryMock = new Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<User, BaseFilter, int>>();
-            _roleRepositoryMock = new Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<Role, BaseFilter, int>>();
+            _menuitemRepositoryMock = new Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<MenuItem, BaseFilter, int>>();
+            _userRepositoryMock = new Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<User, BaseFilter, int>>();
+            _roleRepositoryMock = new Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<Role, BaseFilter, int>>();
             _loggerMock = new Mock<ILogger<MenuItemService>>();
             _service = new MenuItemService(_loggerMock.Object, _menuitemRepositoryMock.Object, _userRepositoryMock.Object, _roleRepositoryMock.Object);
         }

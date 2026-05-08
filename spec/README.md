@@ -2,7 +2,7 @@
 
 ## High-Level Summary
 
-RETAIL.BASE is a retail management backend API built on **.NET 8 / ASP.NET Core**. It exposes a versioned REST API (v1 and v2) backed by a **PostgreSQL** database accessed through **Entity Framework Core**. The system covers identity and access management (users, roles, menu items), company/customer master data, and a product catalog (brands, categories, products, and product presentations). Real-time notifications are delivered via a **SignalR** hub.
+RETAIL.BASE is a retail management backend API built on **.NET 8 / ASP.NET Core**. It exposes a versioned REST API (v1 and v2) backed by a **SQLite** database accessed through **Entity Framework Core**. The system covers identity and access management (users, roles, menu items), company/customer master data, and a product catalog (brands, categories, products, and product presentations). Real-time notifications are delivered via a **SignalR** hub.
 
 ---
 
@@ -29,13 +29,13 @@ RETAIL.BASE.API → RETAIL.BASE.NEG → RETAIL.BASE.DAT → RETAIL.BASE.OBJ
 
 ## Guide for New Developers
 
-1. **Prerequisites** — .NET 8 SDK, PostgreSQL server, Node.js + npm (for front-end).
+1. **Prerequisites** — .NET 8 SDK, Node.js + npm (for front-end). No database server required — SQLite is file-based.
 2. **Clone**
    ```bash
    git clone https://github.com/mrodriguex/RETAIL.BASE.git
    cd RETAIL.BASE
    ```
-3. **Configuration** — Connection string and JWT settings are in `RETAIL.BASE.API/appsettings.json`. Update `ConnectionStrings:SqlConn_RETAIL_BASE` and `Jwt:Key` for your environment.
+3. **Configuration** — Connection string and JWT settings are in `RETAIL.BASE.API/appsettings.json`. The default connection string is `Data Source=retailbase.db` (SQLite file in the working directory). Update `Jwt:Key` for your environment.
 4. **Database setup** — Apply EF migrations:
    ```bash
    dotnet ef database update --project RETAIL.BASE.DAT --startup-project RETAIL.BASE.API

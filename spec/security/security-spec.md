@@ -22,8 +22,10 @@ The signing key is read from `appsettings.json` (`Jwt:Key`). Key absence throws 
 - Algorithm: `HmacSha256`.
 - Claims: single claim `ClaimTypes.Name = idUser.ToString()` (numeric user ID).
 - Expiry: configurable via `Jwt:Duration` (minutes), default 60.
-- Signing key: read from `IConfiguration["Jwt:Key"]`.
+- Signing key: read from `IConfiguration["Jwt:Key"]`, encoded with `Encoding.UTF8` in `JwtAuthenticateHelper.GenerateJwtToken()`.
 - Token is generated in `JwtAuthenticateHelper.GenerateJwtToken()`.
+
+**Note**: Token generation uses `Encoding.UTF8` while token validation in `Program.cs` uses `Encoding.ASCII`. For purely ASCII keys (as in the current `appsettings.json`) the byte sequences are identical, so validation succeeds. If the key ever contains non-ASCII characters these will diverge.
 
 ### Token generation (V2) — **[RISK]**
 - Signing key is **hardcoded** in source: `"Cryoinfra_SDL_3d80b5da-824b-4dde-b1db-3942c6d3d9fc"`.

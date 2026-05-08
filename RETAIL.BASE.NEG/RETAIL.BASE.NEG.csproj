@@ -12,11 +12,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RETAIL.BASE.DAT\RETAIL.BASE.DAT.csproj" />
     <ProjectReference Include="..\RETAIL.BASE.OBJ\RETAIL.BASE.OBJ.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 

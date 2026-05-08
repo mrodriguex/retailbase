@@ -1,7 +1,4 @@
-﻿// using System;
-// using System.Collections.Generic;
-// using System.Threading.Tasks;
-// namespace RETAIL.BASE.DAT.Interfaces
+// namespace RETAIL.BASE.OBJ.Ports
 // {
 //     public interface IRepositoryRead<MyClass, FilterClass, IdType>
 //     {

@@ -20,7 +20,7 @@ namespace RETAIL.BASE.DAT
             if (!optionsBuilder.IsConfigured)
             {
                 var connectionString = _configuration.GetConnectionString("SqlConn_RETAIL_BASE");
-                optionsBuilder.UseNpgsql(connectionString);
+                optionsBuilder.UseSqlite(connectionString);
             }
         }
 

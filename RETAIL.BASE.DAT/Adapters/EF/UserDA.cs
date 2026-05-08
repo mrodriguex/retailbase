@@ -2,7 +2,7 @@
 using RETAIL.BASE.OBJ;
 using System.Data;
 
-using RETAIL.BASE.DAT.Interfaces;
+using RETAIL.BASE.OBJ.Ports;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

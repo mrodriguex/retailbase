@@ -8,13 +8,13 @@ namespace RETAIL.BASE.NEG.Tests.Services
 {
     public class UserServiceTests
     {
-        private readonly Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<User, BaseFilter, int>> _userRepositoryMock;
+        private readonly Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<User, BaseFilter, int>> _userRepositoryMock;
         private readonly Mock<ILogger<UserService>> _loggerMock;
         private readonly UserService _service;
 
         public UserServiceTests()
         {
-            _userRepositoryMock = new Mock<RETAIL.BASE.DAT.Interfaces.IRepositoryBase<User, BaseFilter, int>>();
+            _userRepositoryMock = new Mock<RETAIL.BASE.OBJ.Ports.IRepositoryBase<User, BaseFilter, int>>();
             _loggerMock = new Mock<ILogger<UserService>>();
             _service = new UserService(_loggerMock.Object, _userRepositoryMock.Object);
         }
