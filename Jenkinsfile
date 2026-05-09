@@ -6,6 +6,15 @@ pipeline {
         }
     }
 
+    parameters { 
+        string(name: 'USER', defaultValue: 'mrodriguex') 
+        string(name: 'SERVER', defaultValue: 'localhost') 
+        string(name: 'ENVIRONMENT', defaultValue: 'dev') 
+        string(name: 'PROJECT', defaultValue: 'RETAIL.BASE.API') 
+        string(name: 'SERVICE_PORT', defaultValue: '5000') 
+        string(name: 'DEPLOY_PATH', defaultValue: '') 
+    }
+    
     environment {
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
         DOTNET_SKIP_FIRST_TIME_EXPERIENCE = '1'
@@ -36,14 +45,14 @@ pipeline {
                 script {
                     // Evaluar condicionales AQUÍ dentro de script
                     
-                    env.USER = params.USER ?: 'mrodriguex'
-                    env.SERVER = params.SERVER ?: 'localhost'
-                    env.ENVIRONMENT = params.ENVIRONMENT ?: 'dev'
-                    env.PROJECT_NAME = params.PROJECT ?: 'RETAIL.BASE.API'
-                    env.SERVICE_PORT = params.SERVICE_PORT ?: '5000'
+                    env.USER = params.USER
+                    env.SERVER = params.SERVER
+                    env.ENVIRONMENT = params.ENVIRONMENT
+                    env.PROJECT_NAME = params.PROJECT
+                    env.SERVICE_PORT = params.SERVICE_PORT
                     
                     env.PROJECT_DIR = env.PROJECT_NAME
-                                        
+
                     env.DEPLOY_PATH = params.DEPLOY_PATH ?: "/home/${env.USER}/www/services/${env.ENVIRONMENT}/${env.PROJECT_NAME}"
                     
                     env.SERVICE = "${env.PROJECT_NAME}-${env.ENVIRONMENT}.service"
@@ -73,71 +82,103 @@ pipeline {
             }
         }
 
-        stage('Setup Service') {
+        stage('Deploy') {
             steps {
                 sshagent(['server-deploy-key']) {
+
                     script {
+
                         def serviceContent = """\
 [Unit]
-Description=Servicio API de ${env.PROJECT_NAME}
+Description=${env.PROJECT_NAME}
+After=network.target
 
 [Service]
-ExecStart=${env.DEPLOY_PATH}/${env.PROJECT_NAME} --urls http://0.0.0.0:${env.SERVICE_PORT}
-WorkingDirectory=${env.DEPLOY_PATH}/
+WorkingDirectory=${env.DEPLOY_PATH}
+
+ExecStart=${env.DEPLOY_PATH}/${env.PROJECT_NAME} --urls=http://0.0.0.0:${env.SERVICE_PORT}
+
 User=${env.USER}
 Group=${env.USER}
-Restart=on-failure
+
+Restart=always
+RestartSec=5
+
 SyslogIdentifier=${env.PROJECT_NAME}-${env.ENVIRONMENT}
+
+Environment=ASPNETCORE_ENVIRONMENT=${env.ENVIRONMENT}
+
 PrivateTmp=true
-CPUWeight=20
-CPUQuota=80%
 
 [Install]
 WantedBy=multi-user.target
 """
-                        writeFile file: "${env.SERVICE}", text: serviceContent
+
+                        writeFile file: env.SERVICE, text: serviceContent
+
                         sh """
-                            echo "=== VERIFICANDO SERVICIO ${env.SERVICE} ==="
-                            SERVICE_EXISTS=\$(ssh -o StrictHostKeyChecking=no ${env.USER}@${env.SERVER} "[ -f /etc/systemd/system/${env.SERVICE} ] && echo yes || echo no")
-                            if [ "\$SERVICE_EXISTS" = "no" ]; then
-                                echo "Creando unidad de servicio..."
-                                scp -o StrictHostKeyChecking=no ${env.SERVICE} ${env.USER}@${env.SERVER}:/tmp/${env.SERVICE}
-                                ssh -o StrictHostKeyChecking=no ${env.USER}@${env.SERVER} "
+                            set -eux
+
+                            echo "=== PREPARING REMOTE DIRECTORY ==="
+
+                            ssh -o StrictHostKeyChecking=no \
+                                ${env.USER}@${env.SERVER} "
+                                    mkdir -p ${env.DEPLOY_PATH}
+                                "
+
+                            echo "=== INSTALLING SYSTEMD SERVICE ==="
+
+                            scp -o StrictHostKeyChecking=no \
+                                ${env.SERVICE} \
+                                ${env.USER}@${env.SERVER}:/tmp/${env.SERVICE}
+
+                            ssh -o StrictHostKeyChecking=no \
+                                ${env.USER}@${env.SERVER} "
                                     sudo mv /tmp/${env.SERVICE} /etc/systemd/system/${env.SERVICE}
                                     sudo chmod 644 /etc/systemd/system/${env.SERVICE}
+
                                     sudo systemctl daemon-reload
                                     sudo systemctl enable ${env.SERVICE}
                                 "
-                                echo "✅ Servicio ${env.SERVICE} creado y habilitado."
-                            else
-                                echo "El servicio ya existe, omitiendo creación."
-                            fi
-                        """
-                    }
-                }
-            }
-        }
 
-        stage('Deploy') {
-            steps {
-                sshagent(['server-deploy-key']) {
-                    dir("${env.PROJECT_DIR}") {
-                        sh """
-                            echo "=== DESPLEGANDO ${env.PROJECT_NAME} en ${env.ENVIRONMENT} ==="
-                            ssh -o StrictHostKeyChecking=no ${env.USER}@${env.SERVER} "rm -rf ${env.DEPLOY_PATH}/*"
-                            ssh -o StrictHostKeyChecking=no ${env.USER}@${env.SERVER} "mkdir -p ${env.DEPLOY_PATH}"
-                            scp -o StrictHostKeyChecking=no -r /tmp/publish/* ${env.USER}@${env.SERVER}:${env.DEPLOY_PATH}/
-                            
-                            echo "=== CONFIGURANDO SERVICIO ==="
-                            ssh -o StrictHostKeyChecking=no ${env.USER}@${env.SERVER} "
-                                chown -R ${env.USER}:${env.USER} ${env.DEPLOY_PATH}
-                                sudo /usr/bin/systemctl daemon-reload
-                                sudo /usr/bin/systemctl restart ${env.SERVICE}
-                                echo 'Service status:'
-                                sudo /usr/bin/systemctl status ${env.SERVICE} --no-pager | head -5
-                            "
-                            
-                            echo "✅ ${env.PROJECT_NAME} desplegado en ${env.ENVIRONMENT}"
+                            echo "=== CLEANING DEPLOY DIRECTORY ==="
+
+                            ssh -o StrictHostKeyChecking=no \
+                                ${env.USER}@${env.SERVER} "
+                                    find ${env.DEPLOY_PATH} -mindepth 1 -delete
+                                "
+
+                            echo "=== COPYING APPLICATION FILES ==="
+
+                            scp -o StrictHostKeyChecking=no -r \
+                                /tmp/publish/* \
+                                ${env.USER}@${env.SERVER}:${env.DEPLOY_PATH}/
+
+                            echo "=== FIXING PERMISSIONS ==="
+
+                            ssh -o StrictHostKeyChecking=no \
+                                ${env.USER}@${env.SERVER} "
+                                    chmod +x ${env.DEPLOY_PATH}/${env.PROJECT_NAME}
+                                    chown -R ${env.USER}:${env.USER} ${env.DEPLOY_PATH}
+                                "
+
+                            echo "=== RESTARTING SERVICE ==="
+
+                            ssh -o StrictHostKeyChecking=no \
+                                ${env.USER}@${env.SERVER} "
+                                    sudo systemctl restart ${env.SERVICE}
+
+                                    sleep 3
+
+                                    echo '=== SERVICE STATUS ==='
+
+                                    sudo systemctl status ${env.SERVICE} \
+                                        --no-pager \
+                                        --full \
+                                        | head -20
+                                "
+
+                            echo "✅ ${env.PROJECT_NAME} desplegado correctamente"
                         """
                     }
                 }
