@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'mcr.microsoft.com/dotnet/sdk:8.0'
-            args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
 
@@ -23,7 +23,10 @@ pipeline {
         }
 
         stage('Checkout') {
-            steps { checkout scm }
+            steps { 
+                cleanWs()
+                checkout scm 
+                }
         }
 
          stage('Set Variables') {
@@ -57,12 +60,12 @@ pipeline {
                 dir("${env.PROJECT_DIR}") {
                     sh "dotnet restore ${env.PROJECT_NAME}.csproj"
                     sh "dotnet build ${env.PROJECT_NAME}.csproj -c Release"
-                    sh "dotnet publish ${env.PROJECT_NAME}.csproj -c Release -o ./publish"
+                    sh "dotnet publish ${env.PROJECT_NAME}.csproj -c Release -o /tmp/publish"
                     sh '''
                         echo "=== BUSCANDO appsettings ==="
                         find . -name "appsettings.json"
                     '''
-                    sh "cat ./publish/appsettings.json"
+                    sh "cat /tmp/publish/appsettings.json"
                     echo "✅ Build completado para ${env.PROJECT_NAME} en ${env.ENVIRONMENT}"
                 }
             }
@@ -121,7 +124,7 @@ WantedBy=multi-user.target
                             echo "=== DESPLEGANDO ${env.PROJECT_NAME} en ${env.ENVIRONMENT} ==="
                             ssh -o StrictHostKeyChecking=no ${env.USER}@${env.SERVER} "rm -rf ${env.DEPLOY_PATH}/*"
                             ssh -o StrictHostKeyChecking=no ${env.USER}@${env.SERVER} "mkdir -p ${env.DEPLOY_PATH}"
-                            scp -o StrictHostKeyChecking=no -r publish/* ${env.USER}@${env.SERVER}:${env.DEPLOY_PATH}/
+                            scp -o StrictHostKeyChecking=no -r /tmp/publish/* ${env.USER}@${env.SERVER}:${env.DEPLOY_PATH}/
                             
                             echo "=== CONFIGURANDO SERVICIO ==="
                             ssh -o StrictHostKeyChecking=no ${env.USER}@${env.SERVER} "
@@ -148,7 +151,7 @@ WantedBy=multi-user.target
             echo "❌ FALLÓ - ${env.PROJECT_NAME} en ${env.ENVIRONMENT}"
         }
         always { 
-            archiveArtifacts artifacts: 'publish/**', allowEmptyArchive: true 
+            archiveArtifacts artifacts: '/tmp/publish/**', allowEmptyArchive: true
         }
     }
 }
