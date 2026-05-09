@@ -71,12 +71,12 @@ pipeline {
                 dir("${env.PROJECT_DIR}") {
                     sh "dotnet restore ${env.PROJECT_NAME}.csproj"
                     sh "dotnet build ${env.PROJECT_NAME}.csproj -c Release"
-                    sh "dotnet publish ${env.PROJECT_NAME}.csproj -c Release -o /tmp/publish"
+                    sh "dotnet publish ${env.PROJECT_NAME}.csproj -c Release -o publish"
                     sh '''
                         echo "=== BUSCANDO appsettings ==="
                         find . -name "appsettings.json"
                     '''
-                    sh "cat /tmp/publish/appsettings.json"
+                    sh "cat publish/appsettings.json"
                     echo "✅ Build completado para ${env.PROJECT_NAME} en ${env.ENVIRONMENT}"
                 }
             }
@@ -136,7 +136,6 @@ WantedBy=multi-user.target
                                 ${env.USER}@${env.SERVER} "
                                     sudo mv /tmp/${env.SERVICE} /etc/systemd/system/${env.SERVICE}
                                     sudo chmod 644 /etc/systemd/system/${env.SERVICE}
-
                                     sudo systemctl daemon-reload
                                     sudo systemctl enable ${env.SERVICE}
                                 "
@@ -145,13 +144,15 @@ WantedBy=multi-user.target
 
                             ssh -o StrictHostKeyChecking=no \
                                 ${env.USER}@${env.SERVER} "
-                                    find ${env.DEPLOY_PATH} -mindepth 1 -delete
+                                    test -n "${env.DEPLOY_PATH}"
+                                    test "${env.DEPLOY_PATH}" != "/"
+                                    find "${env.DEPLOY_PATH}" -mindepth 1 -delete
                                 "
 
                             echo "=== COPYING APPLICATION FILES ==="
 
                             scp -o StrictHostKeyChecking=no -r \
-                                /tmp/publish/* \
+                                publish/* \
                                 ${env.USER}@${env.SERVER}:${env.DEPLOY_PATH}/
 
                             echo "=== FIXING PERMISSIONS ==="
@@ -194,7 +195,7 @@ WantedBy=multi-user.target
             echo "❌ FALLÓ - ${env.PROJECT_NAME} en ${env.ENVIRONMENT}"
         }
         always { 
-            archiveArtifacts artifacts: '/tmp/publish/**', allowEmptyArchive: true
+            archiveArtifacts artifacts: '**/publish/**', allowEmptyArchive: true
         }
     }
 }
