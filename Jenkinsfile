@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'mcr.microsoft.com/dotnet/sdk:8.0'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
+            args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
 
@@ -16,8 +16,10 @@ pipeline {
         stage('Prepare') {
             steps {
                 sh '''
-                    apt-get update && apt-get install -y openssh-client
-                    mkdir -p /tmp/dotnet-home && chmod 777 /tmp/dotnet-home
+                apt-get update
+                apt-get install -y openssh-client
+                mkdir -p /tmp/dotnet-home
+                chmod 777 /tmp/dotnet-home
                 '''
             }
         }
