@@ -36,10 +36,10 @@ pipeline {
                 script {
                     // Evaluar condicionales AQUÍ dentro de script
                     
-                    env.USER = params.USER ?: 'mrodriguex'
+                    env.USER = params.USER ?: 'user'
                     env.SERVER = params.SERVER ?: 'localhost'
                     env.ENVIRONMENT = params.ENVIRONMENT ?: 'dev'
-                    env.PROJECT_NAME = params.PROJECT_NAME ?: 'RETAIL.BASE.API'
+                    env.PROJECT_NAME = params.PROJECT_NAME ?: 'project_name'
                     env.SERVICE_PORT = params.SERVICE_PORT ?: '5000'                    
                     env.PROJECT_DIR = env.PROJECT_NAME
 
@@ -76,9 +76,11 @@ pipeline {
             steps {
                 sshagent(['server-deploy-key']) {
 
-                    script {
+                    dir("${env.PROJECT_DIR}") {
 
-                        def serviceContent = """\
+                        script {
+
+                            def serviceContent = """\
 [Unit]
 Description=${env.PROJECT_NAME}
 After=network.target
@@ -104,73 +106,74 @@ PrivateTmp=true
 WantedBy=multi-user.target
 """
 
-                        writeFile file: env.SERVICE, text: serviceContent
+                            writeFile file: env.SERVICE, text: serviceContent
 
-                        sh """
-                            set -eux
+                            sh """
+                                set -eux
 
-                            echo "=== PREPARING REMOTE DIRECTORY ==="
+                                echo "=== PREPARING REMOTE DIRECTORY ==="
 
-                            ssh -o StrictHostKeyChecking=no \
-                                ${env.USER}@${env.SERVER} "
-                                    mkdir -p ${env.DEPLOY_PATH}
-                                "
+                                ssh -o StrictHostKeyChecking=no \
+                                    ${env.USER}@${env.SERVER} "
+                                        mkdir -p ${env.DEPLOY_PATH}
+                                    "
 
-                            echo "=== INSTALLING SYSTEMD SERVICE ==="
+                                echo "=== INSTALLING SYSTEMD SERVICE ==="
 
-                            scp -o StrictHostKeyChecking=no \
-                                ${env.SERVICE} \
-                                ${env.USER}@${env.SERVER}:/tmp/${env.SERVICE}
+                                scp -o StrictHostKeyChecking=no \
+                                    ${env.SERVICE} \
+                                    ${env.USER}@${env.SERVER}:/tmp/${env.SERVICE}
 
-                            ssh -o StrictHostKeyChecking=no \
-                                ${env.USER}@${env.SERVER} "
-                                    sudo mv /tmp/${env.SERVICE} /etc/systemd/system/${env.SERVICE}
-                                    sudo chmod 644 /etc/systemd/system/${env.SERVICE}
-                                    sudo systemctl daemon-reload
-                                    sudo systemctl enable ${env.SERVICE}
-                                "
+                                ssh -o StrictHostKeyChecking=no \
+                                    ${env.USER}@${env.SERVER} "
+                                        sudo mv /tmp/${env.SERVICE} /etc/systemd/system/${env.SERVICE}
+                                        sudo chmod 644 /etc/systemd/system/${env.SERVICE}
+                                        sudo systemctl daemon-reload
+                                        sudo systemctl enable ${env.SERVICE}
+                                    "
 
-                            echo "=== CLEANING DEPLOY DIRECTORY ==="
+                                echo "=== CLEANING DEPLOY DIRECTORY ==="
 
-                            ssh -o StrictHostKeyChecking=no \
-                                ${env.USER}@${env.SERVER} "
-                                    test -n "${env.DEPLOY_PATH}"
-                                    test "${env.DEPLOY_PATH}" != "/"
-                                    find "${env.DEPLOY_PATH}" -mindepth 1 -delete
-                                "
+                                ssh -o StrictHostKeyChecking=no \
+                                    ${env.USER}@${env.SERVER} "
+                                        test -n "${env.DEPLOY_PATH}"
+                                        test "${env.DEPLOY_PATH}" != "/"
+                                        find "${env.DEPLOY_PATH}" -mindepth 1 -delete
+                                    "
 
-                            echo "=== COPYING APPLICATION FILES ==="
+                                echo "=== COPYING APPLICATION FILES ==="
 
-                            scp -o StrictHostKeyChecking=no -r \
-                                publish/* \
-                                ${env.USER}@${env.SERVER}:${env.DEPLOY_PATH}/
+                                scp -o StrictHostKeyChecking=no -r \
+                                    publish/* \
+                                    ${env.USER}@${env.SERVER}:${env.DEPLOY_PATH}/
 
-                            echo "=== FIXING PERMISSIONS ==="
+                                echo "=== FIXING PERMISSIONS ==="
 
-                            ssh -o StrictHostKeyChecking=no \
-                                ${env.USER}@${env.SERVER} "
-                                    chmod +x ${env.DEPLOY_PATH}/${env.PROJECT_NAME}
-                                    chown -R ${env.USER}:${env.USER} ${env.DEPLOY_PATH}
-                                "
+                                ssh -o StrictHostKeyChecking=no \
+                                    ${env.USER}@${env.SERVER} "
+                                        chmod +x ${env.DEPLOY_PATH}/${env.PROJECT_NAME}
+                                        chown -R ${env.USER}:${env.USER} ${env.DEPLOY_PATH}
+                                    "
 
-                            echo "=== RESTARTING SERVICE ==="
+                                echo "=== RESTARTING SERVICE ==="
 
-                            ssh -o StrictHostKeyChecking=no \
-                                ${env.USER}@${env.SERVER} "
-                                    sudo systemctl restart ${env.SERVICE}
+                                ssh -o StrictHostKeyChecking=no \
+                                    ${env.USER}@${env.SERVER} "
+                                        sudo systemctl restart ${env.SERVICE}
 
-                                    sleep 3
+                                        sleep 3
 
-                                    echo '=== SERVICE STATUS ==='
+                                        echo '=== SERVICE STATUS ==='
 
-                                    sudo systemctl status ${env.SERVICE} \
-                                        --no-pager \
-                                        --full \
-                                        | head -20
-                                "
+                                        sudo systemctl status ${env.SERVICE} \
+                                            --no-pager \
+                                            --full \
+                                            | head -20
+                                    "
 
-                            echo "✅ ${env.PROJECT_NAME} desplegado correctamente"
-                        """
+                                echo "✅ ${env.PROJECT_NAME} desplegado correctamente"
+                            """
+                        }
                     }
                 }
             }
