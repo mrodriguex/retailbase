@@ -5,15 +5,6 @@ pipeline {
             args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
-
-    parameters { 
-        string(name: 'USER', defaultValue: 'mrodriguex') 
-        string(name: 'SERVER', defaultValue: 'localhost') 
-        string(name: 'ENVIRONMENT', defaultValue: 'dev') 
-        string(name: 'PROJECT', defaultValue: 'RETAIL.BASE.API') 
-        string(name: 'SERVICE_PORT', defaultValue: '5000') 
-        string(name: 'DEPLOY_PATH', defaultValue: '') 
-    }
     
     environment {
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
@@ -45,12 +36,11 @@ pipeline {
                 script {
                     // Evaluar condicionales AQUÍ dentro de script
                     
-                    env.USER = params.USER
-                    env.SERVER = params.SERVER
-                    env.ENVIRONMENT = params.ENVIRONMENT
-                    env.PROJECT_NAME = params.PROJECT
-                    env.SERVICE_PORT = params.SERVICE_PORT
-                    
+                    env.USER = params.USER ?: 'mrodriguex'
+                    env.SERVER = params.SERVER ?: 'localhost'
+                    env.ENVIRONMENT = params.ENVIRONMENT ?: 'dev'
+                    env.PROJECT_NAME = params.PROJECT_NAME ?: 'RETAIL.BASE.API'
+                    env.SERVICE_PORT = params.SERVICE_PORT ?: '5000'                    
                     env.PROJECT_DIR = env.PROJECT_NAME
 
                     env.DEPLOY_PATH = params.DEPLOY_PATH ?: "/home/${env.USER}/www/services/${env.ENVIRONMENT}/${env.PROJECT_NAME}"
